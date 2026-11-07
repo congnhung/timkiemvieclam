@@ -1,0 +1,17 @@
+body {
+    font-size: 15px;
+}
+.alert-count {
+    bottom: 12px;
+    left: 18px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    background: #f62718;
+}

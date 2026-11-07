@@ -1,0 +1,3 @@
+/**
+ * Bootstrap vendor script
+ */
