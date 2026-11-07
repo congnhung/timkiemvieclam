@@ -32,14 +32,92 @@
 
         <div class="tw-nav-actions">
           @if(Auth::check())
-            @if(Auth::user()->role === 'user')
-              <a href="{{ route('account.profile') }}" class="tw-btn tw-btn-outline">Tài khoản</a>
-            @elseif(Auth::user()->role === 'admin')
-              <a href="{{ route('admin.home') }}" class="tw-btn tw-btn-outline">Quản trị</a>
-            @elseif(Auth::user()->role === 'employer')
-              <a href="{{ route('account.profile') }}" class="tw-btn tw-btn-outline">Tài khoản</a>
-              <a href="{{ route('account.createJob') }}" class="tw-btn tw-btn-primary">Đăng tuyển</a>
+            @php
+              $userImg = Auth::user()->image ?? '';
+              if (!empty($userImg)) {
+                  if (str_starts_with($userImg, 'http://') || str_starts_with($userImg, 'https://')) {
+                      $userAvatar = $userImg;
+                  } elseif (file_exists(public_path('assets/user/profile_picture/thumb/' . $userImg))) {
+                      $userAvatar = asset('assets/user/profile_picture/thumb/' . $userImg);
+                  } elseif (file_exists(public_path('assets/user/profile_picture/' . $userImg))) {
+                      $userAvatar = asset('assets/user/profile_picture/' . $userImg);
+                  } elseif (file_exists(public_path($userImg))) {
+                      $userAvatar = asset($userImg);
+                  } else {
+                      $userAvatar = asset('assets/user/images/avatar7.png');
+                  }
+              } else {
+                  $userAvatar = asset('assets/user/images/avatar7.png');
+              }
+              $displayName = !empty(Auth::user()->fullname)
+                  ? Auth::user()->fullname
+                  : (!empty(Auth::user()->name)
+                      ? Auth::user()->name
+                      : (!empty(Auth::user()->company_name) ? Auth::user()->company_name : 'Tài khoản'));
+            @endphp
+
+            @if(Auth::user()->role === 'employer')
+              <a href="{{ route('account.createJob') }}" class="tw-btn tw-btn-primary d-none d-sm-inline-flex align-items-center gap-1">
+                <i class="fa fa-plus-circle"></i> Đăng tuyển
+              </a>
             @endif
+
+            <div class="dropdown tw-user-dropdown">
+              <a href="javascript:void(0);" class="tw-user-badge d-flex align-items-center gap-2 text-decoration-none dropdown-toggle"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="{{ $userAvatar }}" alt="{{ $displayName }}" class="rounded-circle border"
+                  style="width: 32px; height: 32px; object-fit: cover; border-color: var(--c-brand) !important;">
+                <span class="fw-semibold text-dark text-truncate d-none d-sm-inline-block" style="max-width: 140px; font-size: var(--text-sm);">
+                  {{ $displayName }}
+                </span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="min-width: 200px; border-radius: 12px; font-size: var(--text-sm);">
+                <li class="px-3 py-2 border-bottom">
+                  <div class="fw-bold text-dark text-truncate">{{ $displayName }}</div>
+                  <small class="text-muted text-truncate d-block">{{ Auth::user()->email }}</small>
+                </li>
+                <li>
+                  <a class="dropdown-item py-2" href="{{ route('account.profile') }}">
+                    <i class="fa fa-user me-2 text-muted"></i> Trang cá nhân
+                  </a>
+                </li>
+                @if(Auth::user()->role === 'employer')
+                  <li>
+                    <a class="dropdown-item py-2" href="{{ route('account.myJobs') }}">
+                      <i class="fa fa-briefcase me-2 text-muted"></i> Việc làm đã đăng
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item py-2" href="{{ route('account.createJob') }}">
+                      <i class="fa fa-plus me-2 text-muted"></i> Đăng tin mới
+                    </a>
+                  </li>
+                @elseif(Auth::user()->role === 'user')
+                  <li>
+                    <a class="dropdown-item py-2" href="{{ route('cv.myResumes') }}">
+                      <i class="fa fa-file-text-o me-2 text-muted"></i> CV của tôi
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item py-2" href="{{ route('account.savedJobs') }}">
+                      <i class="fa fa-heart-o me-2 text-muted"></i> Việc làm đã lưu
+                    </a>
+                  </li>
+                @elseif(Auth::user()->role === 'admin')
+                  <li>
+                    <a class="dropdown-item py-2" href="{{ route('admin.home') }}">
+                      <i class="fa fa-dashboard me-2 text-muted"></i> Trang quản trị
+                    </a>
+                  </li>
+                @endif
+                <li><hr class="dropdown-divider my-1"></li>
+                <li>
+                  <a class="dropdown-item py-2 text-danger" href="{{ route('account.logout') }}">
+                    <i class="fa fa-sign-out me-2"></i> Đăng xuất
+                  </a>
+                </li>
+              </ul>
+            </div>
           @else
             <a href="{{ route('account.login') }}" class="tw-btn tw-btn-outline">Đăng nhập</a>
             <a href="{{ route('account.registration') }}" class="tw-btn tw-btn-primary">Đăng ký</a>

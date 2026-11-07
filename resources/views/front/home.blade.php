@@ -14,10 +14,57 @@ $careerIcons = ['Công nghệ'=>'fa-code','Marketing'=>'fa-bullhorn','Kinh doanh
     <div class="row align-items-center gy-5">
 
       <div class="col-lg-6 tw-hero-inner">
-        <span class="tw-hero-eyebrow">Nền tảng tuyển dụng Việt Nam</span>
-        <h1>Tìm công việc <em>phù hợp</em><br>với bạn ngay hôm nay</h1>
-        <p class="tw-hero-sub">Kết nối ứng viên với hàng nghìn nhà tuyển dụng uy tín. Tạo CV chuyên nghiệp và ứng tuyển nhanh chóng.</p>
-        <div class="tw-hero-stats">
+        @if(isset($banners) && $banners->isNotEmpty())
+          <div id="heroBannerCarousel" class="carousel slide carousel-fade tw-hero-carousel" data-bs-ride="carousel" data-bs-interval="4000">
+            <!-- Indicators -->
+            <div class="carousel-indicators">
+              @foreach($banners as $index => $banner)
+                <button type="button" data-bs-target="#heroBannerCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-label="Slide {{ $index + 1 }}"></button>
+              @endforeach
+            </div>
+
+            <!-- Slides -->
+            <div class="carousel-inner">
+              @foreach($banners as $index => $banner)
+                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                  @if(!empty($banner->link))
+                    <a href="{{ $banner->link }}" target="{{ str_starts_with($banner->link, 'http') ? '_blank' : '_self' }}" class="d-block position-relative text-decoration-none">
+                  @else
+                    <div class="position-relative">
+                  @endif
+                      <img src="{{ asset($banner->image) }}" class="tw-hero-banner-img" alt="{{ $banner->title }}">
+                      <div class="carousel-caption">
+                        <span class="badge bg-success mb-1" style="font-size: 11px; font-weight: 500;">
+                          <i class="fa fa-bullhorn me-1"></i> Quảng cáo nhà tuyển dụng
+                        </span>
+                        <h4 class="text-white mb-0 fw-bold" style="font-size: 1.15rem; text-shadow: 0 2px 4px rgba(0,0,0,0.6);">{{ $banner->title }}</h4>
+                      </div>
+                  @if(!empty($banner->link))
+                    </a>
+                  @else
+                    </div>
+                  @endif
+                </div>
+              @endforeach
+            </div>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroBannerCarousel" data-bs-slide="prev" style="width: 48px;">
+              <span class="carousel-control-prev-icon p-2 rounded-circle bg-dark bg-opacity-50" aria-hidden="true" style="background-size: 55%;"></span>
+              <span class="visually-hidden">Trước</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroBannerCarousel" data-bs-slide="next" style="width: 48px;">
+              <span class="carousel-control-next-icon p-2 rounded-circle bg-dark bg-opacity-50" aria-hidden="true" style="background-size: 55%;"></span>
+              <span class="visually-hidden">Sau</span>
+            </button>
+          </div>
+        @else
+          <span class="tw-hero-eyebrow">Nền tảng tuyển dụng Việt Nam</span>
+          <h1>Tìm công việc <em>phù hợp</em><br>với bạn ngay hôm nay</h1>
+          <p class="tw-hero-sub">Kết nối ứng viên với hàng nghìn nhà tuyển dụng uy tín. Tạo CV chuyên nghiệp và ứng tuyển nhanh chóng.</p>
+        @endif
+
+        <div class="tw-hero-stats mt-4">
           <div>
             <div class="tw-stat-num">10.000+</div>
             <div class="tw-stat-label">Việc làm</div>

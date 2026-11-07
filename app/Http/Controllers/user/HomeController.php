@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Careers;
 use App\Models\Job;
 use App\Models\SavedJob;
+use App\Models\Banner;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -56,12 +57,18 @@ class HomeController extends Controller
         
         $provinces = config('vietnam_provinces_34.provinces', []);
 
+        $banners = Banner::where('status', 1)
+            ->orderBy('sort_order', 'ASC')
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
         return view('front.home', [
             'careers' => $careers,
             'featureJobs' => $featureJobs,
             'latesJobs' => $latesJobs,
             'newCareers' => $newCareers,
             'provinces' => $provinces,
+            'banners' => $banners,
         ]);
     }
 }

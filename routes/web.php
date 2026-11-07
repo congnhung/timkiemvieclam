@@ -10,6 +10,7 @@ use App\Http\Controllers\user\AccountController;
 use App\Http\Controllers\user\JobsController;
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\CareerController;
+use App\Http\Controllers\admin\BannerController;
 use App\Http\Controllers\admin\FileDownloadController;
 use App\Http\Controllers\admin\NotificationController;
 use App\Http\Controllers\admin\SupportChatController;
@@ -108,6 +109,13 @@ Route::group(['prefix' => 'admin'], function () {
       Route::post("edit-career/{id}",  "postEditCareer")->name('admin.postEditCareer.career');
       Route::delete("delete-career/{id}", "deleteCareer")->name('admin.deleteCareer.career');
       Route::get("edit-career/{id}", "getEditCareer")->name('admin.getEditCareer.career');
+    });
+    Route::controller(BannerController::class)->group(function () {
+      Route::get("banner", "index")->name('admin.banner.index');
+      Route::post("create-banner", "postCreateBanner")->name('admin.banner.create');
+      Route::get("edit-banner/{id}", "getEditBanner")->name('admin.banner.edit');
+      Route::post("edit-banner/{id}", "postEditBanner")->name('admin.banner.update');
+      Route::delete("delete-banner/{id}", "deleteBanner")->name('admin.banner.delete');
     });
     Route::controller(JobController::class)->group(function () {
       Route::get("job", "index")->name('admin.job');

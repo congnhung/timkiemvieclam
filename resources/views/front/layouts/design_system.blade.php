@@ -241,6 +241,76 @@ html { scroll-behavior: smooth; }
 .tw-btn-primary { background: var(--c-brand); color: var(--c-white); border-color: var(--c-brand-dark); }
 .tw-btn-primary:hover { background: var(--c-brand-dark); color: var(--c-white); border-color: var(--c-brand-dark); }
 
+/* User Profile Badge in Header */
+.tw-user-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px 4px 5px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.tw-user-badge:hover {
+  background: var(--c-gray-50);
+  border-color: var(--c-brand);
+  box-shadow: 0 2px 8px rgba(0,177,79,0.15);
+}
+.tw-user-badge::after {
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.tw-user-dropdown .dropdown-menu {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  border: 1px solid var(--c-gray-200);
+}
+.tw-user-dropdown .dropdown-item:hover {
+  background-color: var(--c-brand-light);
+  color: var(--c-brand-dark);
+}
+
+/* Hero Carousel Banners */
+.tw-hero-carousel {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  background: #000;
+}
+.tw-hero-carousel .carousel-indicators [data-bs-target] {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 4px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: none;
+  transition: all 0.25s ease;
+}
+.tw-hero-carousel .carousel-indicators .active {
+  width: 24px;
+  border-radius: 5px;
+  background-color: var(--c-brand);
+}
+.tw-hero-carousel .carousel-caption {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16px 20px;
+  background: linear-gradient(180deg, transparent 0%, rgba(10, 20, 15, 0.75) 40%, rgba(6, 15, 10, 0.95) 100%);
+  text-align: left;
+}
+.tw-hero-banner-img {
+  width: 100%;
+  height: 330px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.tw-hero-carousel:hover .tw-hero-banner-img {
+  transform: scale(1.02);
+}
+
 /* Scroll progress */
 .tw-progress-bar-wrap { height: 2px; background: transparent; }
 .tw-progress-bar { height: 2px; background: var(--c-brand); width: 0%; transition: width 0.2s; }
