@@ -401,51 +401,108 @@ html { scroll-behavior: smooth; }
   animation: slideUp 0.8s ease-out 0.4s both;
 }
 .tw-hero-stats {
-  display: flex; gap: var(--sp-8); flex-wrap: wrap;
+  display: flex; gap: var(--sp-3); flex-wrap: wrap;
   animation: slideUp 0.8s ease-out 0.6s both;
 }
-.tw-hero-stats > div { position: relative; padding-left: 14px; }
-.tw-hero-stats > div::before {
-  content: ''; position: absolute; left: 0; top: 4px; bottom: 4px;
-  width: 3px; border-radius: 3px; background: var(--c-brand);
+.tw-stat-card {
+  flex: 1;
+  min-width: 130px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 10px 14px;
+  transition: transform 0.2s, background 0.2s, border-color 0.2s;
 }
-.tw-stat-num { font-size: var(--text-xl); font-weight: 700; color: var(--c-white); }
-.tw-stat-label { font-size: var(--text-sm); color: #8aa396; margin-top: 2px; }
+.tw-stat-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(74, 222, 128, 0.4);
+}
+.tw-stat-num { font-size: 20px; font-weight: 800; color: var(--c-white); line-height: 1.2; }
+.tw-stat-label { font-size: 13px; color: #a7f3d0; margin-top: 3px; display: flex; align-items: center; gap: 5px; }
 
 /* Search box — card style + entrance animation */
 .tw-search-box {
   background: var(--c-white);
-  border-radius: var(--r-xl);
-  padding: var(--sp-6);
-  box-shadow: var(--shadow-hero);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2);
   position: relative; z-index: 10;
   animation: slideUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
 }
 .tw-search-box:hover {
-  box-shadow: 0 20px 56px rgba(0,0,0,0.28);
+  box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.35);
 }
 .tw-search-box-title {
   font-size: var(--text-base); font-weight: 600; color: var(--c-text);
   margin-bottom: var(--sp-4); padding-bottom: var(--sp-3);
   border-bottom: 1px solid var(--c-border);
 }
-.tw-search-field { margin-bottom: var(--sp-3); }
+.tw-search-field { margin-bottom: 12px; }
 .tw-search-field label {
-  display: block; font-size: var(--text-sm); font-weight: 500;
-  color: var(--c-gray-600); margin-bottom: var(--sp-1);
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--c-gray-700); margin-bottom: 5px;
 }
-.tw-search-field input,
-.tw-search-field select {
-  width: 100%; border: 1px solid var(--c-border); border-radius: var(--r-md);
-  padding: 8px var(--sp-3); font-size: var(--text-base); color: var(--c-text);
-  font-family: var(--font); background: var(--c-white); outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s; appearance: auto;
+.tw-search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
-.tw-search-field input:focus,
-.tw-search-field select:focus {
+.tw-search-input-wrap .tw-input-icon {
+  position: absolute;
+  left: 14px;
+  color: #94a3b8;
+  pointer-events: none;
+  font-size: 14px;
+  z-index: 2;
+}
+.tw-search-input-wrap input,
+.tw-search-input-wrap select {
+  width: 100%; border: 1px solid #e2e8f0; border-radius: 10px;
+  padding: 10px 14px 10px 38px; font-size: 14px; color: var(--c-text);
+  font-family: var(--font); background: #f8fafc; outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s; appearance: auto;
+}
+.tw-search-input-wrap input:focus,
+.tw-search-input-wrap select:focus {
   border-color: var(--c-brand);
-  box-shadow: 0 0 0 3px var(--c-brand-muted);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 177, 79, 0.16);
 }
+.tw-search-btn-primary {
+  width: 100%; margin-top: 10px;
+  background: linear-gradient(135deg, #00b14f 0%, #009944 100%);
+  color: #ffffff; border: none;
+  padding: 12px 20px; border-radius: 10px; font-size: 15px;
+  font-weight: 700; cursor: pointer; font-family: var(--font);
+  box-shadow: 0 4px 14px rgba(0, 177, 79, 0.35);
+  transition: all 0.2s ease;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  text-decoration: none;
+}
+.tw-search-btn-primary:hover {
+  background: linear-gradient(135deg, #009944 0%, #007a36 100%);
+  box-shadow: 0 6px 20px rgba(0, 177, 79, 0.45);
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+.tw-quick-tags {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  margin-top: 14px; font-size: 12px; color: #64748b;
+}
+.tw-quick-tag {
+  background: #f1f5f9; color: #475569; padding: 2px 9px;
+  border-radius: 999px; text-decoration: none; font-size: 11px;
+  font-weight: 500; transition: all 0.15s ease; border: 1px solid #e2e8f0;
+  cursor: pointer;
+}
+.tw-quick-tag:hover {
+  background: var(--c-brand-light); color: var(--c-brand-dark);
+  border-color: var(--c-brand);
+}
+
 .tw-search-btn {
   width: 100%; margin-top: var(--sp-2);
   background: var(--c-brand); color: var(--c-white); border: none;
@@ -493,95 +550,130 @@ html { scroll-behavior: smooth; }
 }
 
 /* ===================================================
-   CAREER CHIPS — Atlassian-style tag chips
+   CAREER CHIPS / CARDS — Modern Bento-style category cards
    ================================================= */
 .tw-career-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--sp-3);
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
 }
 .tw-career-chip {
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--c-white); border: 1px solid var(--c-border);
-  border-radius: var(--r-lg); padding: var(--sp-3) var(--sp-4);
+  display: flex; align-items: center; gap: 14px;
+  background: var(--c-white); border: 1px solid #e2e8f0;
+  border-radius: 14px; padding: 14px 16px;
   text-decoration: none; color: var(--c-text);
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .tw-career-chip:hover {
-  border-color: var(--c-brand); background: var(--c-brand-light);
-  color: var(--c-brand); box-shadow: var(--shadow-sm);
+  border-color: var(--c-brand); background: #ffffff;
+  color: var(--c-brand); box-shadow: 0 10px 25px -5px rgba(0, 177, 79, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
   transform: translateY(-3px);
 }
 .tw-career-chip:active { transform: translateY(-1px); }
-.tw-career-chip-name { font-size: var(--text-base); font-weight: 500; }
-.tw-career-chip-count { font-size: var(--text-xs); color: var(--c-gray-400); }
+.tw-career-chip-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; background: var(--c-brand-light); color: var(--c-brand);
+  flex-shrink: 0; transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.tw-career-chip:hover .tw-career-chip-icon {
+  transform: scale(1.08); background: var(--c-brand); color: #ffffff;
+}
+.tw-career-chip-info { flex: 1; min-width: 0; }
+.tw-career-chip-name {
+  font-size: 14px; font-weight: 600; color: #1e293b;
+  margin-bottom: 2px; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; display: block; transition: color 0.15s;
+}
+.tw-career-chip:hover .tw-career-chip-name { color: var(--c-brand); }
+.tw-career-chip-count { font-size: 12px; color: #64748b; font-weight: 500; display: block; }
 
 /* ===================================================
-   JOB CARD — GitHub Primer card style
+   JOB CARD — Modern Polish & Clean Elevation
    ================================================= */
 .tw-job-card {
   background: var(--c-white);
-  border: 1px solid var(--c-border);
-  border-radius: var(--r-lg);
-  padding: var(--sp-4);
-  transition: border-color 0.2s, box-shadow 0.25s, transform 0.25s;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 18px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex; flex-direction: column; height: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 .tw-job-card:hover {
   border-color: var(--c-brand);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 14px 28px -6px rgba(0, 177, 79, 0.14), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
   transform: translateY(-4px);
 }
 /* Card entrance animation (staggered via JS adding .tw-reveal) */
 .tw-job-card.tw-reveal {
   animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.tw-job-card-top { display: flex; align-items: flex-start; gap: var(--sp-3); margin-bottom: var(--sp-3); }
+.tw-job-card-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
 .tw-job-logo {
-  width: 44px; height: 44px; border-radius: var(--r-md);
-  object-fit: cover; border: 1px solid var(--c-border); flex-shrink: 0;
+  width: 50px; height: 50px; border-radius: 12px;
+  object-fit: cover; border: 1px solid #e2e8f0; background: #f8fafc;
+  flex-shrink: 0; padding: 2px; transition: transform 0.2s;
 }
+.tw-job-card:hover .tw-job-logo { transform: scale(1.05); }
 .tw-job-title {
-  font-size: var(--text-base); font-weight: 600; color: var(--c-text);
-  line-height: var(--lh-tight); margin-bottom: 2px;
+  font-size: 15px; font-weight: 700; color: #1e293b;
+  line-height: 1.4; margin-bottom: 4px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; text-decoration: none; transition: color 0.15s;
 }
-.tw-job-company { font-size: var(--text-sm); color: var(--c-text-sub); }
+.tw-job-card:hover .tw-job-title { color: var(--c-brand); }
+.tw-job-company {
+  font-size: 13px; color: #64748b; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .tw-job-heart {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
   margin-left: auto; flex-shrink: 0;
-  background: none; border: none; cursor: pointer;
-  font-size: 16px; color: var(--c-gray-300); transition: color 0.15s; padding: 0;
+  background: #f8fafc; border: 1px solid #e2e8f0; cursor: pointer;
+  font-size: 14px; color: #94a3b8; transition: all 0.2s ease;
+  text-decoration: none; padding: 0;
 }
-.tw-job-heart:hover, .tw-job-heart .fa-heart { color: #f43f5e; }
+.tw-job-heart:hover {
+  background: #ffe4e6; border-color: #fecdd3; color: #f43f5e;
+  transform: scale(1.1);
+}
+.tw-job-heart .fa-heart { color: #f43f5e; }
 
-.tw-job-meta { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.tw-job-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 .tw-job-badge {
-  display: inline-block; font-size: var(--text-xs);
-  padding: 2px 8px; border-radius: var(--r-sm); font-weight: 500;
+  display: inline-flex; align-items: center; gap: 4px; font-size: 12px;
+  padding: 3px 9px; border-radius: 6px; font-weight: 500;
+  border: 1px solid transparent;
 }
-.tw-badge-loc { background: var(--c-gray-100); color: var(--c-gray-600); }
-.tw-badge-type { background: var(--c-brand-light); color: var(--c-brand-dark); }
-.tw-badge-salary { background: #fffbeb; color: #92400e; font-weight: 600; }
+.tw-badge-loc { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
+.tw-badge-type { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.tw-badge-salary { background: #fef3c7; color: #92400e; border-color: #fde68a; font-weight: 600; }
 
-.tw-job-tags { display: flex; flex-wrap: wrap; gap: var(--sp-1); margin-bottom: var(--sp-3); flex: 1; }
+.tw-job-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; flex: 1; }
 .tw-job-tag {
-  font-size: var(--text-xs); padding: 2px 8px; border-radius: var(--r-sm);
-  background: var(--c-gray-50); border: 1px solid var(--c-gray-200); color: var(--c-gray-500);
-  text-decoration: none; transition: color 0.12s, border-color 0.12s;
+  font-size: 11px; padding: 2px 8px; border-radius: 999px;
+  background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b;
+  text-decoration: none; transition: all 0.15s;
 }
 .tw-job-tag:hover { color: var(--c-brand); border-color: var(--c-brand); background: var(--c-brand-light); }
 
-.tw-job-footer { margin-top: auto; }
+.tw-job-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: auto; padding-top: 12px; border-top: 1px dashed #e2e8f0;
+}
+.tw-job-time { font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
 .tw-btn-detail {
-  display: block; text-align: center; padding: 8px;
-  background: var(--c-brand); color: var(--c-white); border-radius: var(--r-md);
-  font-size: var(--text-base); font-weight: 600; text-decoration: none;
-  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-  border: 1px solid var(--c-brand-dark);
-  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: 5px; text-align: center;
+  padding: 6px 14px; background: #ecfdf5; color: #047857; border-radius: 8px;
+  font-size: 13px; font-weight: 600; text-decoration: none;
+  transition: all 0.2s ease; border: 1px solid #a7f3d0;
 }
 .tw-btn-detail:hover {
-  background: var(--c-brand-dark); color: var(--c-white);
-  box-shadow: 0 4px 14px rgba(0, 177, 79, 0.35);
+  background: var(--c-brand); color: var(--c-white); border-color: var(--c-brand-dark);
+  box-shadow: 0 4px 12px rgba(0, 177, 79, 0.25);
   transform: translateY(-1px);
 }
 .tw-btn-detail:active { transform: translateY(0); }
@@ -590,13 +682,25 @@ html { scroll-behavior: smooth; }
    VIEW ALL BUTTON
    ================================================= */
 .tw-view-all {
-  display: inline-block;
+  display: inline-flex; align-items: center; gap: 6px;
   border: 1px solid var(--c-brand); color: var(--c-brand);
-  padding: 8px var(--sp-6); border-radius: var(--r-md);
-  font-size: var(--text-base); font-weight: 600; text-decoration: none;
-  transition: all 0.15s; background: var(--c-white);
+  padding: 10px 24px; border-radius: 10px;
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  transition: all 0.2s ease; background: var(--c-white);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-.tw-view-all:hover { background: var(--c-brand); color: var(--c-white); }
+.tw-view-all:hover {
+  background: var(--c-brand); color: var(--c-white);
+  box-shadow: 0 4px 14px rgba(0, 177, 79, 0.25);
+  transform: translateY(-1px);
+}
+.tw-view-more-link {
+  color: var(--c-brand); font-size: 14px; font-weight: 600;
+  transition: color 0.15s, transform 0.15s;
+}
+.tw-view-more-link:hover {
+  color: var(--c-brand-dark); transform: translateX(3px);
+}
 
 /* ===================================================
    CTA BANNER — IBM Carbon-style: full-color block, no rounded mess

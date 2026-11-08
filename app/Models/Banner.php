@@ -19,3 +19,4 @@ class Banner extends Model
         'sort_order',
     ];
 }
+

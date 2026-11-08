@@ -153,3 +153,4 @@ class BannerController extends Controller
         return redirect()->route('admin.banner.index');
     }
 }
+

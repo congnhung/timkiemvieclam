@@ -3,9 +3,21 @@
 @section('main')
 
 @php
-$careerIcons = ['Công nghệ'=>'fa-code','Marketing'=>'fa-bullhorn','Kinh doanh'=>'fa-briefcase',
-  'Kế toán'=>'fa-calculator','Thiết kế'=>'fa-paint-brush','Giáo dục'=>'fa-graduation-cap',
-  'Y tế'=>'fa-heartbeat','Xây dựng'=>'fa-building','default'=>'fa-tag'];
+$getCareerIcon = function($name) {
+  $lower = mb_strtolower($name, 'UTF-8');
+  if (str_contains($lower, 'công nghệ') || str_contains($lower, 'it') || str_contains($lower, 'lập trình')) return 'fa-code';
+  if (str_contains($lower, 'kinh doanh') || str_contains($lower, 'sales') || str_contains($lower, 'bán hàng')) return 'fa-line-chart';
+  if (str_contains($lower, 'marketing') || str_contains($lower, 'quảng cáo') || str_contains($lower, 'truyền thông')) return 'fa-bullhorn';
+  if (str_contains($lower, 'kế toán') || str_contains($lower, 'tài chính') || str_contains($lower, 'ngân hàng')) return 'fa-calculator';
+  if (str_contains($lower, 'thiết kế') || str_contains($lower, 'đồ họa') || str_contains($lower, 'design')) return 'fa-paint-brush';
+  if (str_contains($lower, 'giáo dục') || str_contains($lower, 'đào tạo') || str_contains($lower, 'giảng viên')) return 'fa-graduation-cap';
+  if (str_contains($lower, 'y tế') || str_contains($lower, 'dược') || str_contains($lower, 'bác sĩ')) return 'fa-heartbeat';
+  if (str_contains($lower, 'xây dựng') || str_contains($lower, 'kiến trúc')) return 'fa-building';
+  if (str_contains($lower, 'nhân sự') || str_contains($lower, 'hr') || str_contains($lower, 'hành chính')) return 'fa-users';
+  if (str_contains($lower, 'logistics') || str_contains($lower, 'vận chuyển') || str_contains($lower, 'kho vận')) return 'fa-truck';
+  if (str_contains($lower, 'dịch vụ') || str_contains($lower, 'khách sạn') || str_contains($lower, 'nhà hàng')) return 'fa-cutlery';
+  return 'fa-briefcase';
+};
 @endphp
 
 {{-- ===== HERO ===== --}}
@@ -14,6 +26,10 @@ $careerIcons = ['Công nghệ'=>'fa-code','Marketing'=>'fa-bullhorn','Kinh doanh
     <div class="row align-items-center gy-5">
 
       <div class="col-lg-6 tw-hero-inner">
+        <span class="tw-hero-eyebrow">
+          <i class="fa fa-star me-1 text-warning"></i> Nền tảng tuyển dụng thông minh
+        </span>
+
         @if(isset($banners) && $banners->isNotEmpty())
           <div id="heroBannerCarousel" class="carousel slide carousel-fade tw-hero-carousel" data-bs-ride="carousel" data-bs-interval="4000">
             <!-- Indicators -->
@@ -59,58 +75,92 @@ $careerIcons = ['Công nghệ'=>'fa-code','Marketing'=>'fa-bullhorn','Kinh doanh
             </button>
           </div>
         @else
-          <span class="tw-hero-eyebrow">Nền tảng tuyển dụng Việt Nam</span>
           <h1>Tìm công việc <em>phù hợp</em><br>với bạn ngay hôm nay</h1>
           <p class="tw-hero-sub">Kết nối ứng viên với hàng nghìn nhà tuyển dụng uy tín. Tạo CV chuyên nghiệp và ứng tuyển nhanh chóng.</p>
         @endif
 
+        <!-- Polished Hero Stats -->
         <div class="tw-hero-stats mt-4">
-          <div>
+          <div class="tw-stat-card">
             <div class="tw-stat-num">10.000+</div>
-            <div class="tw-stat-label">Việc làm</div>
+            <div class="tw-stat-label"><i class="fa fa-briefcase text-success"></i> Việc làm</div>
           </div>
-          <div>
+          <div class="tw-stat-card">
             <div class="tw-stat-num">2.000+</div>
-            <div class="tw-stat-label">Doanh nghiệp</div>
+            <div class="tw-stat-label"><i class="fa fa-building text-success"></i> Doanh nghiệp</div>
           </div>
-          <div>
+          <div class="tw-stat-card">
             <div class="tw-stat-num">50.000+</div>
-            <div class="tw-stat-label">Ứng viên</div>
+            <div class="tw-stat-label"><i class="fa fa-users text-success"></i> Ứng viên</div>
           </div>
         </div>
       </div>
 
+      <!-- Modern Search Card -->
       <div class="col-lg-5 offset-lg-1" style="position:relative;z-index:10;">
         <div class="tw-search-box">
-          <div class="tw-search-box-title">Tìm việc làm phù hợp</div>
+          <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+            <div>
+              <h3 class="fw-bold text-dark mb-0 fs-6">Tìm việc làm mơ ước</h3>
+              <small class="text-muted">Cập nhật hơn 1.000+ cơ hội mới</small>
+            </div>
+            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 small">
+              <i class="fa fa-bolt me-1"></i> Chuẩn xác
+            </span>
+          </div>
+
           <form id="searchFormHome">
             <div class="tw-search-field">
               <label for="keyword">Từ khoá / Vị trí</label>
-              <input type="text" name="keyword" id="keyword" placeholder="VD: PHP Developer, Marketing...">
+              <div class="tw-search-input-wrap">
+                <i class="fa fa-search tw-input-icon"></i>
+                <input type="text" name="keyword" id="keyword" placeholder="Vị trí tuyển dụng, kỹ năng, công ty...">
+              </div>
             </div>
+
             <div class="tw-search-field">
               <label for="province">Tỉnh / Thành phố</label>
-              <select id="province" name="province">
-                <option value="">Tất cả địa điểm</option>
-                @if(!empty($provinces))
-                  @foreach ($provinces as $p)
-                    <option value="{{ $p['full_name'] }}" {{ Request::get('province') == $p['full_name'] ? 'selected' : '' }}>
-                      {{ $p['full_name'] }}
-                    </option>
-                  @endforeach
-                @endif
-              </select>
+              <div class="tw-search-input-wrap">
+                <i class="fa fa-map-marker tw-input-icon"></i>
+                <select id="province" name="province">
+                  <option value="">Tất cả địa điểm</option>
+                  @if(!empty($provinces))
+                    @foreach ($provinces as $p)
+                      <option value="{{ $p['full_name'] }}" {{ Request::get('province') == $p['full_name'] ? 'selected' : '' }}>
+                        {{ $p['full_name'] }}
+                      </option>
+                    @endforeach
+                  @endif
+                </select>
+              </div>
             </div>
+
             <div class="tw-search-field">
               <label for="career">Ngành nghề</label>
-              <select name="career" id="career">
-                <option value="">Tất cả ngành nghề</option>
-                @foreach ($newCareers as $career)
-                  <option value="{{ $career->id }}">{{ $career->name }}</option>
-                @endforeach
-              </select>
+              <div class="tw-search-input-wrap">
+                <i class="fa fa-briefcase tw-input-icon"></i>
+                <select name="career" id="career">
+                  <option value="">Tất cả ngành nghề</option>
+                  @foreach ($newCareers as $career)
+                    <option value="{{ $career->id }}">{{ $career->name }}</option>
+                  @endforeach
+                </select>
+              </div>
             </div>
-            <button type="submit" class="tw-search-btn">Tìm kiếm việc làm</button>
+
+            <button type="submit" class="tw-search-btn-primary">
+              <i class="fa fa-search me-1"></i> Tìm kiếm việc làm
+            </button>
+
+            <!-- Quick search suggestion pills -->
+            <div class="tw-quick-tags">
+              <span class="text-muted fw-semibold">Gợi ý:</span>
+              <a href="{{ route('jobs', ['keyword' => 'PHP']) }}" class="tw-quick-tag">PHP</a>
+              <a href="{{ route('jobs', ['keyword' => 'Marketing']) }}" class="tw-quick-tag">Marketing</a>
+              <a href="{{ route('jobs', ['keyword' => 'Kế toán']) }}" class="tw-quick-tag">Kế toán</a>
+              <a href="{{ route('jobs', ['keyword' => 'Kinh doanh']) }}" class="tw-quick-tag">Kinh doanh</a>
+              <a href="{{ route('jobs', ['keyword' => 'Thực tập sinh']) }}" class="tw-quick-tag">Thực tập</a>
+            </div>
           </form>
         </div>
       </div>
@@ -123,16 +173,30 @@ $careerIcons = ['Công nghệ'=>'fa-code','Marketing'=>'fa-bullhorn','Kinh doanh
 @if($careers->isNotEmpty())
 <section class="tw-section">
   <div class="container">
-    <div class="tw-section-head">
-      <h2>Ngành nghề phổ biến</h2>
-      <p>Chọn lĩnh vực phù hợp với bạn</p>
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+      <div class="tw-section-head mb-0">
+        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
+          <i class="fa fa-th-large me-1"></i> Khám phá cơ hội
+        </span>
+        <h2 class="mb-1">Top ngành nghề nổi bật</h2>
+        <p class="mb-0 text-muted">Lựa chọn ngành nghề phù hợp với năng lực và mục tiêu sự nghiệp của bạn</p>
+      </div>
+      <a href="{{ route('jobs') }}" class="tw-view-more-link d-none d-sm-inline-flex align-items-center gap-1 text-decoration-none">
+        Xem tất cả việc làm <i class="fa fa-arrow-right"></i>
+      </a>
     </div>
+
     <div class="tw-career-grid">
       @foreach ($careers as $group)
         @foreach ($group as $career)
           <a href="{{ route('jobs') }}?career={{ $career->id }}" class="tw-career-chip">
-            <span class="tw-career-chip-name">{{ $career->name }}</span>
-            <span class="tw-career-chip-count">{{ $career->jobs_count }} việc</span>
+            <div class="tw-career-chip-icon">
+              <i class="fa {{ $getCareerIcon($career->name) }}"></i>
+            </div>
+            <div class="tw-career-chip-info">
+              <span class="tw-career-chip-name" title="{{ $career->name }}">{{ $career->name }}</span>
+              <span class="tw-career-chip-count">{{ number_format($career->jobs_count) }} việc làm</span>
+            </div>
           </a>
         @endforeach
       @endforeach
@@ -145,10 +209,19 @@ $careerIcons = ['Công nghệ'=>'fa-code','Marketing'=>'fa-bullhorn','Kinh doanh
 @if($featureJobs->isNotEmpty())
 <section class="tw-section tw-section-alt">
   <div class="container">
-    <div class="tw-section-head">
-      <h2>Việc làm nổi bật</h2>
-      <p>Các vị trí đang được nhiều ứng viên quan tâm</p>
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+      <div class="tw-section-head mb-0">
+        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
+          <i class="fa fa-fire text-danger me-1"></i> Tuyển gấp
+        </span>
+        <h2 class="mb-1">Việc làm nổi bật</h2>
+        <p class="mb-0 text-muted">Các vị trí có chế độ đãi ngộ tốt và được nhiều ứng viên quan tâm nhất</p>
+      </div>
+      <a href="{{ route('jobs') }}" class="tw-view-more-link d-none d-sm-inline-flex align-items-center gap-1 text-decoration-none">
+        Xem tất cả <i class="fa fa-arrow-right"></i>
+      </a>
     </div>
+
     <div class="row g-3">
       @foreach ($featureJobs as $job)
         @php
@@ -160,48 +233,72 @@ $careerIcons = ['Công nghệ'=>'fa-code','Marketing'=>'fa-bullhorn','Kinh doanh
         <div class="col-md-6 col-lg-4 d-flex">
           <div class="tw-job-card w-100">
             <div class="tw-job-card-top">
-              <img src="{{ $logoSrc }}" alt="{{ $job->company_name }}" class="tw-job-logo">
+              <img src="{{ $logoSrc }}" alt="{{ $job->company_name }}" class="tw-job-logo" onerror="this.src='{{ asset('assets/user/images/avatar7.png') }}'">
               <div style="flex:1;min-width:0;">
-                <div class="tw-job-title">{{ Str::words(strip_tags($job->title), 8) }}</div>
-                <div class="tw-job-company">{{ Str::words(strip_tags($job->company_name), 6) }}</div>
+                <a href="{{ $detailRoute }}" class="tw-job-title d-block" title="{{ $job->title }}">
+                  {{ Str::words(strip_tags($job->title), 8) }}
+                </a>
+                <div class="tw-job-company" title="{{ $job->company_name }}">
+                  <i class="fa fa-building-o me-1 text-muted"></i> {{ Str::words(strip_tags($job->company_name), 6) }}
+                </div>
               </div>
               @if(Auth::check() && Auth::user()->role === 'user')
-                <a class="tw-job-heart" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)">
-                  <i class="fa {{ $job->is_saved ? 'fa-heart' : 'fa-heart-o' }}"></i>
+                <a class="tw-job-heart" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)" title="Lưu việc làm">
+                  <i class="fa {{ $job->is_saved ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
                 </a>
               @endif
             </div>
+
             <div class="tw-job-meta">
               @if(!empty($job->province))
-                <span class="tw-job-badge tw-badge-loc">{{ $job->province }}</span>
+                <span class="tw-job-badge tw-badge-loc">
+                  <i class="fa fa-map-marker text-muted"></i> {{ $job->province }}
+                </span>
               @endif
               @if(!empty($job->jobType->name))
-                <span class="tw-job-badge tw-badge-type">{{ $job->jobType->name }}</span>
+                <span class="tw-job-badge tw-badge-type">
+                  <i class="fa fa-briefcase"></i> {{ $job->jobType->name }}
+                </span>
               @endif
               @if(Auth::check() && !is_null($job->salary))
-                <span class="tw-job-badge tw-badge-salary">{{ $job->salary }}</span>
+                <span class="tw-job-badge tw-badge-salary">
+                  <i class="fa fa-money"></i> {{ $job->salary }}
+                </span>
               @elseif(is_null($job->salary))
-                <span class="tw-job-badge tw-badge-salary">Thỏa thuận</span>
+                <span class="tw-job-badge tw-badge-salary">
+                  <i class="fa fa-handshake-o"></i> Thỏa thuận
+                </span>
               @else
-                <span class="tw-job-badge tw-badge-loc">Đăng nhập xem lương</span>
+                <span class="tw-job-badge tw-badge-loc">
+                  <i class="fa fa-lock"></i> Đăng nhập xem lương
+                </span>
               @endif
             </div>
+
             @if(!empty($job->keywords))
               <div class="tw-job-tags">
                 @foreach(array_slice(explode(',', $job->keywords), 0, 3) as $kw)
-                  <a href="{{ route('jobs', ['keyword' => trim($kw)]) }}" class="tw-job-tag">{{ trim($kw) }}</a>
+                  <a href="{{ route('jobs', ['keyword' => trim($kw)]) }}" class="tw-job-tag">#{{ trim($kw) }}</a>
                 @endforeach
               </div>
             @endif
+
             <div class="tw-job-footer">
-              <a href="{{ $detailRoute }}" class="tw-btn-detail">Xem chi tiết</a>
+              <span class="tw-job-time">
+                <i class="fa fa-clock-o"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Mới cập nhật' }}
+              </span>
+              <a href="{{ $detailRoute }}" class="tw-btn-detail">
+                Ứng tuyển <i class="fa fa-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
       @endforeach
     </div>
-    <div class="text-center mt-4">
-      <a href="{{ route('jobs') }}" class="tw-view-all">Xem tất cả việc làm</a>
+    <div class="text-center mt-4 pt-2">
+      <a href="{{ route('jobs') }}" class="tw-view-all">
+        Xem tất cả việc làm nổi bật <i class="fa fa-arrow-right"></i>
+      </a>
     </div>
   </div>
 </section>
@@ -211,10 +308,19 @@ $careerIcons = ['Công nghệ'=>'fa-code','Marketing'=>'fa-bullhorn','Kinh doanh
 @if($latesJobs->isNotEmpty())
 <section class="tw-section">
   <div class="container">
-    <div class="tw-section-head">
-      <h2>Việc làm mới nhất</h2>
-      <p>Cập nhật liên tục mỗi ngày</p>
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+      <div class="tw-section-head mb-0">
+        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
+          <i class="fa fa-clock-o me-1"></i> Cập nhật liên tục
+        </span>
+        <h2 class="mb-1">Việc làm mới nhất</h2>
+        <p class="mb-0 text-muted">Những cơ hội việc làm mới được đăng tuyển trong ngày</p>
+      </div>
+      <a href="{{ route('jobs') }}" class="tw-view-more-link d-none d-sm-inline-flex align-items-center gap-1 text-decoration-none">
+        Xem tất cả <i class="fa fa-arrow-right"></i>
+      </a>
     </div>
+
     <div class="row g-3">
       @foreach ($latesJobs as $job)
         @php
@@ -226,67 +332,147 @@ $careerIcons = ['Công nghệ'=>'fa-code','Marketing'=>'fa-bullhorn','Kinh doanh
         <div class="col-md-6 col-lg-4 d-flex">
           <div class="tw-job-card w-100">
             <div class="tw-job-card-top">
-              <img src="{{ $logoSrc }}" alt="{{ $job->company_name }}" class="tw-job-logo">
+              <img src="{{ $logoSrc }}" alt="{{ $job->company_name }}" class="tw-job-logo" onerror="this.src='{{ asset('assets/user/images/avatar7.png') }}'">
               <div style="flex:1;min-width:0;">
-                <div class="tw-job-title">{{ Str::words(strip_tags($job->title), 8) }}</div>
-                <div class="tw-job-company">{{ Str::words(strip_tags($job->company_name), 6) }}</div>
+                <a href="{{ $detailRoute }}" class="tw-job-title d-block" title="{{ $job->title }}">
+                  {{ Str::words(strip_tags($job->title), 8) }}
+                </a>
+                <div class="tw-job-company" title="{{ $job->company_name }}">
+                  <i class="fa fa-building-o me-1 text-muted"></i> {{ Str::words(strip_tags($job->company_name), 6) }}
+                </div>
               </div>
               @if(Auth::check() && Auth::user()->role === 'user')
-                <a class="tw-job-heart" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)">
-                  <i class="fa {{ $job->is_saved ? 'fa-heart' : 'fa-heart-o' }}"></i>
+                <a class="tw-job-heart" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)" title="Lưu việc làm">
+                  <i class="fa {{ $job->is_saved ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
                 </a>
               @endif
             </div>
+
             <div class="tw-job-meta">
               @if(!empty($job->province))
-                <span class="tw-job-badge tw-badge-loc">{{ $job->province }}</span>
+                <span class="tw-job-badge tw-badge-loc">
+                  <i class="fa fa-map-marker text-muted"></i> {{ $job->province }}
+                </span>
               @endif
               @if(!empty($job->jobType->name))
-                <span class="tw-job-badge tw-badge-type">{{ $job->jobType->name }}</span>
+                <span class="tw-job-badge tw-badge-type">
+                  <i class="fa fa-briefcase"></i> {{ $job->jobType->name }}
+                </span>
               @endif
               @if(Auth::check() && !is_null($job->salary))
-                <span class="tw-job-badge tw-badge-salary">{{ $job->salary }}</span>
+                <span class="tw-job-badge tw-badge-salary">
+                  <i class="fa fa-money"></i> {{ $job->salary }}
+                </span>
               @elseif(is_null($job->salary))
-                <span class="tw-job-badge tw-badge-salary">Thỏa thuận</span>
+                <span class="tw-job-badge tw-badge-salary">
+                  <i class="fa fa-handshake-o"></i> Thỏa thuận
+                </span>
               @else
-                <span class="tw-job-badge tw-badge-loc">Đăng nhập xem lương</span>
+                <span class="tw-job-badge tw-badge-loc">
+                  <i class="fa fa-lock"></i> Đăng nhập xem lương
+                </span>
               @endif
             </div>
+
             @if(!empty($job->keywords))
               <div class="tw-job-tags">
                 @foreach(array_slice(explode(',', $job->keywords), 0, 3) as $kw)
-                  <a href="{{ route('jobs', ['keyword' => trim($kw)]) }}" class="tw-job-tag">{{ trim($kw) }}</a>
+                  <a href="{{ route('jobs', ['keyword' => trim($kw)]) }}" class="tw-job-tag">#{{ trim($kw) }}</a>
                 @endforeach
               </div>
             @endif
+
             <div class="tw-job-footer">
-              <a href="{{ $detailRoute }}" class="tw-btn-detail">Xem chi tiết</a>
+              <span class="tw-job-time">
+                <i class="fa fa-clock-o"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Mới cập nhật' }}
+              </span>
+              <a href="{{ $detailRoute }}" class="tw-btn-detail">
+                Ứng tuyển <i class="fa fa-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
       @endforeach
     </div>
-    <div class="text-center mt-4">
-      <a href="{{ route('jobs') }}" class="tw-view-all">Xem tất cả việc làm</a>
+    <div class="text-center mt-4 pt-2">
+      <a href="{{ route('jobs') }}" class="tw-view-all">
+        Xem tất cả việc làm mới nhất <i class="fa fa-arrow-right"></i>
+      </a>
     </div>
   </div>
 </section>
 @endif
 
 {{-- ===== CTA BANNER ===== --}}
-<section class="tw-section">
+<section class="tw-section pt-3 pb-5">
   <div class="container">
-    <div class="tw-cta">
-      <h3>Bạn là nhà tuyển dụng?</h3>
-      <p>Tiếp cận hàng nghìn ứng viên chất lượng cao. Đăng tin tuyển dụng miễn phí.</p>
-      <div class="tw-cta-btns">
-        <a href="{{ route('account.createJob') }}" class="tw-cta-btn-green">Đăng tin tuyển dụng</a>
-        <a href="{{ route('cv.builder') }}" class="tw-cta-btn-outline">Tạo CV ngay</a>
+    <div class="tw-cta p-4 p-md-5">
+      <div class="row align-items-center justify-content-center">
+        <div class="col-lg-8 text-center">
+          <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 rounded-pill px-3 py-1 mb-3 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
+            Dành cho Nhà tuyển dụng & Doanh nghiệp
+          </span>
+          <h3 class="fw-bold text-white mb-2" style="font-size: clamp(22px, 3.2vw, 32px);">
+            Bạn đang tìm kiếm nhân sự tài năng?
+          </h3>
+          <p class="text-white-50 fs-6 mb-4 mx-auto" style="max-width: 620px;">
+            Tiếp cận mạng lưới hơn 50.000+ hồ sơ ứng viên chất lượng cao. Đăng tin tuyển dụng hoàn toàn miễn phí và quản lý hồ sơ ứng tuyển thông minh.
+          </p>
+          <div class="d-flex flex-wrap gap-3 justify-content-center align-items-center mb-4">
+            <span class="text-white-50 small"><i class="fa fa-check-circle text-success me-1"></i> Đăng tin miễn phí</span>
+            <span class="text-white-50 small"><i class="fa fa-check-circle text-success me-1"></i> Quản lý CV thông minh</span>
+            <span class="text-white-50 small"><i class="fa fa-check-circle text-success me-1"></i> Tiếp cận ứng viên chuẩn xác</span>
+          </div>
+          <div class="tw-cta-btns">
+            <a href="{{ route('account.createJob') }}" class="tw-cta-btn-green shadow-sm">
+              <i class="fa fa-plus-circle me-1"></i> Đăng tin tuyển dụng ngay
+            </a>
+            <a href="{{ route('cv.builder') }}" class="tw-cta-btn-outline">
+              <i class="fa fa-file-text-o me-1"></i> Tạo CV xin việc
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
+@endsection
+
+@section('customJs')
+<script>
+document.getElementById('searchFormHome').addEventListener('submit', function(e) {
+  e.preventDefault();
+  let url = '{{ route("jobs") }}?';
+  const keyword = document.getElementById('keyword').value.trim();
+  const province = document.getElementById('province').value;
+  const career = document.getElementById('career').value;
+  if (keyword) url += '&keyword=' + encodeURIComponent(keyword);
+  if (province) url += '&province=' + encodeURIComponent(province);
+  if (career) url += '&career=' + career;
+  window.location.href = url;
+});
+
+function saveJobHeart(id, element) {
+  event.preventDefault();
+  $.ajax({
+    url: '{{ route("saveJob") }}', type: 'post',
+    data: { id: id }, dataType: 'json',
+    success: function(res) {
+      if (res.status === false) { toastr.error(res.message); }
+      else {
+        if (res.action === 'saved') {
+          $(element).find('i').removeClass('fa-heart-o').addClass('fa-heart text-danger');
+          toastr.success('Đã thêm vào yêu thích');
+        } else {
+          $(element).find('i').removeClass('fa-heart text-danger').addClass('fa-heart-o');
+          toastr.warning('Đã hủy yêu thích');
+        }
+      }
+    }
+  });
+}
+</script>
 @endsection
 
 @section('customJs')
