@@ -513,7 +513,7 @@
             </a>
           </li>
           <li class="cvt-menu-item">
-            <a href="{{ route('account.myJobApplications') }}">
+            <a href="{{ route('account.myJobApplication') }}">
               <i class="fa fa-paper-plane-o"></i> Việc làm đã ứng tuyển
             </a>
           </li>
@@ -758,3 +758,4 @@
   </div>
 </div>
 @endsection
+
