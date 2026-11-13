@@ -7,6 +7,7 @@ use App\Models\Careers;
 use App\Models\Job;
 use App\Models\SavedJob;
 use App\Models\Banner;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -62,13 +63,24 @@ class HomeController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
+        // Top employers: users with role employer, ordered by job count desc
+        $topEmployers = User::where('role', 'employer')
+            ->withCount(['jobs' => function($q) {
+                $q->where('status', 1);
+            }])
+            ->having('jobs_count', '>', 0)
+            ->orderBy('jobs_count', 'desc')
+            ->take(12)
+            ->get();
+
         return view('front.home', [
-            'careers' => $careers,
-            'featureJobs' => $featureJobs,
-            'latesJobs' => $latesJobs,
-            'newCareers' => $newCareers,
-            'provinces' => $provinces,
-            'banners' => $banners,
+            'careers'       => $careers,
+            'featureJobs'   => $featureJobs,
+            'latesJobs'     => $latesJobs,
+            'newCareers'    => $newCareers,
+            'provinces'     => $provinces,
+            'banners'       => $banners,
+            'topEmployers'  => $topEmployers,
         ]);
     }
 }

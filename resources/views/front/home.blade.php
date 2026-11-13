@@ -27,19 +27,16 @@ $getCareerIcon = function($name) {
 
       <div class="col-lg-6 tw-hero-inner">
         <span class="tw-hero-eyebrow">
-          <i class="fa fa-star me-1 text-warning"></i> Nền tảng tuyển dụng thông minh
+          <i class="fa fa-star me-1 text-warning"></i> Nền tảng tuyển dụng Việt Nam
         </span>
 
         @if(isset($banners) && $banners->isNotEmpty())
           <div id="heroBannerCarousel" class="carousel slide carousel-fade tw-hero-carousel" data-bs-ride="carousel" data-bs-interval="4000">
-            <!-- Indicators -->
             <div class="carousel-indicators">
               @foreach($banners as $index => $banner)
                 <button type="button" data-bs-target="#heroBannerCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-label="Slide {{ $index + 1 }}"></button>
               @endforeach
             </div>
-
-            <!-- Slides -->
             <div class="carousel-inner">
               @foreach($banners as $index => $banner)
                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
@@ -63,8 +60,6 @@ $getCareerIcon = function($name) {
                 </div>
               @endforeach
             </div>
-
-            <!-- Controls -->
             <button class="carousel-control-prev" type="button" data-bs-target="#heroBannerCarousel" data-bs-slide="prev" style="width: 48px;">
               <span class="carousel-control-prev-icon p-2 rounded-circle bg-dark bg-opacity-50" aria-hidden="true" style="background-size: 55%;"></span>
               <span class="visually-hidden">Trước</span>
@@ -79,7 +74,6 @@ $getCareerIcon = function($name) {
           <p class="tw-hero-sub">Kết nối ứng viên với hàng nghìn nhà tuyển dụng uy tín. Tạo CV chuyên nghiệp và ứng tuyển nhanh chóng.</p>
         @endif
 
-        <!-- Polished Hero Stats -->
         <div class="tw-hero-stats mt-4">
           <div class="tw-stat-card">
             <div class="tw-stat-num">10.000+</div>
@@ -96,16 +90,16 @@ $getCareerIcon = function($name) {
         </div>
       </div>
 
-      <!-- Modern Search Card -->
+      {{-- Search Card --}}
       <div class="col-lg-5 offset-lg-1" style="position:relative;z-index:10;">
         <div class="tw-search-box">
           <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
             <div>
-              <h3 class="fw-bold text-dark mb-0 fs-6">Tìm việc làm mơ ước</h3>
+              <h3 class="fw-bold text-dark mb-0 fs-6">Tìm việc làm phù hợp</h3>
               <small class="text-muted">Cập nhật hơn 1.000+ cơ hội mới</small>
             </div>
             <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 small">
-              <i class="fa fa-bolt me-1"></i> Chuẩn xác
+              <i class="fa fa-bolt me-1"></i> Mới nhất
             </span>
           </div>
 
@@ -114,7 +108,7 @@ $getCareerIcon = function($name) {
               <label for="keyword">Từ khoá / Vị trí</label>
               <div class="tw-search-input-wrap">
                 <i class="fa fa-search tw-input-icon"></i>
-                <input type="text" name="keyword" id="keyword" placeholder="Vị trí tuyển dụng, kỹ năng, công ty...">
+                <input type="text" name="keyword" id="keyword" placeholder="VD: PHP Developer, Marketing...">
               </div>
             </div>
 
@@ -152,7 +146,6 @@ $getCareerIcon = function($name) {
               <i class="fa fa-search me-1"></i> Tìm kiếm việc làm
             </button>
 
-            <!-- Quick search suggestion pills -->
             <div class="tw-quick-tags">
               <span class="text-muted fw-semibold">Gợi ý:</span>
               <a href="{{ route('jobs', ['keyword' => 'PHP']) }}" class="tw-quick-tag">PHP</a>
@@ -169,6 +162,178 @@ $getCareerIcon = function($name) {
   </div>
 </section>
 
+{{-- ===== VIỆC LÀM GẤP (Urgent Jobs) ===== --}}
+@if($featureJobs->isNotEmpty())
+<section class="tw-section tw-urgent-section">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+      <div class="tw-section-head mb-0">
+        <span class="badge tw-urgent-section-badge rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
+          <i class="fa fa-fire me-1"></i> HOT
+        </span>
+        <h2 class="mb-1">Việc làm nổi bật</h2>
+        <p class="mb-0 text-muted">Các vị trí có chế độ đãi ngộ tốt và nhiều ứng viên quan tâm</p>
+      </div>
+      <a href="{{ route('jobs') }}" class="tw-view-more-link d-none d-sm-inline-flex align-items-center gap-1 text-decoration-none">
+        Xem tất cả <i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+
+    {{-- Horizontal scrollable row on mobile, 2-col grid on desktop --}}
+    <div class="tw-urgent-scroll-wrap">
+      <div class="tw-urgent-row">
+        @foreach ($featureJobs as $job)
+          @php
+            $detailRoute = (Auth::check() && Auth::user()->role === 'employer')
+              ? route('JobDetail_employer', $job->id)
+              : route('jobDetail', $job->id);
+            $logoSrc = asset('assets/user/profile_picture/thumb/' . ($job->user->image ?? 'logo-page.jpg'));
+          @endphp
+          <div class="tw-urgent-card-wrap">
+            <div class="tw-job-card-h">
+              <div class="tw-job-card-h-urgent-badge">
+                <span class="tw-urgent-badge"><i class="fa fa-bolt me-1"></i>TUYỂN GẤP</span>
+              </div>
+              <img src="{{ $logoSrc }}" alt="{{ $job->company_name }}" class="tw-job-logo-h"
+                   onerror="this.src='{{ asset('assets/user/images/avatar7.png') }}'">
+              <div class="tw-job-card-h-body">
+                <a href="{{ $detailRoute }}" class="tw-job-title tw-job-title-h" title="{{ $job->title }}">
+                  {{ Str::words(strip_tags($job->title), 8) }}
+                </a>
+                <div class="tw-job-company mb-2">
+                  <i class="fa fa-building-o me-1 text-muted"></i> {{ Str::words(strip_tags($job->company_name), 6) }}
+                </div>
+                <div class="tw-job-meta mb-0">
+                  @if(!empty($job->province))
+                    <span class="tw-job-badge tw-badge-loc">
+                      <i class="fa fa-map-marker"></i> {{ $job->province }}
+                    </span>
+                  @endif
+                  @if(Auth::check() && !is_null($job->salary))
+                    <span class="tw-job-badge tw-badge-salary">
+                      <i class="fa fa-money"></i> {{ $job->salary }}
+                    </span>
+                  @elseif(is_null($job->salary))
+                    <span class="tw-job-badge tw-badge-salary">
+                      <i class="fa fa-handshake-o"></i> Thỏa thuận
+                    </span>
+                  @endif
+                  @if(!empty($job->jobType->name))
+                    <span class="tw-job-badge tw-badge-type">
+                      <i class="fa fa-briefcase"></i> {{ $job->jobType->name }}
+                    </span>
+                  @endif
+                </div>
+              </div>
+              <div class="tw-job-card-h-action">
+                @if(Auth::check() && Auth::user()->role === 'user')
+                  <a class="tw-job-heart mb-2" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)" title="Lưu việc làm">
+                    <i class="fa {{ $job->is_saved ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
+                  </a>
+                @endif
+                <span class="tw-job-time d-block mb-2">
+                  <i class="fa fa-clock-o"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Mới' }}
+                </span>
+                <a href="{{ $detailRoute }}" class="tw-btn-detail">Ứng tuyển <i class="fa fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+        @endforeach
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ route('jobs') }}" class="tw-view-all">
+        Xem tất cả việc làm <i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+@endif
+
+{{-- ===== VIỆC LÀM MỚI NHẤT (horizontal card layout) ===== --}}
+@if($latesJobs->isNotEmpty())
+<section class="tw-section tw-section-alt">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+      <div class="tw-section-head mb-0">
+        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
+          <i class="fa fa-clock-o me-1"></i> Cập nhật liên tục
+        </span>
+        <h2 class="mb-1">Việc làm mới nhất</h2>
+        <p class="mb-0 text-muted">Những cơ hội việc làm mới được đăng tuyển trong ngày</p>
+      </div>
+      <a href="{{ route('jobs') }}" class="tw-view-more-link d-none d-sm-inline-flex align-items-center gap-1 text-decoration-none">
+        Xem tất cả <i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="row g-3">
+      @foreach ($latesJobs as $job)
+        @php
+          $detailRoute = (Auth::check() && Auth::user()->role === 'employer')
+            ? route('JobDetail_employer', $job->id)
+            : route('jobDetail', $job->id);
+          $logoSrc = asset('assets/user/profile_picture/thumb/' . ($job->user->image ?? 'logo-page.jpg'));
+        @endphp
+        <div class="col-12 col-md-6">
+          <div class="tw-job-card-h tw-job-card-h-flat">
+            <img src="{{ $logoSrc }}" alt="{{ $job->company_name }}" class="tw-job-logo-h"
+                 onerror="this.src='{{ asset('assets/user/images/avatar7.png') }}'">
+            <div class="tw-job-card-h-body">
+              <a href="{{ $detailRoute }}" class="tw-job-title tw-job-title-h" title="{{ $job->title }}">
+                {{ Str::words(strip_tags($job->title), 8) }}
+              </a>
+              <div class="tw-job-company mb-2">
+                <i class="fa fa-building-o me-1 text-muted"></i> {{ Str::words(strip_tags($job->company_name), 6) }}
+              </div>
+              <div class="tw-job-meta mb-0">
+                @if(!empty($job->province))
+                  <span class="tw-job-badge tw-badge-loc">
+                    <i class="fa fa-map-marker"></i> {{ $job->province }}
+                  </span>
+                @endif
+                @if(Auth::check() && !is_null($job->salary))
+                  <span class="tw-job-badge tw-badge-salary">
+                    <i class="fa fa-money"></i> {{ $job->salary }}
+                  </span>
+                @elseif(is_null($job->salary))
+                  <span class="tw-job-badge tw-badge-salary">
+                    <i class="fa fa-handshake-o"></i> Thỏa thuận
+                  </span>
+                @endif
+                @if(!empty($job->jobType->name))
+                  <span class="tw-job-badge tw-badge-type">
+                    <i class="fa fa-briefcase"></i> {{ $job->jobType->name }}
+                  </span>
+                @endif
+              </div>
+            </div>
+            <div class="tw-job-card-h-action">
+              @if(Auth::check() && Auth::user()->role === 'user')
+                <a class="tw-job-heart mb-2" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)" title="Lưu việc làm">
+                  <i class="fa {{ $job->is_saved ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
+                </a>
+              @endif
+              <span class="tw-job-time d-block mb-2">
+                <i class="fa fa-clock-o"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Mới' }}
+              </span>
+              <a href="{{ $detailRoute }}" class="tw-btn-detail">Ứng tuyển <i class="fa fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      @endforeach
+    </div>
+
+    <div class="text-center mt-4 pt-2">
+      <a href="{{ route('jobs') }}" class="tw-view-all">
+        Xem tất cả việc làm mới nhất <i class="fa fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+@endif
+
 {{-- ===== NGÀNH NGHỀ PHỔ BIẾN ===== --}}
 @if($careers->isNotEmpty())
 <section class="tw-section">
@@ -179,7 +344,7 @@ $getCareerIcon = function($name) {
           <i class="fa fa-th-large me-1"></i> Khám phá cơ hội
         </span>
         <h2 class="mb-1">Top ngành nghề nổi bật</h2>
-        <p class="mb-0 text-muted">Lựa chọn ngành nghề phù hợp với năng lực và mục tiêu sự nghiệp của bạn</p>
+        <p class="mb-0 text-muted">Lựa chọn ngành nghề phù hợp với năng lực và mục tiêu sự nghiệp</p>
       </div>
       <a href="{{ route('jobs') }}" class="tw-view-more-link d-none d-sm-inline-flex align-items-center gap-1 text-decoration-none">
         Xem tất cả việc làm <i class="fa fa-arrow-right"></i>
@@ -205,199 +370,36 @@ $getCareerIcon = function($name) {
 </section>
 @endif
 
-{{-- ===== VIỆC LÀM NỔI BẬT ===== --}}
-@if($featureJobs->isNotEmpty())
+{{-- ===== DOANH NGHIỆP NỔI BẬT ===== --}}
+@if(isset($topEmployers) && $topEmployers->isNotEmpty())
 <section class="tw-section tw-section-alt">
   <div class="container">
     <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
       <div class="tw-section-head mb-0">
         <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
-          <i class="fa fa-fire text-danger me-1"></i> Tuyển gấp
+          <i class="fa fa-building me-1"></i> Đối tác tuyển dụng
         </span>
-        <h2 class="mb-1">Việc làm nổi bật</h2>
-        <p class="mb-0 text-muted">Các vị trí có chế độ đãi ngộ tốt và được nhiều ứng viên quan tâm nhất</p>
+        <h2 class="mb-1">Công ty nổi bật</h2>
+        <p class="mb-0 text-muted">Những doanh nghiệp hàng đầu đang tuyển dụng tích cực</p>
       </div>
-      <a href="{{ route('jobs') }}" class="tw-view-more-link d-none d-sm-inline-flex align-items-center gap-1 text-decoration-none">
-        Xem tất cả <i class="fa fa-arrow-right"></i>
-      </a>
     </div>
 
-    <div class="row g-3">
-      @foreach ($featureJobs as $job)
+    <div class="tw-company-grid">
+      @foreach ($topEmployers as $employer)
         @php
-          $detailRoute = (Auth::check() && Auth::user()->role === 'employer')
-            ? route('JobDetail_employer', $job->id)
-            : route('jobDetail', $job->id);
-          $logoSrc = asset('assets/user/profile_picture/thumb/' . ($job->user->image ?? 'logo-page.jpg'));
+          $employerLogo = asset('assets/user/profile_picture/thumb/' . ($employer->image ?? 'logo-page.jpg'));
         @endphp
-        <div class="col-md-6 col-lg-4 d-flex">
-          <div class="tw-job-card w-100">
-            <div class="tw-job-card-top">
-              <img src="{{ $logoSrc }}" alt="{{ $job->company_name }}" class="tw-job-logo" onerror="this.src='{{ asset('assets/user/images/avatar7.png') }}'">
-              <div style="flex:1;min-width:0;">
-                <a href="{{ $detailRoute }}" class="tw-job-title d-block" title="{{ $job->title }}">
-                  {{ Str::words(strip_tags($job->title), 8) }}
-                </a>
-                <div class="tw-job-company" title="{{ $job->company_name }}">
-                  <i class="fa fa-building-o me-1 text-muted"></i> {{ Str::words(strip_tags($job->company_name), 6) }}
-                </div>
-              </div>
-              @if(Auth::check() && Auth::user()->role === 'user')
-                <a class="tw-job-heart" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)" title="Lưu việc làm">
-                  <i class="fa {{ $job->is_saved ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
-                </a>
-              @endif
-            </div>
-
-            <div class="tw-job-meta">
-              @if(!empty($job->province))
-                <span class="tw-job-badge tw-badge-loc">
-                  <i class="fa fa-map-marker text-muted"></i> {{ $job->province }}
-                </span>
-              @endif
-              @if(!empty($job->jobType->name))
-                <span class="tw-job-badge tw-badge-type">
-                  <i class="fa fa-briefcase"></i> {{ $job->jobType->name }}
-                </span>
-              @endif
-              @if(Auth::check() && !is_null($job->salary))
-                <span class="tw-job-badge tw-badge-salary">
-                  <i class="fa fa-money"></i> {{ $job->salary }}
-                </span>
-              @elseif(is_null($job->salary))
-                <span class="tw-job-badge tw-badge-salary">
-                  <i class="fa fa-handshake-o"></i> Thỏa thuận
-                </span>
-              @else
-                <span class="tw-job-badge tw-badge-loc">
-                  <i class="fa fa-lock"></i> Đăng nhập xem lương
-                </span>
-              @endif
-            </div>
-
-            @if(!empty($job->keywords))
-              <div class="tw-job-tags">
-                @foreach(array_slice(explode(',', $job->keywords), 0, 3) as $kw)
-                  <a href="{{ route('jobs', ['keyword' => trim($kw)]) }}" class="tw-job-tag">#{{ trim($kw) }}</a>
-                @endforeach
-              </div>
-            @endif
-
-            <div class="tw-job-footer">
-              <span class="tw-job-time">
-                <i class="fa fa-clock-o"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Mới cập nhật' }}
-              </span>
-              <a href="{{ $detailRoute }}" class="tw-btn-detail">
-                Ứng tuyển <i class="fa fa-arrow-right"></i>
-              </a>
-            </div>
+        <a href="{{ route('jobs', ['company' => $employer->company_name ?? $employer->name]) }}"
+           class="tw-company-logo-item" title="{{ $employer->company_name ?? $employer->name }}">
+          <div class="tw-company-logo-inner">
+            <img src="{{ $employerLogo }}"
+                 alt="{{ $employer->company_name ?? $employer->name }}"
+                 onerror="this.src='{{ asset('assets/user/images/avatar7.png') }}'">
+            <div class="tw-company-logo-label">{{ Str::limit($employer->company_name ?? $employer->name, 20) }}</div>
+            <div class="tw-company-logo-count"><i class="fa fa-briefcase me-1"></i>{{ $employer->jobs_count }} việc làm</div>
           </div>
-        </div>
+        </a>
       @endforeach
-    </div>
-    <div class="text-center mt-4 pt-2">
-      <a href="{{ route('jobs') }}" class="tw-view-all">
-        Xem tất cả việc làm nổi bật <i class="fa fa-arrow-right"></i>
-      </a>
-    </div>
-  </div>
-</section>
-@endif
-
-{{-- ===== VIỆC LÀM MỚI NHẤT ===== --}}
-@if($latesJobs->isNotEmpty())
-<section class="tw-section">
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
-      <div class="tw-section-head mb-0">
-        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
-          <i class="fa fa-clock-o me-1"></i> Cập nhật liên tục
-        </span>
-        <h2 class="mb-1">Việc làm mới nhất</h2>
-        <p class="mb-0 text-muted">Những cơ hội việc làm mới được đăng tuyển trong ngày</p>
-      </div>
-      <a href="{{ route('jobs') }}" class="tw-view-more-link d-none d-sm-inline-flex align-items-center gap-1 text-decoration-none">
-        Xem tất cả <i class="fa fa-arrow-right"></i>
-      </a>
-    </div>
-
-    <div class="row g-3">
-      @foreach ($latesJobs as $job)
-        @php
-          $detailRoute = (Auth::check() && Auth::user()->role === 'employer')
-            ? route('JobDetail_employer', $job->id)
-            : route('jobDetail', $job->id);
-          $logoSrc = asset('assets/user/profile_picture/thumb/' . ($job->user->image ?? 'logo-page.jpg'));
-        @endphp
-        <div class="col-md-6 col-lg-4 d-flex">
-          <div class="tw-job-card w-100">
-            <div class="tw-job-card-top">
-              <img src="{{ $logoSrc }}" alt="{{ $job->company_name }}" class="tw-job-logo" onerror="this.src='{{ asset('assets/user/images/avatar7.png') }}'">
-              <div style="flex:1;min-width:0;">
-                <a href="{{ $detailRoute }}" class="tw-job-title d-block" title="{{ $job->title }}">
-                  {{ Str::words(strip_tags($job->title), 8) }}
-                </a>
-                <div class="tw-job-company" title="{{ $job->company_name }}">
-                  <i class="fa fa-building-o me-1 text-muted"></i> {{ Str::words(strip_tags($job->company_name), 6) }}
-                </div>
-              </div>
-              @if(Auth::check() && Auth::user()->role === 'user')
-                <a class="tw-job-heart" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)" title="Lưu việc làm">
-                  <i class="fa {{ $job->is_saved ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
-                </a>
-              @endif
-            </div>
-
-            <div class="tw-job-meta">
-              @if(!empty($job->province))
-                <span class="tw-job-badge tw-badge-loc">
-                  <i class="fa fa-map-marker text-muted"></i> {{ $job->province }}
-                </span>
-              @endif
-              @if(!empty($job->jobType->name))
-                <span class="tw-job-badge tw-badge-type">
-                  <i class="fa fa-briefcase"></i> {{ $job->jobType->name }}
-                </span>
-              @endif
-              @if(Auth::check() && !is_null($job->salary))
-                <span class="tw-job-badge tw-badge-salary">
-                  <i class="fa fa-money"></i> {{ $job->salary }}
-                </span>
-              @elseif(is_null($job->salary))
-                <span class="tw-job-badge tw-badge-salary">
-                  <i class="fa fa-handshake-o"></i> Thỏa thuận
-                </span>
-              @else
-                <span class="tw-job-badge tw-badge-loc">
-                  <i class="fa fa-lock"></i> Đăng nhập xem lương
-                </span>
-              @endif
-            </div>
-
-            @if(!empty($job->keywords))
-              <div class="tw-job-tags">
-                @foreach(array_slice(explode(',', $job->keywords), 0, 3) as $kw)
-                  <a href="{{ route('jobs', ['keyword' => trim($kw)]) }}" class="tw-job-tag">#{{ trim($kw) }}</a>
-                @endforeach
-              </div>
-            @endif
-
-            <div class="tw-job-footer">
-              <span class="tw-job-time">
-                <i class="fa fa-clock-o"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Mới cập nhật' }}
-              </span>
-              <a href="{{ $detailRoute }}" class="tw-btn-detail">
-                Ứng tuyển <i class="fa fa-arrow-right"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-      @endforeach
-    </div>
-    <div class="text-center mt-4 pt-2">
-      <a href="{{ route('jobs') }}" class="tw-view-all">
-        Xem tất cả việc làm mới nhất <i class="fa fa-arrow-right"></i>
-      </a>
     </div>
   </div>
 </section>
@@ -466,42 +468,6 @@ function saveJobHeart(id, element) {
           toastr.success('Đã thêm vào yêu thích');
         } else {
           $(element).find('i').removeClass('fa-heart text-danger').addClass('fa-heart-o');
-          toastr.warning('Đã hủy yêu thích');
-        }
-      }
-    }
-  });
-}
-</script>
-@endsection
-
-@section('customJs')
-<script>
-document.getElementById('searchFormHome').addEventListener('submit', function(e) {
-  e.preventDefault();
-  let url = '{{ route("jobs") }}?';
-  const keyword = document.getElementById('keyword').value.trim();
-  const province = document.getElementById('province').value;
-  const career = document.getElementById('career').value;
-  if (keyword) url += '&keyword=' + encodeURIComponent(keyword);
-  if (province) url += '&province=' + encodeURIComponent(province);
-  if (career) url += '&career=' + career;
-  window.location.href = url;
-});
-
-function saveJobHeart(id, element) {
-  event.preventDefault();
-  $.ajax({
-    url: '{{ route("saveJob") }}', type: 'post',
-    data: { id: id }, dataType: 'json',
-    success: function(res) {
-      if (res.status === false) { toastr.error(res.message); }
-      else {
-        if (res.action === 'saved') {
-          $(element).find('i').removeClass('fa-heart-o').addClass('fa-heart');
-          toastr.success('Đã thêm vào yêu thích');
-        } else {
-          $(element).find('i').removeClass('fa-heart').addClass('fa-heart-o');
           toastr.warning('Đã hủy yêu thích');
         }
       }

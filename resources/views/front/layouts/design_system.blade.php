@@ -1076,4 +1076,131 @@ html { scroll-behavior: smooth; }
 .tw-sidebar-nav li a.active {
   background: var(--c-brand-light); color: var(--c-brand); font-weight: 600;
 }
+
+/* ===================================================
+   HORIZONTAL JOB CARD (.tw-job-card-h)
+   ================================================= */
+.tw-job-card-h {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  position: relative;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  height: 100%;
+}
+.tw-job-card-h:hover {
+  border-color: var(--c-brand);
+  box-shadow: 0 10px 24px -6px rgba(0, 177, 79, 0.14), 0 4px 6px -2px rgba(0,0,0,0.04);
+  transform: translateY(-3px);
+}
+.tw-job-card-h-flat { height: auto; }
+.tw-job-logo-h {
+  width: 60px; height: 60px; border-radius: 12px;
+  object-fit: cover; border: 1px solid #e2e8f0; background: #f8fafc;
+  flex-shrink: 0; padding: 2px; transition: transform 0.2s;
+}
+.tw-job-card-h:hover .tw-job-logo-h { transform: scale(1.05); }
+.tw-job-card-h-body { flex: 1; min-width: 0; }
+.tw-job-title-h {
+  font-size: 15px; font-weight: 700; color: #1e293b;
+  line-height: 1.4; margin-bottom: 4px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; text-decoration: none; transition: color 0.15s;
+}
+.tw-job-card-h:hover .tw-job-title-h { color: var(--c-brand); }
+.tw-job-card-h-action {
+  display: flex; flex-direction: column; align-items: flex-end;
+  flex-shrink: 0; min-width: 90px;
+}
+.tw-job-card-h-urgent-badge {
+  position: absolute; top: 12px; right: 12px;
+}
+
+/* Urgent badge */
+.tw-urgent-badge {
+  background: #fee2e2; color: #b91c1c;
+  font-size: 10px; font-weight: 700; padding: 3px 8px;
+  border-radius: 5px; text-transform: uppercase; letter-spacing: 0.5px;
+  border: 1px solid #fecaca;
+  white-space: nowrap;
+}
+
+/* Urgent section styling */
+.tw-urgent-section { background: #fff; }
+.tw-urgent-section-badge {
+  background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca;
+}
+
+/* Urgent horizontal scroll layout */
+.tw-urgent-scroll-wrap { overflow: hidden; }
+.tw-urgent-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (max-width: 768px) {
+  .tw-urgent-row {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tw-urgent-card-wrap {
+    min-width: 310px;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+  .tw-urgent-row::-webkit-scrollbar { height: 4px; }
+  .tw-urgent-row::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+}
+
+/* ===================================================
+   COMPANY LOGOS GRID (.tw-company-grid)
+   ================================================= */
+.tw-company-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+@media (max-width: 991px) {
+  .tw-company-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 576px) {
+  .tw-company-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+}
+.tw-company-logo-item {
+  display: flex; align-items: center; justify-content: center;
+  padding: 14px 10px;
+  border: 1px solid #e2e8f0; border-radius: 14px; background: #fff;
+  text-decoration: none; color: inherit;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: grayscale(50%); opacity: 0.75;
+}
+.tw-company-logo-item:hover {
+  filter: grayscale(0%); opacity: 1;
+  border-color: var(--c-brand);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px -4px rgba(0, 177, 79, 0.14);
+}
+.tw-company-logo-inner { text-align: center; }
+.tw-company-logo-inner img {
+  max-height: 42px; max-width: 100%; width: 42px; height: 42px;
+  object-fit: cover; border-radius: 8px; margin-bottom: 6px;
+  display: block; margin-left: auto; margin-right: auto;
+}
+.tw-company-logo-label {
+  font-size: 11px; font-weight: 600; color: #374151;
+  line-height: 1.3; margin-bottom: 2px;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  max-width: 100px;
+}
+.tw-company-logo-count {
+  font-size: 10px; color: #6b7280;
+}
 </style>
