@@ -43,16 +43,16 @@
 @endphp
 
 @section('main')
-<!-- Google Fonts for CV Templates -->
+<!-- Google Fonts: Lexend and CV Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
    CV BUILDER — VIEC LAM 24H EXACT CLONE
    ============================================================ */
-body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif; }
+body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
 
 /* ---- Top bar ---- */
 .cvb-topbar {
@@ -294,7 +294,7 @@ body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkM
   background: #fff;
   box-shadow: 0 10px 30px rgba(0,0,0,0.12);
   display: flex;
-  font-family: 'Be Vietnam Pro', sans-serif;
+  font-family: 'Lexend', sans-serif !important;
   font-size: 13px; color: #1e293b;
   --cv-theme: #004C82;
   --cv-sidebar-bg: #004C82;

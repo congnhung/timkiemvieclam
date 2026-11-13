@@ -6,14 +6,14 @@
   <link rel="stylesheet" href="{{ asset('assets/user/css/font-awesome.css') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     :root { --t: {{ $resume->theme_color ?? '#0f2942' }}; }
-    *, *::before, *::after { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    *, *::before, *::after { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-family: 'Lexend', sans-serif !important; }
 
     body {
       margin: 0; padding: 0;
-      font-family: 'Be Vietnam Pro', 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Lexend', -apple-system, BlinkMacSystemFont, sans-serif !important;
       background: #475569;
       color: #1e293b;
       font-size: 13px;

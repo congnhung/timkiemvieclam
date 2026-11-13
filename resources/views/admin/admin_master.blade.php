@@ -22,6 +22,16 @@
     <link href="{{ asset('admin/vendor/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css"
       id="app-style" />
 
+    <!-- Google Fonts: Lexend -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+      *, html, body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, a, label, table, th, td {
+        font-family: 'Lexend', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      }
+    </style>
+
     <link rel="stylesheet" href="{{ asset('assets/user/trumbowyg/trumbowyg.min.css') }}" />
   </head>
 

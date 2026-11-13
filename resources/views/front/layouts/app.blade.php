@@ -10,6 +10,10 @@
   <meta name="HandheldFriendly" content="True" />
   <meta name="pinterest" content="nopin" />
   <meta name="csrf-token" content="{{ csrf_token() }}" />
+  <!-- Google Fonts: Lexend (Lexend-Bold, Regular, SemiBold, Medium) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('assets/user/css/font-awesome.css') }}" />
   <link rel="stylesheet" href="{{ asset('assets/user/trumbowyg/trumbowyg.min.css') }}" />
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/user/css/style.css') }}" />

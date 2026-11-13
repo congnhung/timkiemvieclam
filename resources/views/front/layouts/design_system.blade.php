@@ -46,9 +46,10 @@
   --c-bg:          var(--c-gray-50);
   --c-bg-white:    var(--c-white);
 
-  /* Typography */
-  --font:         -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-                  Oxygen-Sans, Ubuntu, Cantarell, Helvetica, Arial, sans-serif;
+  /* Typography — Lexend */
+  --font:                'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bs-body-font-family: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  --bs-font-sans-serif:  'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   --text-xs:   11px;
   --text-sm:   12px;
   --text-base: 14px;
@@ -172,18 +173,32 @@
 }
 
 /* ===================================================
-   BASE RESET & TYPOGRAPHY
+   BASE RESET & TYPOGRAPHY (Global font: Lexend, Lexend-Bold)
    ================================================= */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html, body,
+button, input, select, textarea, optgroup,
+h1, h2, h3, h4, h5, h6,
+p, span, a, label, li, td, th,
+.btn, .form-control, .form-select, .nav-link,
+.dropdown-menu, .dropdown-item, .card, .badge {
+  font-family: 'Lexend', var(--font) !important;
+}
+
 body {
-  font-family: var(--font);
+  font-family: 'Lexend', var(--font) !important;
   font-size: var(--text-base);
   line-height: var(--lh-base);
   color: var(--c-text);
   background: var(--c-white);
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6, b, strong, th, .fw-bold, .font-weight-bold {
+  font-family: 'Lexend', var(--font) !important;
+  font-weight: 700;
 }
 
 html { scroll-behavior: smooth; }

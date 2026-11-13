@@ -28,7 +28,7 @@ class CvBuilderController extends Controller
                 'description' => 'Thiết kế cột bên màu xanh navy sang trọng, tạo cảm giác tin cậy và vững chắc.',
                 'primary_color' => '#0f2942',
                 'accent_color' => '#38bdf8',
-                'font' => 'Be Vietnam Pro',
+                'font' => 'Lexend',
                 'layout' => 'sidebar_left',
             ],
             'teal_mint' => [
@@ -126,7 +126,7 @@ class CvBuilderController extends Controller
                 'description' => 'Tập trung nêu bật học vấn, hoạt động ngoại khóa, kỹ năng mềm và tiềm năng phát triển.',
                 'primary_color' => '#059669',
                 'accent_color' => '#34d399',
-                'font' => 'Be Vietnam Pro',
+                'font' => 'Lexend',
                 'layout' => 'sidebar_left',
             ],
             'royal_purple' => [
@@ -154,7 +154,7 @@ class CvBuilderController extends Controller
                 'description' => 'Màu xanh lục bảo tươi sáng, thể hiện tinh thần bứt phá và thích nghi cao.',
                 'primary_color' => '#00b14f',
                 'accent_color' => '#4ade80',
-                'font' => 'Be Vietnam Pro',
+                'font' => 'Lexend',
                 'layout' => 'sidebar_left',
             ],
             'burgundy_luxury' => [
@@ -253,7 +253,7 @@ class CvBuilderController extends Controller
             'avatar' => $defaultAvatar,
             'theme_color' => $selectedTemplate['primary_color'] ?? '#004C82',
             'template' => $selectedTemplateKey,
-            'font' => $selectedTemplate['font'] ?? 'Be Vietnam Pro',
+            'font' => $selectedTemplate['font'] ?? 'Lexend',
             'objective' => '',
             'experience' => [],
             'education' => [],
