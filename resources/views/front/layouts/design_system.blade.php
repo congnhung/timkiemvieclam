@@ -1113,27 +1113,24 @@ html { scroll-behavior: smooth; }
 }
 .tw-job-card-h:hover .tw-job-title-h { color: var(--c-brand); }
 .tw-job-card-h-action {
-  display: flex; flex-direction: column; align-items: flex-end;
-  flex-shrink: 0; min-width: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-shrink: 0;
+  min-width: 95px;
+  align-self: stretch;
 }
-.tw-job-card-h-urgent-badge {
-  position: absolute; top: 12px; right: 12px;
-}
-
-/* Urgent badge */
-.tw-urgent-badge {
-  background: #fee2e2; color: #b91c1c;
-  font-size: 10px; font-weight: 700; padding: 3px 8px;
-  border-radius: 5px; text-transform: uppercase; letter-spacing: 0.5px;
-  border: 1px solid #fecaca;
-  white-space: nowrap;
+.tw-job-card-h-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  margin-top: auto;
 }
 
 /* Urgent section styling */
 .tw-urgent-section { background: #fff; }
-.tw-urgent-section-badge {
-  background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca;
-}
 
 /* Urgent horizontal scroll layout */
 .tw-urgent-scroll-wrap { overflow: hidden; }
@@ -1158,6 +1155,33 @@ html { scroll-behavior: smooth; }
   }
   .tw-urgent-row::-webkit-scrollbar { height: 4px; }
   .tw-urgent-row::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+}
+
+@media (max-width: 576px) {
+  .tw-job-card-h {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px;
+  }
+  .tw-job-card-h-body {
+    flex: 1 1 calc(100% - 74px);
+  }
+  .tw-job-card-h-action {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px dashed #e2e8f0;
+    min-width: 0;
+  }
+  .tw-job-card-h-bottom {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0;
+  }
 }
 
 /* ===================================================

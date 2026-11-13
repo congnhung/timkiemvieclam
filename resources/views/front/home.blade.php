@@ -26,10 +26,6 @@ $getCareerIcon = function($name) {
     <div class="row align-items-center gy-5">
 
       <div class="col-lg-6 tw-hero-inner">
-        <span class="tw-hero-eyebrow">
-          <i class="fa fa-star me-1 text-warning"></i> Nền tảng tuyển dụng Việt Nam
-        </span>
-
         @if(isset($banners) && $banners->isNotEmpty())
           <div id="heroBannerCarousel" class="carousel slide carousel-fade tw-hero-carousel" data-bs-ride="carousel" data-bs-interval="4000">
             <div class="carousel-indicators">
@@ -93,14 +89,9 @@ $getCareerIcon = function($name) {
       {{-- Search Card --}}
       <div class="col-lg-5 offset-lg-1" style="position:relative;z-index:10;">
         <div class="tw-search-box">
-          <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
-            <div>
-              <h3 class="fw-bold text-dark mb-0 fs-6">Tìm việc làm phù hợp</h3>
-              <small class="text-muted">Cập nhật hơn 1.000+ cơ hội mới</small>
-            </div>
-            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 small">
-              <i class="fa fa-bolt me-1"></i> Mới nhất
-            </span>
+          <div class="mb-3 pb-2 border-bottom">
+            <h3 class="fw-bold text-dark mb-1 fs-6">Tìm việc làm phù hợp</h3>
+            <small class="text-muted">Cập nhật hơn 1.000+ cơ hội mới mỗi ngày</small>
           </div>
 
           <form id="searchFormHome">
@@ -166,11 +157,8 @@ $getCareerIcon = function($name) {
 @if($featureJobs->isNotEmpty())
 <section class="tw-section tw-urgent-section">
   <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
       <div class="tw-section-head mb-0">
-        <span class="badge tw-urgent-section-badge rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
-          <i class="fa fa-fire me-1"></i> HOT
-        </span>
         <h2 class="mb-1">Việc làm nổi bật</h2>
         <p class="mb-0 text-muted">Các vị trí có chế độ đãi ngộ tốt và nhiều ứng viên quan tâm</p>
       </div>
@@ -191,9 +179,6 @@ $getCareerIcon = function($name) {
           @endphp
           <div class="tw-urgent-card-wrap">
             <div class="tw-job-card-h">
-              <div class="tw-job-card-h-urgent-badge">
-                <span class="tw-urgent-badge"><i class="fa fa-bolt me-1"></i>TUYỂN GẤP</span>
-              </div>
               <img src="{{ $logoSrc }}" alt="{{ $job->company_name }}" class="tw-job-logo-h"
                    onerror="this.src='{{ asset('assets/user/images/avatar7.png') }}'">
               <div class="tw-job-card-h-body">
@@ -227,14 +212,16 @@ $getCareerIcon = function($name) {
               </div>
               <div class="tw-job-card-h-action">
                 @if(Auth::check() && Auth::user()->role === 'user')
-                  <a class="tw-job-heart mb-2" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)" title="Lưu việc làm">
+                  <a class="tw-job-heart" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)" title="Lưu việc làm">
                     <i class="fa {{ $job->is_saved ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
                   </a>
                 @endif
-                <span class="tw-job-time d-block mb-2">
-                  <i class="fa fa-clock-o"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Mới' }}
-                </span>
-                <a href="{{ $detailRoute }}" class="tw-btn-detail">Ứng tuyển <i class="fa fa-arrow-right"></i></a>
+                <div class="tw-job-card-h-bottom">
+                  <span class="tw-job-time">
+                    <i class="fa fa-clock-o"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Mới' }}
+                  </span>
+                  <a href="{{ $detailRoute }}" class="tw-btn-detail">Ứng tuyển <i class="fa fa-arrow-right"></i></a>
+                </div>
               </div>
             </div>
           </div>
@@ -257,9 +244,6 @@ $getCareerIcon = function($name) {
   <div class="container">
     <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
       <div class="tw-section-head mb-0">
-        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
-          <i class="fa fa-clock-o me-1"></i> Cập nhật liên tục
-        </span>
         <h2 class="mb-1">Việc làm mới nhất</h2>
         <p class="mb-0 text-muted">Những cơ hội việc làm mới được đăng tuyển trong ngày</p>
       </div>
@@ -311,14 +295,16 @@ $getCareerIcon = function($name) {
             </div>
             <div class="tw-job-card-h-action">
               @if(Auth::check() && Auth::user()->role === 'user')
-                <a class="tw-job-heart mb-2" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)" title="Lưu việc làm">
+                <a class="tw-job-heart" href="javascript:void(0)" onclick="saveJobHeart({{ $job->id }}, this)" title="Lưu việc làm">
                   <i class="fa {{ $job->is_saved ? 'fa-heart text-danger' : 'fa-heart-o' }}"></i>
                 </a>
               @endif
-              <span class="tw-job-time d-block mb-2">
-                <i class="fa fa-clock-o"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Mới' }}
-              </span>
-              <a href="{{ $detailRoute }}" class="tw-btn-detail">Ứng tuyển <i class="fa fa-arrow-right"></i></a>
+              <div class="tw-job-card-h-bottom">
+                <span class="tw-job-time">
+                  <i class="fa fa-clock-o"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Mới' }}
+                </span>
+                <a href="{{ $detailRoute }}" class="tw-btn-detail">Ứng tuyển <i class="fa fa-arrow-right"></i></a>
+              </div>
             </div>
           </div>
         </div>
@@ -340,9 +326,6 @@ $getCareerIcon = function($name) {
   <div class="container">
     <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
       <div class="tw-section-head mb-0">
-        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
-          <i class="fa fa-th-large me-1"></i> Khám phá cơ hội
-        </span>
         <h2 class="mb-1">Top ngành nghề nổi bật</h2>
         <p class="mb-0 text-muted">Lựa chọn ngành nghề phù hợp với năng lực và mục tiêu sự nghiệp</p>
       </div>
@@ -376,9 +359,6 @@ $getCareerIcon = function($name) {
   <div class="container">
     <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
       <div class="tw-section-head mb-0">
-        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 11px;">
-          <i class="fa fa-building me-1"></i> Đối tác tuyển dụng
-        </span>
         <h2 class="mb-1">Công ty nổi bật</h2>
         <p class="mb-0 text-muted">Những doanh nghiệp hàng đầu đang tuyển dụng tích cực</p>
       </div>
