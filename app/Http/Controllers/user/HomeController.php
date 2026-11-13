@@ -63,15 +63,24 @@ class HomeController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        // Top employers: users with role employer, ordered by job count desc
-        $topEmployers = User::where('role', 'employer')
-            ->withCount(['jobs' => function($q) {
-                $q->where('status', 1);
-            }])
-            ->having('jobs_count', '>', 0)
-            ->orderBy('jobs_count', 'desc')
+        // Top employers: query job counts via jobs table, then load user info
+        $topEmployerIds = Job::where('status', 1)
+            ->whereNotNull('user_id')
+            ->select('user_id', \Illuminate\Support\Facades\DB::raw('COUNT(*) as jobs_count'))
+            ->groupBy('user_id')
+            ->orderByDesc('jobs_count')
             ->take(12)
-            ->get();
+            ->pluck('jobs_count', 'user_id');
+
+        $topEmployers = User::whereIn('id', $topEmployerIds->keys())
+            ->where('role', 'employer')
+            ->get()
+            ->map(function($u) use ($topEmployerIds) {
+                $u->jobs_count = $topEmployerIds[$u->id] ?? 0;
+                return $u;
+            })
+            ->sortByDesc('jobs_count')
+            ->values();
 
         return view('front.home', [
             'careers'       => $careers,
