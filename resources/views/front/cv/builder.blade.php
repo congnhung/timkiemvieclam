@@ -4,7 +4,7 @@
   $currentTemplateKey = request()->get('template', $resume->template ?? ($defaultData['template'] ?? 'modern_navy'));
   $selectedTpl = $allTemplates[$currentTemplateKey] ?? ($allTemplates['modern_navy'] ?? [
     'name' => 'Hiện Đại (Navy)',
-    'primary_color' => '#0f2942',
+    'primary_color' => '#004C82',
     'font' => 'Be Vietnam Pro',
     'layout' => 'sidebar_left'
   ]);
@@ -24,20 +24,20 @@
                            ? (Str::startsWith($resume->avatar, 'http')
                                ? $resume->avatar
                                : asset('assets/user/cv_avatars/' . $resume->avatar))
-                           : $defaultData['avatar'],
-    'theme_color'      => $resume->theme_color ?? ($selectedTpl['primary_color'] ?? '#0f2942'),
+                           : asset('assets/user/images/avatar_silhouette.svg'),
+    'theme_color'      => $resume->theme_color ?? ($selectedTpl['primary_color'] ?? '#004C82'),
     'template'         => $resume->template ?? $currentTemplateKey,
     'font'             => $selectedTpl['font'] ?? 'Be Vietnam Pro',
     'objective'        => $resume->objective,
-    'experience'       => !empty($resume->experience_data)     ? $resume->experience_data     : $defaultData['experience'],
-    'education'        => !empty($resume->education_data)      ? $resume->education_data      : $defaultData['education'],
-    'skills'           => !empty($resume->skills_data)         ? $resume->skills_data         : $defaultData['skills'],
-    'projects'         => !empty($resume->projects_data)       ? $resume->projects_data       : $defaultData['projects'],
-    'certifications'   => !empty($resume->certifications_data) ? $resume->certifications_data : $defaultData['certifications'],
+    'experience'       => !empty($resume->experience_data)     ? $resume->experience_data     : [],
+    'education'        => !empty($resume->education_data)      ? $resume->education_data      : [],
+    'skills'           => !empty($resume->skills_data)         ? $resume->skills_data         : [],
+    'projects'         => !empty($resume->projects_data)       ? $resume->projects_data       : [],
+    'certifications'   => !empty($resume->certifications_data) ? $resume->certifications_data : [],
   ] : array_merge($defaultData, [
     'id' => '',
     'template' => $currentTemplateKey,
-    'theme_color' => $selectedTpl['primary_color'] ?? '#0f2942',
+    'theme_color' => $selectedTpl['primary_color'] ?? '#004C82',
     'font' => $selectedTpl['font'] ?? 'Be Vietnam Pro'
   ]);
 @endphp
@@ -46,13 +46,13 @@
 <!-- Google Fonts for CV Templates -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
-   CV BUILDER & EDITOR — VIEC LAM 24H / TOPCV ADVANCED
+   CV BUILDER — VIEC LAM 24H EXACT CLONE
    ============================================================ */
-body { background: #f8fafc; }
+body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif; }
 
 /* ---- Top bar ---- */
 .cvb-topbar {
@@ -60,36 +60,69 @@ body { background: #f8fafc; }
   background: #fff;
   border-bottom: 1px solid #e2e8f0;
   padding: 10px 24px;
-  display: flex; align-items: center; gap: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
-.cvb-title-wrap {
-  display: flex; align-items: center; gap: 8px;
+.cvb-btn-back {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid #e2e8f0; background: #fff; color: #475569;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; font-size: 14px; transition: all 0.15s;
 }
-.cv-title-input {
-  font-weight: 700; border: none; background: #f1f5f9;
-  border-radius: 8px; padding: 7px 14px;
-  font-size: 14px; width: 220px;
-  outline: none; border: 1.5px solid #e2e8f0;
-  transition: all 0.15s;
-}
-.cv-title-input:focus { border-color: #00b14f; background: #fff; }
+.cvb-btn-back:hover { background: #f1f5f9; color: #1e293b; }
 
-/* Dropdown control buttons */
-.cvb-btn-control {
+/* Progress score */
+.cvb-score-wrap {
+  display: flex; flex-direction: column; min-width: 200px;
+}
+.cvb-score-header {
+  display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 4px;
+}
+.cvb-score-badge {
+  color: #ef4444; font-weight: 700;
+}
+.cvb-score-label {
+  color: #475569; font-weight: 600;
+}
+.cvb-score-tip {
+  color: #059669; font-weight: 600; font-size: 11.5px;
+}
+.cvb-progress-bar {
+  height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; width: 140px;
+}
+.cvb-progress-fill {
+  height: 100%; background: #ef4444; width: 10%; border-radius: 2px; transition: width 0.3s;
+}
+
+/* Control buttons above preview */
+.cvb-ctrl-btn {
   background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
-  padding: 6px 12px; font-size: 13px; font-weight: 600; color: #334155;
+  padding: 7px 14px; font-size: 13px; font-weight: 600; color: #334155;
   display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.15s; text-decoration: none;
 }
-.cvb-btn-control:hover { background: #f8fafc; border-color: #cbd5e1; color: #00b14f; }
-.cvb-btn-control .color-indicator {
-  width: 14px; height: 14px; border-radius: 50%;
-  border: 1.5px solid #fff; box-shadow: 0 0 0 1px #cbd5e1;
+.cvb-ctrl-btn:hover { background: #f8fafc; border-color: #cbd5e1; color: #5e35b1; }
+
+.cvb-btn-finish {
+  background: #5e35b1; color: #fff; border: 1px solid #512da8;
+  font-weight: 700; border-radius: 8px; padding: 7px 20px; font-size: 13.5px;
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(94, 53, 177, 0.25);
+  transition: all 0.15s; text-decoration: none;
+}
+.cvb-btn-finish:hover { background: #512da8; color: #fff; transform: translateY(-1px); }
+
+/* Language pills */
+.cvb-lang-pill {
+  padding: 5px 10px; border-radius: 999px; border: 1px solid #e2e8f0;
+  font-size: 12px; font-weight: 600; color: #64748b; background: #fff;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+}
+.cvb-lang-pill.active {
+  background: #f3e8ff; border-color: #d8b4fe; color: #7c3aed;
 }
 
-/* Palette Dropdown */
+/* Palette swatches */
 .cvb-color-menu {
   display: grid; grid-template-columns: repeat(4, 1fr);
   gap: 8px; padding: 12px; min-width: 180px;
@@ -97,244 +130,184 @@ body { background: #f8fafc; }
 .cvb-color-swatch {
   width: 32px; height: 32px; border-radius: 50%;
   cursor: pointer; border: 2.5px solid transparent;
-  transition: transform 0.15s, border-color 0.15s;
-  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s; display: flex; align-items: center; justify-content: center;
 }
 .cvb-color-swatch:hover, .cvb-color-swatch.active {
-  transform: scale(1.15); border-color: #fff;
-  outline: 2px solid currentColor;
+  transform: scale(1.15); border-color: #fff; outline: 2px solid currentColor;
 }
 .cvb-color-swatch.active::after {
   content: '✓'; color: #fff; font-size: 14px; font-weight: 900;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
-
-/* Top bar actions right */
-.gap-auto { flex: 1; }
-.btn-cv-save {
-  background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1;
-  font-weight: 600; border-radius: 8px; padding: 7px 16px; font-size: 13px;
-  display: inline-flex; align-items: center; gap: 6px;
-  transition: all 0.15s;
-}
-.btn-cv-save:hover { background: #e2e8f0; color: #0f172a; }
-.btn-cv-finish {
-  background: #00b14f; color: #fff; border: 1px solid #009140;
-  font-weight: 700; border-radius: 8px; padding: 7px 18px; font-size: 13.5px;
-  display: inline-flex; align-items: center; gap: 6px;
-  box-shadow: 0 2px 8px rgba(0, 177, 79, 0.28);
-  transition: all 0.15s; cursor: pointer;
-}
-.btn-cv-finish:hover { background: #009140; color: #fff; transform: translateY(-1px); }
 
 /* ---- Layout Grid ---- */
 .cvb-layout {
   display: grid;
-  grid-template-columns: 440px 1fr;
-  min-height: calc(100vh - 60px);
+  grid-template-columns: 520px 1fr;
+  min-height: calc(100vh - 58px);
 }
-@media (max-width: 1024px) {
-  .cvb-layout { grid-template-columns: 380px 1fr; }
+@media (max-width: 1100px) {
+  .cvb-layout { grid-template-columns: 460px 1fr; }
 }
 @media (max-width: 860px) {
   .cvb-layout { grid-template-columns: 1fr; }
   .cvb-preview-pane { display: none; }
 }
 
-/* ---- Left form panel ---- */
+/* ---- Left Form Panel ---- */
 .cvb-panel {
   background: #fff;
   border-right: 1px solid #e2e8f0;
   overflow-y: auto;
-  height: calc(100vh - 60px);
-  position: sticky; top: 60px;
-  padding: 16px 20px 80px;
+  height: calc(100vh - 58px);
+  position: sticky; top: 58px;
+  padding: 24px 28px 80px;
 }
 .cvb-panel::-webkit-scrollbar { width: 5px; }
 .cvb-panel::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
 
-/* Collapsible Form Section Card */
-.cvb-card-section {
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  margin-bottom: 14px;
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-  overflow: hidden;
-  transition: border-color 0.15s;
-}
-.cvb-card-section:hover { border-color: #cbd5e1; }
-.cvb-card-section.active { border-color: #00b14f; }
-.cvb-card-header {
+/* Sections */
+.cvb-main-section-title {
+  font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 20px;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px; cursor: pointer;
-  font-weight: 700; font-size: 14px; color: #1e293b;
-  user-select: none; background: #fff;
 }
-.cvb-card-header:hover { background: #f8fafc; }
-.cvb-card-header .toggle-icon {
-  color: #94a3b8; font-size: 12px; transition: transform 0.2s ease;
-}
-.cvb-card-header.collapsed .toggle-icon { transform: rotate(-90deg); }
-.cvb-card-body {
-  padding: 4px 16px 18px;
-  border-top: 1px solid #f1f5f9;
-}
-.cvb-card-body.collapsed { display: none; }
-
-/* Input fields */
 .cvb-label {
-  font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px;
-  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 4px;
 }
 .cvb-input {
-  width: 100%; border: 1.5px solid #e2e8f0; border-radius: 8px;
-  padding: 8px 12px; font-size: 13.5px; color: #1e293b;
-  outline: none; transition: all 0.15s;
-  background: #fff; font-family: inherit;
+  width: 100%; border: 1px solid #d1d5db; border-radius: 8px;
+  padding: 10px 14px; font-size: 13.5px; color: #1e293b;
+  outline: none; transition: all 0.15s; background: #fff;
 }
 .cvb-input:focus {
-  border-color: #00b14f; box-shadow: 0 0 0 3px rgba(0, 177, 79, 0.12);
+  border-color: #5e35b1; box-shadow: 0 0 0 3px rgba(94, 53, 177, 0.12);
 }
-.cvb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cvb-input::placeholder { color: #9ca3af; font-size: 13px; }
 
-/* Entry cards (Experience, Education, Projects) */
+/* Avatar sidebox (Matching Image 1) */
+.cvb-avatar-sidebox {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding-top: 4px;
+}
+.cvb-avatar-img {
+  width: 84px; height: 84px; border-radius: 50%;
+  object-fit: cover; border: 2px solid #e2e8f0;
+}
+.cvb-btn-upload {
+  background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 6px 14px; font-size: 12px; font-weight: 600; color: #475569;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.15s; text-decoration: none;
+}
+.cvb-btn-upload:hover {
+  background: #f1f5f9; color: #1e293b; border-color: #cbd5e1;
+}
+
+/* Add section links (Matching Image 1) */
+.cvb-add-section-block {
+  border-top: 1px solid #f1f5f9;
+  padding: 18px 0;
+}
+.cvb-section-header-title {
+  font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 12px;
+}
+.cvb-link-add {
+  color: #2563eb; font-size: 13.5px; font-weight: 600; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; cursor: pointer;
+}
+.cvb-link-add:hover { color: #1d4ed8; text-decoration: underline; }
+
+/* Entry Card for added items */
 .cvb-entry-card {
   background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
   padding: 14px; margin-bottom: 12px; position: relative;
 }
-.cvb-entry-card .cvb-del-btn {
+.cvb-del-btn {
   position: absolute; top: 10px; right: 10px;
   background: #fff; border: 1px solid #e2e8f0; color: #94a3b8;
   border-radius: 50%; width: 24px; height: 24px;
   cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s;
 }
-.cvb-entry-card .cvb-del-btn:hover {
-  background: #fee2e2; border-color: #fecaca; color: #ef4444;
-}
-.cvb-btn-add {
-  width: 100%; border: 1.5px dashed #cbd5e1; border-radius: 8px;
-  background: #f8fafc; padding: 9px; font-size: 13px; font-weight: 600;
-  color: #00b14f; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.cvb-btn-add:hover {
-  border-color: #00b14f; background: #ecfdf5;
-}
+.cvb-del-btn:hover { background: #fee2e2; color: #ef4444; border-color: #fecaca; }
 
-/* Avatar upload matching Image 2 */
-.cvb-avatar-box {
-  display: flex; align-items: center; gap: 16px;
-  padding: 8px 0 12px;
-}
-.cvb-avatar-box img {
-  width: 76px; height: 76px; border-radius: 50%;
-  object-fit: cover; border: 3px solid #e2e8f0;
-}
-.cvb-avatar-actions {
-  display: flex; flex-direction: column; gap: 6px;
-}
-.btn-upload-avatar {
-  background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;
-  font-size: 12.5px; font-weight: 600; padding: 6px 14px; border-radius: 6px;
-  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-  transition: all 0.15s;
-}
-.btn-upload-avatar:hover {
-  background: #00b14f; color: #fff;
-}
-
-/* Skill row */
-.skill-row {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
-}
-.skill-row input[type="text"] { flex: 1; }
-.skill-row input[type="range"] { width: 90px; accent-color: #00b14f; }
-.skill-row .skill-pct { font-size: 12px; color: #64748b; width: 34px; text-align: right; font-weight: 600; }
-
-/* ---- Right Live Preview ---- */
+/* ---- Right Live Preview Pane (Matching Image 1) ---- */
 .cvb-preview-pane {
-  background: #e2e8f0;
-  overflow-y: auto; padding: 32px 24px;
+  background: #edf2f7;
+  overflow-y: auto; padding: 32px 20px;
   display: flex; flex-direction: column; align-items: center;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 58px);
 }
 .cvb-preview-pane::-webkit-scrollbar { width: 6px; }
 .cvb-preview-pane::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
-/* ---- A4 SHEET CONTAINER (Matching Image 2 Live Preview) ---- */
+/* A4 Paper */
 .cv-a4 {
-  width: 794px;            /* 210mm @ 96dpi */
-  min-height: 1123px;      /* 297mm @ 96dpi */
+  width: 794px; min-height: 1123px;
   background: #fff;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.18);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
   display: flex;
-  font-family: var(--cv-font, 'Be Vietnam Pro', sans-serif);
-  font-size: var(--cv-font-size, 13px);
-  color: #1e293b;
-  --cv-theme: #0f2942;
-  --cv-sidebar-bg: #0f2942;
-  position: relative;
-  overflow: hidden;
-  transition: font-size 0.2s;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 13px; color: #1e293b;
+  --cv-theme: #004C82;
+  --cv-sidebar-bg: #004C82;
+  position: relative; overflow: hidden;
 }
 
-/* Sidebar Left Template (Navy signature style from Image 2) */
+/* Sidebar (Navy Blue matching Image 1) */
 .cva-sidebar {
-  width: 35%;
-  background: var(--cv-sidebar-bg, #0f2942);
+  width: 34%;
+  background: var(--cv-sidebar-bg, #004C82);
   color: #fff;
-  padding: 32px 22px;
+  padding: 36px 20px;
   display: flex; flex-direction: column;
 }
-.cva-avatar-wrap { text-align: center; margin-bottom: 24px; }
+.cva-avatar-wrap { text-align: center; margin-bottom: 28px; }
 .cva-avatar-wrap img {
-  width: 110px; height: 110px; border-radius: 50%;
+  width: 116px; height: 116px; border-radius: 50%;
   object-fit: cover;
-  border: 4px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  background: #fff;
 }
 
 .cva-sb-title {
-  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  font-size: 12px; font-weight: 800; text-transform: uppercase;
   letter-spacing: 1.2px; color: #fff;
   border-bottom: 1.5px solid rgba(255, 255, 255, 0.25);
-  padding-bottom: 4px; margin: 20px 0 10px;
+  padding-bottom: 5px; margin: 20px 0 12px;
 }
 .cva-sb-title:first-of-type { margin-top: 0; }
+
 .cva-contact-item {
   display: flex; align-items: center; gap: 10px;
-  margin-bottom: 9px; font-size: 11.5px; color: #e2e8f0;
+  margin-bottom: 10px; font-size: 12px; color: #e2e8f0;
   word-break: break-word;
 }
 .cva-contact-item i {
-  color: #38bdf8; width: 14px; text-align: center; font-size: 12px;
+  color: #60a5fa; width: 14px; text-align: center; font-size: 12px;
+}
+.cva-contact-placeholder {
+  color: #93c5fd; opacity: 0.8; font-style: normal;
 }
 
-/* Skill bars in sidebar */
-.cva-sb-skill { margin-bottom: 10px; }
-.cva-sb-skill-label {
-  display: flex; justify-content: space-between; font-size: 11.5px;
-  color: #e2e8f0; font-weight: 500; margin-bottom: 3px;
-}
-.cva-sb-skill-bar { height: 5px; background: rgba(255, 255, 255, 0.18); border-radius: 3px; }
-.cva-sb-skill-fill { height: 100%; background: #38bdf8; border-radius: 3px; }
-
-/* Main Right Column */
+/* Main Column */
 .cva-main {
-  width: 65%;
-  padding: 32px 28px;
+  width: 66%;
+  padding: 36px 30px;
   background: #fff;
   display: flex; flex-direction: column;
 }
 .cva-name {
   font-size: 24px; font-weight: 800; color: #0f172a;
-  text-transform: uppercase; line-height: 1.2; margin-bottom: 4px;
+  text-transform: uppercase; line-height: 1.2; margin-bottom: 6px;
   letter-spacing: 0.5px;
 }
 .cva-jobtitle {
-  font-size: 12px; font-weight: 700; color: var(--cv-theme);
-  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;
+  font-size: 12px; font-weight: 700; color: #64748b;
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 24px;
+}
+.cva-jobtitle.is-placeholder {
+  color: #94a3b8; letter-spacing: 2px;
 }
 
 .cva-sec-title {
@@ -349,11 +322,6 @@ body { background: #f8fafc; }
   border-radius: 2px; background: var(--cv-theme);
 }
 .cva-sec-title:first-of-type { margin-top: 0; }
-
-.cva-objective {
-  font-size: 12.5px; color: #475569; line-height: 1.65;
-  margin-bottom: 16px;
-}
 
 .cva-item {
   margin-bottom: 14px; page-break-inside: avoid;
@@ -381,462 +349,386 @@ body { background: #f8fafc; }
 }
 </style>
 
-<!-- TOP CONTROL BAR (Matching Image 2) -->
+<!-- TOP CONTROL BAR (Matching Image 1) -->
 <div class="cvb-topbar">
-  <a href="{{ route('cv.templates') }}" class="btn btn-sm btn-light border" title="Xem tất cả mẫu CV">
-    <i class="fa fa-arrow-left me-1"></i> Mẫu CV
-  </a>
+  <div class="d-flex align-items-center gap-3">
+    <a href="{{ route('cv.templates') }}" class="cvb-btn-back" title="Quay lại danh sách mẫu">
+      <i class="fa fa-arrow-left"></i>
+    </a>
 
-  <div class="cvb-title-wrap">
-    <input type="text" id="cv_title" class="cv-title-input" value="{{ $cd['title'] }}" placeholder="Đặt tên CV...">
-  </div>
-
-  {{-- 1. [🎨 Đổi màu] Button Dropdown --}}
-  <div class="dropdown">
-    <button class="cvb-btn-control dropdown-toggle" type="button" id="dropdownColor" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="color-indicator" id="currentColorDot" style="background: {{ $cd['theme_color'] }};"></span>
-      <span>Đổi màu</span>
-    </button>
-    <div class="dropdown-menu shadow cvb-color-menu" aria-labelledby="dropdownColor">
-      @php
-        $swatches = [
-          '#0f2942' => 'Navy',
-          '#00b14f' => 'Xanh lá',
-          '#2563eb' => 'Xanh dương',
-          '#881337' => 'Đỏ đô',
-          '#ea580c' => 'Cam san hô',
-          '#7c3aed' => 'Tím hoàng gia',
-          '#1e293b' => 'Xám than',
-          '#0d9488' => 'Xanh ngọc',
-        ];
-      @endphp
-      @foreach($swatches as $hex => $name)
-        <span class="cvb-color-swatch {{ $cd['theme_color'] === $hex ? 'active' : '' }}"
-              data-color="{{ $hex }}"
-              style="background: {{ $hex }}; color: {{ $hex }};"
-              title="{{ $name }}"></span>
-      @endforeach
+    {{-- Điểm hồ sơ progress bar --}}
+    <div class="cvb-score-wrap">
+      <div class="cvb-score-header">
+        <span class="cvb-score-badge" id="scoreBadge">10%</span>
+        <span class="cvb-score-label">Điểm hồ sơ</span>
+        <span class="cvb-score-tip" id="scoreTip">+90% Thêm thông tin cơ bản <i class="fa fa-info-circle"></i></span>
+      </div>
+      <div class="cvb-progress-bar">
+        <div class="cvb-progress-fill" id="scoreBar" style="width: 10%;"></div>
+      </div>
     </div>
   </div>
 
-  {{-- 2. [🔤 Phông chữ] Button Dropdown --}}
-  <div class="dropdown">
-    <button class="cvb-btn-control dropdown-toggle" type="button" id="dropdownFont" data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="fa fa-font"></i>
-      <span id="currentFontLabel">{{ $cd['font'] ?? 'Be Vietnam Pro' }}</span>
+  {{-- Right Controls (Positioned directly above preview like Image 1) --}}
+  <div class="d-flex align-items-center gap-2">
+    {{-- Đổi màu dropdown --}}
+    <div class="dropdown">
+      <button class="cvb-ctrl-btn dropdown-toggle" type="button" id="dropdownColor" data-bs-toggle="dropdown" aria-expanded="false">
+        <span style="width: 12px; height: 12px; border-radius: 50%; background: {{ $cd['theme_color'] }}; display: inline-block;" id="colorDot"></span>
+        <span>Đổi màu</span>
+      </button>
+      <div class="dropdown-menu shadow cvb-color-menu" aria-labelledby="dropdownColor">
+        @php
+          $swatches = [
+            '#004C82' => 'Navy (Vieclam24h)',
+            '#00b14f' => 'Xanh lá (TopCV)',
+            '#2563eb' => 'Xanh dương',
+            '#881337' => 'Đỏ đô',
+            '#ea580c' => 'Cam san hô',
+            '#7c3aed' => 'Tím',
+            '#1e293b' => 'Xám than',
+            '#0d9488' => 'Xanh ngọc',
+          ];
+        @endphp
+        @foreach($swatches as $hex => $name)
+          <span class="cvb-color-swatch {{ $cd['theme_color'] === $hex ? 'active' : '' }}"
+                data-color="{{ $hex }}"
+                style="background: {{ $hex }}; color: {{ $hex }};"
+                title="{{ $name }}"></span>
+        @endforeach
+      </div>
+    </div>
+
+    {{-- Đổi mẫu button --}}
+    <div class="dropdown">
+      <button class="cvb-ctrl-btn dropdown-toggle" type="button" id="dropdownTemplate" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-th-large"></i>
+        <span>Đổi mẫu</span>
+      </button>
+      <ul class="dropdown-menu shadow" style="max-height: 320px; overflow-y: auto;" aria-labelledby="dropdownTemplate">
+        @foreach($allTemplates as $k => $tpl)
+          <li>
+            <a class="dropdown-item d-flex justify-content-between align-items-center py-2 {{ $cd['template'] === $k ? 'active' : '' }}"
+               href="{{ route('cv.builder', ['template' => $k]) }}">
+              <span>{{ $tpl['name'] }}</span>
+              <span class="badge bg-light text-dark">{{ $tpl['badge'] }}</span>
+            </a>
+          </li>
+        @endforeach
+      </ul>
+    </div>
+
+    {{-- Ngôn ngữ Việt / Anh --}}
+    <span class="cvb-lang-pill active" title="Tiếng Việt">🇻🇳 Việt</span>
+    <span class="cvb-lang-pill" title="Tiếng Anh">🇬🇧 Anh</span>
+
+    {{-- Hoàn tất / In PDF --}}
+    <button type="button" id="btnExportPdf" class="cvb-btn-finish">
+      <i class="fa fa-check"></i> Hoàn tất
     </button>
-    <ul class="dropdown-menu shadow" aria-labelledby="dropdownFont">
-      <li><a class="dropdown-item cv-font-opt" href="javascript:void(0)" data-font="Be Vietnam Pro">Be Vietnam Pro (Chuẩn TV)</a></li>
-      <li><a class="dropdown-item cv-font-opt" href="javascript:void(0)" data-font="Roboto">Roboto (Hiện đại)</a></li>
-      <li><a class="dropdown-item cv-font-opt" href="javascript:void(0)" data-font="Inter">Inter (Tối giản)</a></li>
-      <li><a class="dropdown-item cv-font-opt" href="javascript:void(0)" data-font="Montserrat">Montserrat (Thanh lịch)</a></li>
-      <li><a class="dropdown-item cv-font-opt" href="javascript:void(0)" data-font="Georgia">Georgia (Cổ điển)</a></li>
-    </ul>
   </div>
-
-  {{-- 3. [📐 Cỡ chữ] Button Dropdown --}}
-  <div class="dropdown">
-    <button class="cvb-btn-control dropdown-toggle" type="button" id="dropdownSize" data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="fa fa-text-height"></i>
-      <span id="currentSizeLabel">Cỡ chữ</span>
-    </button>
-    <ul class="dropdown-menu shadow" aria-labelledby="dropdownSize">
-      <li><a class="dropdown-item cv-size-opt" href="javascript:void(0)" data-size="12px">Nhỏ (12px)</a></li>
-      <li><a class="dropdown-item cv-size-opt active" href="javascript:void(0)" data-size="13px">Tiêu chuẩn (13px)</a></li>
-      <li><a class="dropdown-item cv-size-opt" href="javascript:void(0)" data-size="14px">Lớn (14px)</a></li>
-    </ul>
-  </div>
-
-  {{-- 4. [🖼️ Đổi mẫu nhanh] Dropdown --}}
-  <div class="dropdown">
-    <button class="cvb-btn-control dropdown-toggle" type="button" id="dropdownTemplate" data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="fa fa-th-large"></i>
-      <span>{{ $selectedTpl['name'] ?? 'Mẫu CV' }}</span>
-    </button>
-    <ul class="dropdown-menu shadow" style="max-height: 320px; overflow-y: auto;" aria-labelledby="dropdownTemplate">
-      @foreach($allTemplates as $k => $tpl)
-        <li>
-          <a class="dropdown-item d-flex justify-content-between align-items-center py-2 {{ $cd['template'] === $k ? 'active' : '' }}"
-             href="{{ route('cv.builder', ['template' => $k]) }}">
-            <span>{{ $tpl['name'] }}</span>
-            <span class="badge bg-light text-dark">{{ $tpl['badge'] }}</span>
-          </a>
-        </li>
-      @endforeach
-    </ul>
-  </div>
-
-  <span class="gap-auto"></span>
-
-  {{-- 5. Action Buttons --}}
-  <button id="btnSaveCv" class="btn-cv-save">
-    <i class="fa fa-floppy-o"></i> Lưu CV
-  </button>
-  <button id="btnExportPdf" class="btn-cv-finish">
-    <i class="fa fa-check-circle"></i> Hoàn tất / In PDF
-  </button>
 </div>
 
 <!-- BUILDER LAYOUT -->
 <div class="cvb-layout">
 
-  <!-- ========== LEFT PANEL (FORM) ========== -->
+  <!-- ========== LEFT PANEL (FORM MATCHING IMAGE 1) ========== -->
   <div class="cvb-panel">
     <input type="hidden" id="resume_id" value="{{ $cd['id'] }}">
+    <input type="hidden" id="cv_title" value="{{ $cd['title'] }}">
     <input type="hidden" id="cv_theme_color" value="{{ $cd['theme_color'] }}">
-    <input type="hidden" id="cv_font_family" value="{{ $cd['font'] ?? 'Be Vietnam Pro' }}">
     <input type="hidden" id="cv_template_key" value="{{ $cd['template'] }}">
     <input type="hidden" id="cv_avatar_url" value="{{ $cd['avatar'] }}">
 
-    <!-- 1. THÔNG TIN CƠ BẢN -->
-    <div class="cvb-card-section active">
-      <div class="cvb-card-header" data-target="sec-basic">
-        <span><i class="fa fa-user-circle text-success me-2"></i>Thông tin cơ bản</span>
-        <i class="fa fa-chevron-down toggle-icon"></i>
-      </div>
-      <div class="cvb-card-body" id="sec-basic">
-        {{-- Tiêu đề hồ sơ --}}
-        <div class="mb-3">
-          <div class="cvb-label">Tiêu đề hồ sơ (Vị trí ứng tuyển) <span class="text-danger">*</span></div>
-          <input class="cvb-input" id="f_candidate_title" value="{{ $cd['candidate_title'] }}"
-                 placeholder="VD: Lập trình viên Fullstack / Nhân viên kinh doanh..." data-target="p_candidate_title">
+    <!-- THÔNG TIN CƠ BẢN (Exact Image 1 layout) -->
+    <div class="mb-4">
+      <h3 class="cvb-main-section-title">Thông tin cơ bản</h3>
+
+      <div class="row g-3 mb-3">
+        <div class="col-8">
+          <div class="mb-3">
+            <label class="cvb-label">Tiêu đề hồ sơ <i class="fa fa-info-circle text-muted" title="Vị trí bạn muốn ứng tuyển"></i></label>
+            <input type="text" class="cvb-input" id="f_candidate_title" value="{{ $cd['candidate_title'] }}"
+                   placeholder="VD: Nhân viên kinh doanh bất động sản">
+          </div>
+          <div>
+            <label class="cvb-label">Họ và tên <span class="text-danger">*</span></label>
+            <input type="text" class="cvb-input" id="f_fullname" value="{{ $cd['fullname'] }}"
+                   placeholder="Họ và tên">
+          </div>
         </div>
 
-        {{-- Ảnh hồ sơ --}}
-        <div class="cvb-label">Ảnh hồ sơ</div>
-        <div class="cvb-avatar-box">
-          <img src="{{ $cd['avatar'] }}" id="avatarPreview" alt="avatar"
-               onerror="this.src='{{ asset('assets/user/images/avatar7.png') }}'">
-          <div class="cvb-avatar-actions">
-            <label for="avatarFileInput" class="btn-upload-avatar">
-              <i class="fa fa-camera"></i> Tải ảnh mới
+        <div class="col-4">
+          <label class="cvb-label text-center d-block">Ảnh hồ sơ <i class="fa fa-info-circle text-muted"></i></label>
+          <div class="cvb-avatar-sidebox">
+            <img src="{{ $cd['avatar'] }}" id="avatarPreview" alt="avatar" class="cvb-avatar-img">
+            <label for="avatarFileInput" class="cvb-btn-upload">
+              <i class="fa fa-upload"></i> Tải lên hình mới
             </label>
             <input type="file" id="avatarFileInput" class="d-none" accept="image/*">
-            <small class="text-muted" style="font-size: 11px;">Hỗ trợ JPG, PNG, WEBP tối đa 3MB</small>
           </div>
         </div>
+      </div>
 
-        {{-- Họ và tên --}}
-        <div class="mb-3">
-          <div class="cvb-label">Họ và tên <span class="text-danger">*</span></div>
-          <input class="cvb-input" id="f_fullname" value="{{ $cd['fullname'] }}"
-                 placeholder="Họ và tên đầy đủ..." data-target="p_fullname">
+      <div class="row g-3 mb-3">
+        <div class="col-6">
+          <label class="cvb-label">Email <span class="text-danger">*</span></label>
+          <input type="email" class="cvb-input" id="f_email" value="{{ $cd['email'] }}" placeholder="Điền email">
         </div>
+        <div class="col-6">
+          <label class="cvb-label">Số điện thoại</label>
+          <input type="tel" class="cvb-input" id="f_phone" value="{{ $cd['phone'] }}" placeholder="Điền số điện thoại">
+        </div>
+      </div>
 
-        {{-- Email & Số điện thoại --}}
-        <div class="cvb-row mb-3">
+      <div class="mb-3">
+        <label class="cvb-label">Địa chỉ <i class="fa fa-info-circle text-muted"></i></label>
+        <input type="text" class="cvb-input" id="f_address" value="{{ $cd['address'] }}" placeholder="VD: Trần Bình Trọng, Phường 1">
+      </div>
+
+      <div class="row g-3 mb-2">
+        <div class="col-6">
+          <label class="cvb-label">Ngày sinh</label>
+          <input type="text" class="cvb-input" id="f_birthday" value="{{ $cd['birthday'] }}" placeholder="Chọn ngày sinh (VD: 15/08/1998)">
+        </div>
+        <div class="col-6">
+          <label class="cvb-label">Giới tính</label>
+          <select class="cvb-input" id="f_gender">
+            <option value="">Chọn giới tính</option>
+            <option value="Nam" {{ $cd['gender'] === 'Nam' ? 'selected' : '' }}>Nam</option>
+            <option value="Nữ" {{ $cd['gender'] === 'Nữ' ? 'selected' : '' }}>Nữ</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- KINH NGHIỆM LÀM VIỆC (Matching Image 1: clean link '+ Thêm kinh nghiệm') -->
+    <div class="cvb-add-section-block">
+      <div class="cvb-section-header-title">Kinh nghiệm làm việc</div>
+      <div id="exp_list">
+        @foreach ($cd['experience'] as $exp)
+        <div class="cvb-entry-card" data-section="exp">
+          <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
+          <div class="mb-2">
+            <label class="cvb-label">Vị trí đảm nhiệm</label>
+            <input class="cvb-input exp-position" value="{{ $exp['position'] ?? '' }}" placeholder="VD: Nhân viên kinh doanh">
+          </div>
+          <div class="mb-2">
+            <label class="cvb-label">Tên công ty</label>
+            <input class="cvb-input exp-company" value="{{ $exp['company'] ?? '' }}" placeholder="VD: Công ty TNHH XYZ">
+          </div>
+          <div class="mb-2">
+            <label class="cvb-label">Thời gian làm việc</label>
+            <input class="cvb-input exp-period" value="{{ $exp['period'] ?? '' }}" placeholder="01/2022 - Hiện tại">
+          </div>
           <div>
-            <div class="cvb-label">Email <span class="text-danger">*</span></div>
-            <input class="cvb-input" id="f_email" value="{{ $cd['email'] }}"
-                   placeholder="email@gmail.com" data-target="p_email">
+            <label class="cvb-label">Mô tả công việc</label>
+            <textarea class="cvb-input exp-desc" rows="3" placeholder="Mô tả công việc và thành tích...">{{ $exp['description'] ?? '' }}</textarea>
+          </div>
+        </div>
+        @endforeach
+      </div>
+      <button type="button" class="cvb-link-add" onclick="addCard('exp')">
+        <i class="fa fa-plus"></i> Thêm kinh nghiệm làm việc
+      </button>
+    </div>
+
+    <!-- HỌC VẤN (Matching Image 1) -->
+    <div class="cvb-add-section-block">
+      <div class="cvb-section-header-title">Học vấn</div>
+      <div id="edu_list">
+        @foreach ($cd['education'] as $edu)
+        <div class="cvb-entry-card" data-section="edu">
+          <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
+          <div class="mb-2">
+            <label class="cvb-label">Trường học</label>
+            <input class="cvb-input edu-school" value="{{ $edu['school'] ?? '' }}" placeholder="VD: Đại học Kinh tế Quốc dân">
+          </div>
+          <div class="mb-2">
+            <label class="cvb-label">Chuyên ngành</label>
+            <input class="cvb-input edu-major" value="{{ $edu['major'] ?? '' }}" placeholder="VD: Quản trị Kinh doanh">
+          </div>
+          <div class="mb-2">
+            <label class="cvb-label">Niên khóa</label>
+            <input class="cvb-input edu-period" value="{{ $edu['period'] ?? '' }}" placeholder="2018 - 2022">
           </div>
           <div>
-            <div class="cvb-label">Số điện thoại <span class="text-danger">*</span></div>
-            <input class="cvb-input" id="f_phone" value="{{ $cd['phone'] }}"
-                   placeholder="0987 654 321" data-target="p_phone">
+            <label class="cvb-label">Mô tả thêm</label>
+            <textarea class="cvb-input edu-desc" rows="2" placeholder="Xếp loại tốt nghiệp...">{{ $edu['description'] ?? '' }}</textarea>
           </div>
         </div>
-
-        {{-- Địa chỉ --}}
-        <div class="mb-3">
-          <div class="cvb-label">Địa chỉ</div>
-          <input class="cvb-input" id="f_address" value="{{ $cd['address'] }}"
-                 placeholder="VD: Trần Kim Xuyến, Yên Hòa, Cầu Giấy, Hà Nội..." data-target="p_address">
-        </div>
-
-        {{-- Ngày sinh & Giới tính --}}
-        <div class="cvb-row mb-3">
-          <div>
-            <div class="cvb-label">Ngày sinh</div>
-            <input class="cvb-input" id="f_birthday" value="{{ $cd['birthday'] }}"
-                   placeholder="15/08/1998" data-target="p_birthday">
-          </div>
-          <div>
-            <div class="cvb-label">Giới tính</div>
-            <input class="cvb-input" id="f_gender" value="{{ $cd['gender'] }}"
-                   placeholder="Nam / Nữ" data-target="p_gender">
-          </div>
-        </div>
-
-        {{-- Website / Portfolio --}}
-        <div class="mb-2">
-          <div class="cvb-label">Website / LinkedIn / GitHub</div>
-          <input class="cvb-input" id="f_website" value="{{ $cd['website'] }}"
-                 placeholder="https://linkedin.com/in/..." data-target="p_website">
-        </div>
+        @endforeach
       </div>
+      <button type="button" class="cvb-link-add" onclick="addCard('edu')">
+        <i class="fa fa-plus"></i> Thêm học vấn
+      </button>
     </div>
 
-    <!-- 2. MỤC TIÊU NGHỀ NGHIỆP -->
-    <div class="cvb-card-section">
-      <div class="cvb-card-header" data-target="sec-obj">
-        <span><i class="fa fa-bullseye text-success me-2"></i>Mục tiêu nghề nghiệp</span>
-        <i class="fa fa-chevron-down toggle-icon"></i>
+    <!-- KỸ NĂNG (Matching Image 1) -->
+    <div class="cvb-add-section-block">
+      <div class="cvb-section-header-title">Kỹ năng</div>
+      <div id="skill_list">
+        @foreach ($cd['skills'] as $sk)
+        @php $lvl = intval($sk['level'] ?? 80); @endphp
+        <div class="d-flex align-items-center gap-2 mb-2 skill-row">
+          <input class="cvb-input skill-name" value="{{ $sk['name'] ?? '' }}" placeholder="Tên kỹ năng..." style="flex:1">
+          <input type="range" class="skill-range" min="10" max="100" value="{{ $lvl }}" style="width: 80px;"
+            oninput="this.nextElementSibling.textContent=this.value+'%'; renderPreview()">
+          <span class="skill-pct" style="font-size:12px;width:32px;">{{ $lvl }}%</span>
+          <button type="button" class="btn btn-sm btn-light border p-1" onclick="this.closest('.skill-row').remove(); renderPreview()">
+            <i class="fa fa-times text-danger"></i>
+          </button>
+        </div>
+        @endforeach
       </div>
-      <div class="cvb-card-body" id="sec-obj">
-        <div class="cvb-label">Tóm tắt thế mạnh & mục tiêu sự nghiệp</div>
-        <textarea class="cvb-input" id="f_objective" rows="4"
-                  placeholder="Giới thiệu kinh nghiệm, điểm mạnh và mục tiêu đóng góp cho doanh nghiệp..."
-                  data-target="p_objective">{{ $cd['objective'] }}</textarea>
-      </div>
+      <button type="button" class="cvb-link-add" onclick="addSkill()">
+        <i class="fa fa-plus"></i> Thêm kỹ năng
+      </button>
     </div>
 
-    <!-- 3. KINH NGHIỆM LÀM VIỆC -->
-    <div class="cvb-card-section">
-      <div class="cvb-card-header" data-target="sec-exp">
-        <span><i class="fa fa-briefcase text-success me-2"></i>Kinh nghiệm làm việc</span>
-        <i class="fa fa-chevron-down toggle-icon"></i>
-      </div>
-      <div class="cvb-card-body" id="sec-exp">
-        <div id="exp_list">
-          @foreach ($cd['experience'] as $exp)
-          <div class="cvb-entry-card" data-section="exp">
-            <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
-            <div class="mb-2">
-              <div class="cvb-label">Vị trí đảm nhiệm</div>
-              <input class="cvb-input exp-position" value="{{ $exp['position'] ?? '' }}" placeholder="VD: Senior Backend Developer">
-            </div>
-            <div class="mb-2">
-              <div class="cvb-label">Tên công ty / Doanh nghiệp</div>
-              <input class="cvb-input exp-company" value="{{ $exp['company'] ?? '' }}" placeholder="VD: Công ty Cổ phần Công nghệ ABC">
-            </div>
-            <div class="mb-2">
-              <div class="cvb-label">Thời gian làm việc</div>
-              <input class="cvb-input exp-period" value="{{ $exp['period'] ?? '' }}" placeholder="03/2022 - Hiện tại">
-            </div>
-            <div>
-              <div class="cvb-label">Mô tả chi tiết & Kết quả công việc</div>
-              <textarea class="cvb-input exp-desc" rows="4" placeholder="• Mô tả trách nhiệm chính và thành quả nổi bật...">{{ $exp['description'] ?? '' }}</textarea>
-            </div>
-          </div>
-          @endforeach
-        </div>
-        <button class="cvb-btn-add" onclick="addCard('exp')">
-          <i class="fa fa-plus"></i> Thêm kinh nghiệm làm việc
-        </button>
-      </div>
+    <!-- NGOẠI NGỮ -->
+    <div class="cvb-add-section-block">
+      <div class="cvb-section-header-title">Ngoại ngữ</div>
+      <div id="lang_list"></div>
+      <button type="button" class="cvb-link-add" onclick="addLanguage()">
+        <i class="fa fa-plus"></i> Thêm ngoại ngữ
+      </button>
     </div>
 
-    <!-- 4. TRÌNH ĐỘ HỌC VẤN -->
-    <div class="cvb-card-section">
-      <div class="cvb-card-header" data-target="sec-edu">
-        <span><i class="fa fa-graduation-cap text-success me-2"></i>Trình độ học vấn</span>
-        <i class="fa fa-chevron-down toggle-icon"></i>
-      </div>
-      <div class="cvb-card-body" id="sec-edu">
-        <div id="edu_list">
-          @foreach ($cd['education'] as $edu)
-          <div class="cvb-entry-card" data-section="edu">
-            <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
-            <div class="mb-2">
-              <div class="cvb-label">Trường học / Đơn vị đào tạo</div>
-              <input class="cvb-input edu-school" value="{{ $edu['school'] ?? '' }}" placeholder="VD: Đại học Bách Khoa Hà Nội">
-            </div>
-            <div class="mb-2">
-              <div class="cvb-label">Chuyên ngành đào tạo</div>
-              <input class="cvb-input edu-major" value="{{ $edu['major'] ?? '' }}" placeholder="VD: Công nghệ Thông tin">
-            </div>
-            <div class="mb-2">
-              <div class="cvb-label">Niên khóa / Năm tốt nghiệp</div>
-              <input class="cvb-input edu-period" value="{{ $edu['period'] ?? '' }}" placeholder="2016 - 2020">
-            </div>
-            <div>
-              <div class="cvb-label">Xếp loại / Thành tích học tập</div>
-              <textarea class="cvb-input edu-desc" rows="2" placeholder="Tốt nghiệp loại Giỏi (GPA 3.4/4.0)...">{{ $edu['description'] ?? '' }}</textarea>
-            </div>
-          </div>
-          @endforeach
-        </div>
-        <button class="cvb-btn-add" onclick="addCard('edu')">
-          <i class="fa fa-plus"></i> Thêm học vấn
-        </button>
-      </div>
+    <!-- TIN HỌC -->
+    <div class="cvb-add-section-block">
+      <div class="cvb-section-header-title">Tin học</div>
+      <div id="it_list"></div>
+      <button type="button" class="cvb-link-add" onclick="addItSkill()">
+        <i class="fa fa-plus"></i> Thêm tin học
+      </button>
     </div>
 
-    <!-- 5. KỸ NĂNG CHUYÊN MÔN -->
-    <div class="cvb-card-section">
-      <div class="cvb-card-header" data-target="sec-skill">
-        <span><i class="fa fa-star text-success me-2"></i>Kỹ năng chuyên môn</span>
-        <i class="fa fa-chevron-down toggle-icon"></i>
-      </div>
-      <div class="cvb-card-body" id="sec-skill">
-        <div id="skill_list">
-          @foreach ($cd['skills'] as $sk)
-          @php $lvl = intval($sk['level'] ?? 80); @endphp
-          <div class="skill-row">
-            <input class="cvb-input skill-name" value="{{ $sk['name'] ?? '' }}" placeholder="Tên kỹ năng...">
-            <input type="range" class="skill-range" min="10" max="100" value="{{ $lvl }}"
-              oninput="this.nextElementSibling.textContent=this.value+'%'; renderPreview()">
-            <span class="skill-pct">{{ $lvl }}%</span>
-            <button type="button" class="btn btn-sm btn-light border p-1" onclick="this.closest('.skill-row').remove(); renderPreview()">
-              <i class="fa fa-times text-danger"></i>
-            </button>
-          </div>
-          @endforeach
-        </div>
-        <button class="cvb-btn-add" onclick="addSkill()">
-          <i class="fa fa-plus"></i> Thêm kỹ năng
-        </button>
-      </div>
+    <!-- NGƯỜI LIÊN HỆ -->
+    <div class="cvb-add-section-block">
+      <div class="cvb-section-header-title">Người liên hệ</div>
+      <div id="ref_list"></div>
+      <button type="button" class="cvb-link-add" onclick="addReference()">
+        <i class="fa fa-plus"></i> Thêm người liên hệ
+      </button>
     </div>
 
-    <!-- 6. DỰ ÁN NỔI BẬT -->
-    <div class="cvb-card-section">
-      <div class="cvb-card-header" data-target="sec-proj">
-        <span><i class="fa fa-code text-success me-2"></i>Dự án nổi bật</span>
-        <i class="fa fa-chevron-down toggle-icon"></i>
-      </div>
-      <div class="cvb-card-body" id="sec-proj">
-        <div id="proj_list">
-          @foreach ($cd['projects'] as $pr)
-          <div class="cvb-entry-card" data-section="proj">
-            <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
-            <div class="mb-2">
-              <div class="cvb-label">Tên dự án</div>
-              <input class="cvb-input proj-name" value="{{ $pr['name'] ?? '' }}" placeholder="VD: Nền tảng thương mại điện tử">
-            </div>
-            <div class="cvb-row mb-2">
-              <div>
-                <div class="cvb-label">Vai trò</div>
-                <input class="cvb-input proj-role" value="{{ $pr['role'] ?? '' }}" placeholder="Tech Lead / Fullstack">
-              </div>
-              <div>
-                <div class="cvb-label">Thời gian</div>
-                <input class="cvb-input proj-period" value="{{ $pr['period'] ?? '' }}" placeholder="01/2023 - 08/2023">
-              </div>
-            </div>
-            <div>
-              <div class="cvb-label">Mô tả công nghệ & Kết quả</div>
-              <textarea class="cvb-input proj-desc" rows="3" placeholder="Quy mô dự án, công nghệ sử dụng và kết quả đạt được...">{{ $pr['description'] ?? '' }}</textarea>
-            </div>
-          </div>
-          @endforeach
-        </div>
-        <button class="cvb-btn-add" onclick="addCard('proj')">
-          <i class="fa fa-plus"></i> Thêm dự án
-        </button>
-      </div>
+    <!-- HOẠT ĐỘNG -->
+    <div class="cvb-add-section-block">
+      <div class="cvb-section-header-title">Hoạt động</div>
+      <div id="act_list"></div>
+      <button type="button" class="cvb-link-add" onclick="addActivity()">
+        <i class="fa fa-plus"></i> Thêm hoạt động
+      </button>
     </div>
 
-    <!-- 7. CHỨNG CHỈ & GIẢI THƯỞNG -->
-    <div class="cvb-card-section">
-      <div class="cvb-card-header" data-target="sec-cert">
-        <span><i class="fa fa-certificate text-success me-2"></i>Chứng chỉ & Giải thưởng</span>
-        <i class="fa fa-chevron-down toggle-icon"></i>
-      </div>
-      <div class="cvb-card-body" id="sec-cert">
-        <div id="cert_list">
-          @foreach ($cd['certifications'] as $cr)
-          <div class="cvb-entry-card" data-section="cert">
-            <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
-            <div class="mb-2">
-              <div class="cvb-label">Tên chứng chỉ / Giải thưởng</div>
-              <input class="cvb-input cert-name" value="{{ $cr['name'] ?? '' }}" placeholder="VD: Chứng chỉ TOEIC 750">
-            </div>
-            <div class="cvb-row">
-              <div>
-                <div class="cvb-label">Tổ chức cấp</div>
-                <input class="cvb-input cert-org" value="{{ $cr['organization'] ?? '' }}" placeholder="IIG Việt Nam">
-              </div>
-              <div>
-                <div class="cvb-label">Năm</div>
-                <input class="cvb-input cert-year" value="{{ $cr['year'] ?? '' }}" placeholder="2022">
-              </div>
-            </div>
-          </div>
-          @endforeach
-        </div>
-        <button class="cvb-btn-add" onclick="addCard('cert')">
-          <i class="fa fa-plus"></i> Thêm chứng chỉ
-        </button>
-      </div>
+    <!-- CHỨNG CHỈ -->
+    <div class="cvb-add-section-block">
+      <div class="cvb-section-header-title">Chứng chỉ</div>
+      <div id="cert_list"></div>
+      <button type="button" class="cvb-link-add" onclick="addCard('cert')">
+        <i class="fa fa-plus"></i> Thêm chứng chỉ
+      </button>
+    </div>
+
+    <!-- SỞ THÍCH -->
+    <div class="cvb-add-section-block">
+      <div class="cvb-section-header-title">Sở thích</div>
+      <textarea class="cvb-input" id="f_hobby" rows="3" placeholder="Sở thích cá nhân..."></textarea>
     </div>
 
   </div><!-- /cvb-panel -->
 
-  <!-- ========== RIGHT LIVE PREVIEW PANE (Matching Image 2) ========== -->
+  <!-- ========== RIGHT LIVE PREVIEW (MATCHING IMAGE 1) ========== -->
   <div class="cvb-preview-pane">
-    <div class="cv-a4" id="cvA4" style="--cv-theme: {{ $cd['theme_color'] }}; --cv-sidebar-bg: {{ $cd['theme_color'] }}; font-family: '{{ $cd['font'] ?? 'Be Vietnam Pro' }}', sans-serif;">
+    <div class="cv-a4" id="cvA4" style="--cv-theme: {{ $cd['theme_color'] }}; --cv-sidebar-bg: {{ $cd['theme_color'] }};">
       
-      <!-- LEFT SIDEBAR -->
+      <!-- LEFT NAVY SIDEBAR (Matching Image 1) -->
       <div class="cva-sidebar" id="p_sidebar">
         <div class="cva-avatar-wrap">
-          <img id="p_avatar" src="{{ $cd['avatar'] }}" alt="avatar"
-               onerror="this.src='{{ asset('assets/user/images/avatar7.png') }}'">
+          <img id="p_avatar" src="{{ $cd['avatar'] }}" alt="avatar">
         </div>
 
-        <div class="cva-sb-title">Thông tin liên hệ</div>
-        <div class="cva-contact-item"><i class="fa fa-envelope"></i><span id="p_email">{{ $cd['email'] }}</span></div>
-        <div class="cva-contact-item"><i class="fa fa-phone"></i><span id="p_phone">{{ $cd['phone'] }}</span></div>
-        <div class="cva-contact-item"><i class="fa fa-calendar"></i><span id="p_birthday">{{ $cd['birthday'] }}</span></div>
-        <div class="cva-contact-item"><i class="fa fa-user"></i><span id="p_gender">{{ $cd['gender'] }}</span></div>
-        <div class="cva-contact-item"><i class="fa fa-map-marker"></i><span id="p_address">{{ $cd['address'] }}</span></div>
-        <div class="cva-contact-item"><i class="fa fa-globe"></i><span id="p_website">{{ $cd['website'] }}</span></div>
-
-        <div class="cva-sb-title">Kỹ năng chuyên môn</div>
-        <div id="p_skills">
-          @foreach ($cd['skills'] as $sk)
-          @php $lvl = intval($sk['level'] ?? 80); @endphp
-          <div class="cva-sb-skill">
-            <div class="cva-sb-skill-label"><span>{{ $sk['name'] ?? '' }}</span><span>{{ $lvl }}%</span></div>
-            <div class="cva-sb-skill-bar"><div class="cva-sb-skill-fill" style="width:{{ $lvl }}%"></div></div>
-          </div>
-          @endforeach
+        <div class="cva-sb-title">LIÊN HỆ</div>
+        
+        {{-- Phone --}}
+        <div class="cva-contact-item">
+          <i class="fa fa-phone"></i>
+          <span id="p_phone" class="{{ empty($cd['phone']) ? 'cva-contact-placeholder' : '' }}">
+            {{ !empty($cd['phone']) ? $cd['phone'] : 'Điền số điện thoại' }}
+          </span>
         </div>
 
-        <div class="cva-sb-title">Chứng chỉ & Giải thưởng</div>
-        <div id="p_certs">
-          @foreach ($cd['certifications'] as $cr)
-          <div style="margin-bottom: 9px;">
-            <div style="font-size: 11.5px; font-weight: 700; color: #fff;">{{ $cr['name'] ?? '' }}</div>
-            <div style="font-size: 11px; color: #94a3b8;">{{ $cr['organization'] ?? '' }} · {{ $cr['year'] ?? '' }}</div>
-          </div>
-          @endforeach
+        {{-- Email --}}
+        <div class="cva-contact-item">
+          <i class="fa fa-envelope"></i>
+          <span id="p_email">{{ $cd['email'] }}</span>
+        </div>
+
+        {{-- Birthday --}}
+        <div class="cva-contact-item">
+          <i class="fa fa-calendar"></i>
+          <span id="p_birthday" class="{{ empty($cd['birthday']) ? 'cva-contact-placeholder' : '' }}">
+            {{ !empty($cd['birthday']) ? $cd['birthday'] : 'Chọn ngày sinh' }}
+          </span>
+        </div>
+
+        {{-- Address --}}
+        <div class="cva-contact-item">
+          <i class="fa fa-map-marker"></i>
+          <span id="p_address" class="{{ empty($cd['address']) ? 'cva-contact-placeholder' : '' }}">
+            {{ !empty($cd['address']) ? $cd['address'] : 'VD: Trần Bình Trọng, Phường 1' }}
+          </span>
+        </div>
+
+        {{-- Skills (only if added) --}}
+        <div id="p_skills_wrap" style="display: none;">
+          <div class="cva-sb-title">KỸ NĂNG</div>
+          <div id="p_skills"></div>
+        </div>
+
+        {{-- Languages / IT (only if added) --}}
+        <div id="p_lang_wrap" style="display: none;">
+          <div class="cva-sb-title">NGOẠI NGỮ</div>
+          <div id="p_languages"></div>
         </div>
       </div>
 
-      <!-- MAIN COLUMN -->
+      <!-- MAIN RIGHT COLUMN (Matching Image 1) -->
       <div class="cva-main">
-        <div id="p_fullname" class="cva-name">{{ $cd['fullname'] }}</div>
-        <div id="p_candidate_title" class="cva-jobtitle">{{ $cd['candidate_title'] }}</div>
-
-        <div class="cva-sec-title">Mục tiêu nghề nghiệp</div>
-        <div id="p_objective" class="cva-objective">{{ $cd['objective'] }}</div>
-
-        <div class="cva-sec-title">Kinh nghiệm làm việc</div>
-        <div id="p_experience">
-          @foreach ($cd['experience'] as $exp)
-          <div class="cva-item">
-            <div class="cva-item-title">{{ $exp['position'] ?? '' }}</div>
-            <div class="cva-item-sub">{{ $exp['company'] ?? '' }}</div>
-            <div class="cva-item-period"><i class="fa fa-clock-o me-1"></i>{{ $exp['period'] ?? '' }}</div>
-            <div class="cva-item-desc">{{ $exp['description'] ?? '' }}</div>
-          </div>
-          @endforeach
+        <div id="p_fullname" class="cva-name">{{ mb_strtoupper($cd['fullname'], 'UTF-8') }}</div>
+        <div id="p_candidate_title" class="cva-jobtitle {{ empty($cd['candidate_title']) ? 'is-placeholder' : '' }}">
+          {{ !empty($cd['candidate_title']) ? mb_strtoupper($cd['candidate_title'], 'UTF-8') : 'TIÊU ĐỀ HỒ SƠ' }}
         </div>
 
-        <div class="cva-sec-title">Trình độ học vấn</div>
-        <div id="p_education">
-          @foreach ($cd['education'] as $edu)
-          <div class="cva-item">
-            <div class="cva-item-title">{{ $edu['school'] ?? '' }}</div>
-            <div class="cva-item-sub">{{ $edu['major'] ?? '' }}</div>
-            <div class="cva-item-period"><i class="fa fa-calendar me-1"></i>{{ $edu['period'] ?? '' }}</div>
-            <div class="cva-item-desc">{{ $edu['description'] ?? '' }}</div>
-          </div>
-          @endforeach
+        {{-- Experience Section --}}
+        <div id="p_exp_wrap" style="display: none;">
+          <div class="cva-sec-title">KINH NGHIỆM LÀM VIỆC</div>
+          <div id="p_experience"></div>
         </div>
 
-        <div class="cva-sec-title">Dự án nổi bật</div>
-        <div id="p_projects">
-          @foreach ($cd['projects'] as $pr)
-          <div class="cva-item">
-            <div class="cva-item-title">{{ $pr['name'] ?? '' }}</div>
-            <span class="badge bg-light text-dark border me-2">{{ $pr['role'] ?? '' }}</span>
-            <span style="font-size: 11px; color: #94a3b8;">{{ $pr['period'] ?? '' }}</span>
-            <div class="cva-item-desc" style="margin-top: 4px;">{{ $pr['description'] ?? '' }}</div>
-          </div>
-          @endforeach
+        {{-- Education Section --}}
+        <div id="p_edu_wrap" style="display: none;">
+          <div class="cva-sec-title">HỌC VẤN</div>
+          <div id="p_education"></div>
+        </div>
+
+        {{-- Certifications Section --}}
+        <div id="p_cert_wrap" style="display: none;">
+          <div class="cva-sec-title">CHỨNG CHỈ</div>
+          <div id="p_certs"></div>
+        </div>
+
+        {{-- Projects Section --}}
+        <div id="p_proj_wrap" style="display: none;">
+          <div class="cva-sec-title">HOẠT ĐỘNG / DỰ ÁN</div>
+          <div id="p_projects"></div>
+        </div>
+
+        {{-- Reference Section --}}
+        <div id="p_ref_wrap" style="display: none;">
+          <div class="cva-sec-title">NGƯỜI LIÊN HỆ</div>
+          <div id="p_references"></div>
         </div>
       </div>
 
@@ -850,139 +742,179 @@ body { background: #f8fafc; }
 @section('customJs')
 <script>
 /* ============================================================
-   REAL-TIME CV LIVE PREVIEW & CONTROLS
+   REAL-TIME CV LIVE PREVIEW & VIECLAM24H REPLICA ENGINE
 ============================================================ */
 
 function renderPreview() {
-  const theme = document.getElementById('cv_theme_color').value || '#0f2942';
+  const theme = document.getElementById('cv_theme_color').value || '#004C82';
   const cvA4 = document.getElementById('cvA4');
   cvA4.style.setProperty('--cv-theme', theme);
   cvA4.style.setProperty('--cv-sidebar-bg', theme);
 
-  // Sync basic text fields
-  const textMap = {
-    f_fullname: 'p_fullname',
-    f_candidate_title: 'p_candidate_title',
-    f_email: 'p_email',
-    f_phone: 'p_phone',
-    f_birthday: 'p_birthday',
-    f_gender: 'p_gender',
-    f_address: 'p_address',
-    f_website: 'p_website',
-    f_objective: 'p_objective'
-  };
-  Object.entries(textMap).forEach(([fid, pid]) => {
-    const el = document.getElementById(pid);
-    const src = document.getElementById(fid);
-    if (el && src) el.textContent = src.value || '';
-  });
+  // 1. Candidate Name
+  const fName = (document.getElementById('f_fullname').value || '').trim();
+  document.getElementById('p_fullname').textContent = fName ? fName.toUpperCase() : 'HỌ VÀ TÊN';
 
-  // Render Experience list
-  let expHtml = '';
-  document.querySelectorAll('#exp_list .cvb-entry-card').forEach(card => {
-    const pos = card.querySelector('.exp-position')?.value || '';
-    const comp = card.querySelector('.exp-company')?.value || '';
-    const per = card.querySelector('.exp-period')?.value || '';
-    const desc = card.querySelector('.exp-desc')?.value || '';
-    expHtml += `
-      <div class="cva-item">
-        <div class="cva-item-title">${esc(pos)}</div>
-        <div class="cva-item-sub">${esc(comp)}</div>
-        <div class="cva-item-period"><i class="fa fa-clock-o me-1"></i>${esc(per)}</div>
-        <div class="cva-item-desc">${esc(desc)}</div>
-      </div>
-    `;
-  });
-  document.getElementById('p_experience').innerHTML = expHtml;
+  // 2. Candidate Title (Placeholder "TIÊU ĐỀ HỒ SƠ" if empty like Image 1)
+  const fTitle = (document.getElementById('f_candidate_title').value || '').trim();
+  const pTitle = document.getElementById('p_candidate_title');
+  if (fTitle) {
+    pTitle.textContent = fTitle.toUpperCase();
+    pTitle.classList.remove('is-placeholder');
+  } else {
+    pTitle.textContent = 'TIÊU ĐỀ HỒ SƠ';
+    pTitle.classList.add('is-placeholder');
+  }
 
-  // Render Education list
-  let eduHtml = '';
-  document.querySelectorAll('#edu_list .cvb-entry-card').forEach(card => {
-    const sch = card.querySelector('.edu-school')?.value || '';
-    const maj = card.querySelector('.edu-major')?.value || '';
-    const per = card.querySelector('.edu-period')?.value || '';
-    const desc = card.querySelector('.edu-desc')?.value || '';
-    eduHtml += `
-      <div class="cva-item">
-        <div class="cva-item-title">${esc(sch)}</div>
-        <div class="cva-item-sub">${esc(maj)}</div>
-        <div class="cva-item-period"><i class="fa fa-calendar me-1"></i>${esc(per)}</div>
-        <div class="cva-item-desc">${esc(desc)}</div>
-      </div>
-    `;
-  });
-  document.getElementById('p_education').innerHTML = eduHtml;
+  // 3. Email
+  const fEmail = (document.getElementById('f_email').value || '').trim();
+  document.getElementById('p_email').textContent = fEmail || 'email@example.com';
 
-  // Render Skills list
-  let skHtml = '';
-  document.querySelectorAll('#skill_list .skill-row').forEach(row => {
-    const name = row.querySelector('.skill-name')?.value || '';
-    const lvl = row.querySelector('.skill-range')?.value || '80';
-    skHtml += `
-      <div class="cva-sb-skill">
-        <div class="cva-sb-skill-label"><span>${esc(name)}</span><span>${lvl}%</span></div>
-        <div class="cva-sb-skill-bar"><div class="cva-sb-skill-fill" style="width:${lvl}%"></div></div>
-      </div>
-    `;
-  });
-  document.getElementById('p_skills').innerHTML = skHtml;
+  // 4. Phone (Placeholder "Điền số điện thoại" if empty like Image 1)
+  const fPhone = (document.getElementById('f_phone').value || '').trim();
+  const pPhone = document.getElementById('p_phone');
+  if (fPhone) {
+    pPhone.textContent = fPhone;
+    pPhone.classList.remove('cva-contact-placeholder');
+  } else {
+    pPhone.textContent = 'Điền số điện thoại';
+    pPhone.classList.add('cva-contact-placeholder');
+  }
 
-  // Render Projects list
-  let prHtml = '';
-  document.querySelectorAll('#proj_list .cvb-entry-card').forEach(card => {
-    const name = card.querySelector('.proj-name')?.value || '';
-    const role = card.querySelector('.proj-role')?.value || '';
-    const per = card.querySelector('.proj-period')?.value || '';
-    const desc = card.querySelector('.proj-desc')?.value || '';
-    prHtml += `
-      <div class="cva-item">
-        <div class="cva-item-title">${esc(name)}</div>
-        <span class="badge bg-light text-dark border me-2">${esc(role)}</span>
-        <span style="font-size: 11px; color: #94a3b8;">${esc(per)}</span>
-        <div class="cva-item-desc" style="margin-top: 4px;">${esc(desc)}</div>
-      </div>
-    `;
-  });
-  document.getElementById('p_projects').innerHTML = prHtml;
+  // 5. Birthday (Placeholder "Chọn ngày sinh" if empty like Image 1)
+  const fBirthday = (document.getElementById('f_birthday').value || '').trim();
+  const pBirthday = document.getElementById('p_birthday');
+  if (fBirthday) {
+    pBirthday.textContent = fBirthday;
+    pBirthday.classList.remove('cva-contact-placeholder');
+  } else {
+    pBirthday.textContent = 'Chọn ngày sinh';
+    pBirthday.classList.add('cva-contact-placeholder');
+  }
 
-  // Render Certifications list
-  let crHtml = '';
-  document.querySelectorAll('#cert_list .cvb-entry-card').forEach(card => {
-    const name = card.querySelector('.cert-name')?.value || '';
-    const org = card.querySelector('.cert-org')?.value || '';
-    const yr = card.querySelector('.cert-year')?.value || '';
-    crHtml += `
-      <div style="margin-bottom: 9px;">
-        <div style="font-size: 11.5px; font-weight: 700; color: #fff;">${esc(name)}</div>
-        <div style="font-size: 11px; color: #94a3b8;">${esc(org)} · ${esc(yr)}</div>
-      </div>
-    `;
-  });
-  document.getElementById('p_certs').innerHTML = crHtml;
+  // 6. Address (Placeholder "VD: Trần Bình Trọng, Phường 1" if empty like Image 1)
+  const fAddress = (document.getElementById('f_address').value || '').trim();
+  const pAddress = document.getElementById('p_address');
+  if (fAddress) {
+    pAddress.textContent = fAddress;
+    pAddress.classList.remove('cva-contact-placeholder');
+  } else {
+    pAddress.textContent = 'VD: Trần Bình Trọng, Phường 1';
+    pAddress.classList.add('cva-contact-placeholder');
+  }
+
+  // 7. Experience List
+  const expCards = document.querySelectorAll('#exp_list .cvb-entry-card');
+  const expWrap = document.getElementById('p_exp_wrap');
+  if (expCards.length > 0) {
+    expWrap.style.display = 'block';
+    let expHtml = '';
+    expCards.forEach(card => {
+      const pos = card.querySelector('.exp-position')?.value || '';
+      const comp = card.querySelector('.exp-company')?.value || '';
+      const per = card.querySelector('.exp-period')?.value || '';
+      const desc = card.querySelector('.exp-desc')?.value || '';
+      expHtml += `
+        <div class="cva-item">
+          <div class="cva-item-title">${esc(pos)}</div>
+          <div class="cva-item-sub">${esc(comp)}</div>
+          <div class="cva-item-period"><i class="fa fa-clock-o me-1"></i>${esc(per)}</div>
+          <div class="cva-item-desc">${esc(desc)}</div>
+        </div>
+      `;
+    });
+    document.getElementById('p_experience').innerHTML = expHtml;
+  } else {
+    expWrap.style.display = 'none';
+  }
+
+  // 8. Education List
+  const eduCards = document.querySelectorAll('#edu_list .cvb-entry-card');
+  const eduWrap = document.getElementById('p_edu_wrap');
+  if (eduCards.length > 0) {
+    eduWrap.style.display = 'block';
+    let eduHtml = '';
+    eduCards.forEach(card => {
+      const sch = card.querySelector('.edu-school')?.value || '';
+      const maj = card.querySelector('.edu-major')?.value || '';
+      const per = card.querySelector('.edu-period')?.value || '';
+      const desc = card.querySelector('.edu-desc')?.value || '';
+      eduHtml += `
+        <div class="cva-item">
+          <div class="cva-item-title">${esc(sch)}</div>
+          <div class="cva-item-sub">${esc(maj)}</div>
+          <div class="cva-item-period"><i class="fa fa-calendar me-1"></i>${esc(per)}</div>
+          <div class="cva-item-desc">${esc(desc)}</div>
+        </div>
+      `;
+    });
+    document.getElementById('p_education').innerHTML = eduHtml;
+  } else {
+    eduWrap.style.display = 'none';
+  }
+
+  // 9. Skills List
+  const skillRows = document.querySelectorAll('#skill_list .skill-row');
+  const skillsWrap = document.getElementById('p_skills_wrap');
+  if (skillRows.length > 0) {
+    skillsWrap.style.display = 'block';
+    let skHtml = '';
+    skillRows.forEach(row => {
+      const name = row.querySelector('.skill-name')?.value || '';
+      const lvl = row.querySelector('.skill-range')?.value || '80';
+      skHtml += `
+        <div style="margin-bottom: 8px;">
+          <div style="display:flex; justify-content:space-between; font-size:11.5px; color:#e2e8f0; margin-bottom:2px;">
+            <span>${esc(name)}</span><span>${lvl}%</span>
+          </div>
+          <div style="height:4px; background:rgba(255,255,255,0.2); border-radius:2px;">
+            <div style="height:100%; width:${lvl}%; background:#60a5fa; border-radius:2px;"></div>
+          </div>
+        </div>
+      `;
+    });
+    document.getElementById('p_skills').innerHTML = skHtml;
+  } else {
+    skillsWrap.style.display = 'none';
+  }
+
+  // Calculate profile completeness score
+  updateScore();
+}
+
+function updateScore() {
+  let score = 10;
+  if (document.getElementById('f_candidate_title').value.trim()) score += 20;
+  if (document.getElementById('f_phone').value.trim()) score += 15;
+  if (document.getElementById('f_address').value.trim()) score += 15;
+  if (document.querySelectorAll('#exp_list .cvb-entry-card').length > 0) score += 20;
+  if (document.querySelectorAll('#edu_list .cvb-entry-card').length > 0) score += 10;
+  if (document.querySelectorAll('#skill_list .skill-row').length > 0) score += 10;
+
+  score = Math.min(score, 100);
+  document.getElementById('scoreBadge').textContent = score + '%';
+  document.getElementById('scoreBar').style.width = score + '%';
+  if (score >= 80) {
+    document.getElementById('scoreBar').style.background = '#059669';
+    document.getElementById('scoreTip').textContent = 'Hồ sơ đạt chuẩn xuất sắc';
+  } else if (score >= 40) {
+    document.getElementById('scoreBar').style.background = '#eab308';
+    document.getElementById('scoreTip').textContent = `+${100 - score}% Điền thêm kinh nghiệm`;
+  } else {
+    document.getElementById('scoreBar').style.background = '#ef4444';
+    document.getElementById('scoreTip').textContent = `+${100 - score}% Thêm thông tin cơ bản`;
+  }
 }
 
 function esc(str) {
   return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-/* Bind inputs to real-time rendering */
-document.querySelectorAll('.cvb-panel input, .cvb-panel textarea').forEach(el => {
+/* Event binding */
+document.querySelectorAll('.cvb-panel input, .cvb-panel textarea, .cvb-panel select').forEach(el => {
   el.addEventListener('input', renderPreview);
 });
 
-/* Collapsible Section Cards */
-document.querySelectorAll('.cvb-card-header').forEach(header => {
-  header.addEventListener('click', () => {
-    const targetId = header.getAttribute('data-target');
-    const body = document.getElementById(targetId);
-    if (!body) return;
-    const isCollapsed = body.classList.toggle('collapsed');
-    header.classList.toggle('collapsed', isCollapsed);
-    header.closest('.cvb-card-section').classList.toggle('active', !isCollapsed);
-  });
-});
-
-/* Dynamic Card Addition / Deletion */
 function delCard(btn) {
   btn.closest('.cvb-entry-card').remove();
   renderPreview();
@@ -995,20 +927,20 @@ function addCard(type) {
       <div class="cvb-entry-card" data-section="exp">
         <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
         <div class="mb-2">
-          <div class="cvb-label">Vị trí đảm nhiệm</div>
-          <input class="cvb-input exp-position" placeholder="VD: Senior Backend Developer">
+          <label class="cvb-label">Vị trí đảm nhiệm</label>
+          <input class="cvb-input exp-position" placeholder="VD: Nhân viên kinh doanh">
         </div>
         <div class="mb-2">
-          <div class="cvb-label">Tên công ty / Doanh nghiệp</div>
-          <input class="cvb-input exp-company" placeholder="VD: Công ty Cổ phần Công nghệ ABC">
+          <label class="cvb-label">Tên công ty</label>
+          <input class="cvb-input exp-company" placeholder="VD: Công ty TNHH XYZ">
         </div>
         <div class="mb-2">
-          <div class="cvb-label">Thời gian làm việc</div>
+          <label class="cvb-label">Thời gian làm việc</label>
           <input class="cvb-input exp-period" placeholder="01/2022 - Hiện tại">
         </div>
         <div>
-          <div class="cvb-label">Mô tả chi tiết & Kết quả công việc</div>
-          <textarea class="cvb-input exp-desc" rows="4" placeholder="• Mô tả chi tiết..."></textarea>
+          <label class="cvb-label">Mô tả công việc</label>
+          <textarea class="cvb-input exp-desc" rows="3" placeholder="Mô tả trách nhiệm và kết quả..."></textarea>
         </div>
       </div>
     `;
@@ -1018,73 +950,26 @@ function addCard(type) {
       <div class="cvb-entry-card" data-section="edu">
         <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
         <div class="mb-2">
-          <div class="cvb-label">Trường học / Đơn vị đào tạo</div>
-          <input class="cvb-input edu-school" placeholder="VD: Đại học Bách Khoa Hà Nội">
+          <label class="cvb-label">Trường học</label>
+          <input class="cvb-input edu-school" placeholder="VD: Đại học Kinh tế Quốc dân">
         </div>
         <div class="mb-2">
-          <div class="cvb-label">Chuyên ngành đào tạo</div>
-          <input class="cvb-input edu-major" placeholder="VD: Công nghệ Thông tin">
+          <label class="cvb-label">Chuyên ngành</label>
+          <input class="cvb-input edu-major" placeholder="VD: Quản trị Kinh doanh">
         </div>
         <div class="mb-2">
-          <div class="cvb-label">Niên khóa / Năm tốt nghiệp</div>
+          <label class="cvb-label">Niên khóa</label>
           <input class="cvb-input edu-period" placeholder="2018 - 2022">
         </div>
         <div>
-          <div class="cvb-label">Xếp loại / Thành tích học tập</div>
+          <label class="cvb-label">Mô tả thêm</label>
           <textarea class="cvb-input edu-desc" rows="2" placeholder="Xếp loại tốt nghiệp..."></textarea>
         </div>
       </div>
     `;
     document.getElementById('edu_list').insertAdjacentHTML('beforeend', html);
-  } else if (type === 'proj') {
-    html = `
-      <div class="cvb-entry-card" data-section="proj">
-        <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
-        <div class="mb-2">
-          <div class="cvb-label">Tên dự án</div>
-          <input class="cvb-input proj-name" placeholder="VD: Nền tảng thương mại điện tử">
-        </div>
-        <div class="cvb-row mb-2">
-          <div>
-            <div class="cvb-label">Vai trò</div>
-            <input class="cvb-input proj-role" placeholder="Tech Lead / Fullstack">
-          </div>
-          <div>
-            <div class="cvb-label">Thời gian</div>
-            <input class="cvb-input proj-period" placeholder="01/2023 - 08/2023">
-          </div>
-        </div>
-        <div>
-          <div class="cvb-label">Mô tả công nghệ & Kết quả</div>
-          <textarea class="cvb-input proj-desc" rows="3" placeholder="Mô tả dự án..."></textarea>
-        </div>
-      </div>
-    `;
-    document.getElementById('proj_list').insertAdjacentHTML('beforeend', html);
-  } else if (type === 'cert') {
-    html = `
-      <div class="cvb-entry-card" data-section="cert">
-        <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
-        <div class="mb-2">
-          <div class="cvb-label">Tên chứng chỉ / Giải thưởng</div>
-          <input class="cvb-input cert-name" placeholder="VD: Chứng chỉ TOEIC 750">
-        </div>
-        <div class="cvb-row">
-          <div>
-            <div class="cvb-label">Tổ chức cấp</div>
-            <input class="cvb-input cert-org" placeholder="IIG Việt Nam">
-          </div>
-          <div>
-            <div class="cvb-label">Năm</div>
-            <input class="cvb-input cert-year" placeholder="2023">
-          </div>
-        </div>
-      </div>
-    `;
-    document.getElementById('cert_list').insertAdjacentHTML('beforeend', html);
   }
 
-  // Re-bind input events
   document.querySelectorAll('.cvb-panel input, .cvb-panel textarea').forEach(el => {
     el.removeEventListener('input', renderPreview);
     el.addEventListener('input', renderPreview);
@@ -1094,11 +979,11 @@ function addCard(type) {
 
 function addSkill() {
   const html = `
-    <div class="skill-row">
-      <input class="cvb-input skill-name" placeholder="Tên kỹ năng mới...">
-      <input type="range" class="skill-range" min="10" max="100" value="80"
+    <div class="d-flex align-items-center gap-2 mb-2 skill-row">
+      <input class="cvb-input skill-name" placeholder="Tên kỹ năng..." style="flex:1">
+      <input type="range" class="skill-range" min="10" max="100" value="80" style="width: 80px;"
         oninput="this.nextElementSibling.textContent=this.value+'%'; renderPreview()">
-      <span class="skill-pct">80%</span>
+      <span class="skill-pct" style="font-size:12px;width:32px;">80%</span>
       <button type="button" class="btn btn-sm btn-light border p-1" onclick="this.closest('.skill-row').remove(); renderPreview()">
         <i class="fa fa-times text-danger"></i>
       </button>
@@ -1111,36 +996,63 @@ function addSkill() {
   renderPreview();
 }
 
-/* Color Swatches Interaction */
+function addLanguage() {
+  const name = prompt('Nhập tên ngoại ngữ (VD: Tiếng Anh, Tiếng Nhật):');
+  if (!name) return;
+  const html = `
+    <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-light border rounded">
+      <span class="fw-bold">${esc(name)}</span>
+      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove()"><i class="fa fa-times"></i></button>
+    </div>
+  `;
+  document.getElementById('lang_list').insertAdjacentHTML('beforeend', html);
+}
+
+function addItSkill() {
+  const name = prompt('Nhập kỹ năng tin học (VD: MS Word, Excel, Photoshop):');
+  if (!name) return;
+  const html = `
+    <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-light border rounded">
+      <span class="fw-bold">${esc(name)}</span>
+      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove()"><i class="fa fa-times"></i></button>
+    </div>
+  `;
+  document.getElementById('it_list').insertAdjacentHTML('beforeend', html);
+}
+
+function addReference() {
+  const name = prompt('Nhập thông tin người liên hệ (Họ tên, chức vụ, SĐT):');
+  if (!name) return;
+  const html = `
+    <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-light border rounded">
+      <span>${esc(name)}</span>
+      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove()"><i class="fa fa-times"></i></button>
+    </div>
+  `;
+  document.getElementById('ref_list').insertAdjacentHTML('beforeend', html);
+}
+
+function addActivity() {
+  const name = prompt('Nhập tên hoạt động / dự án:');
+  if (!name) return;
+  const html = `
+    <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-light border rounded">
+      <span>${esc(name)}</span>
+      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove()"><i class="fa fa-times"></i></button>
+    </div>
+  `;
+  document.getElementById('act_list').insertAdjacentHTML('beforeend', html);
+}
+
+/* Color Palette */
 document.querySelectorAll('.cvb-color-swatch').forEach(swatch => {
   swatch.addEventListener('click', () => {
     document.querySelectorAll('.cvb-color-swatch').forEach(s => s.classList.remove('active'));
     swatch.classList.add('active');
     const color = swatch.getAttribute('data-color');
     document.getElementById('cv_theme_color').value = color;
-    document.getElementById('currentColorDot').style.background = color;
+    document.getElementById('colorDot').style.background = color;
     renderPreview();
-  });
-});
-
-/* Font Selector Interaction */
-document.querySelectorAll('.cv-font-opt').forEach(opt => {
-  opt.addEventListener('click', () => {
-    const font = opt.getAttribute('data-font');
-    document.getElementById('cv_font_family').value = font;
-    document.getElementById('currentFontLabel').textContent = font;
-    document.getElementById('cvA4').style.fontFamily = `'${font}', sans-serif`;
-  });
-});
-
-/* Font Size Selector Interaction */
-document.querySelectorAll('.cv-size-opt').forEach(opt => {
-  opt.addEventListener('click', () => {
-    document.querySelectorAll('.cv-size-opt').forEach(s => s.classList.remove('active'));
-    opt.classList.add('active');
-    const size = opt.getAttribute('data-size');
-    document.getElementById('cvA4').style.setProperty('--cv-font-size', size);
-    document.getElementById('currentSizeLabel').textContent = opt.textContent;
   });
 });
 
@@ -1169,14 +1081,13 @@ document.getElementById('avatarFileInput').addEventListener('change', function()
       }
     },
     error: function() {
-      toastr.error('Lỗi khi tải ảnh lên server.');
+      toastr.error('Lỗi khi tải ảnh lên.');
     }
   });
 });
 
-/* Save CV via AJAX */
-function saveCvData(callback) {
-  // Collect experience
+/* Save CV and Finish */
+document.getElementById('btnExportPdf').addEventListener('click', function() {
   const expData = [];
   document.querySelectorAll('#exp_list .cvb-entry-card').forEach(card => {
     expData.push({
@@ -1187,7 +1098,6 @@ function saveCvData(callback) {
     });
   });
 
-  // Collect education
   const eduData = [];
   document.querySelectorAll('#edu_list .cvb-entry-card').forEach(card => {
     eduData.push({
@@ -1198,7 +1108,6 @@ function saveCvData(callback) {
     });
   });
 
-  // Collect skills
   const skillsData = [];
   document.querySelectorAll('#skill_list .skill-row').forEach(row => {
     skillsData.push({
@@ -1207,48 +1116,25 @@ function saveCvData(callback) {
     });
   });
 
-  // Collect projects
-  const projData = [];
-  document.querySelectorAll('#proj_list .cvb-entry-card').forEach(card => {
-    projData.push({
-      name: card.querySelector('.proj-name')?.value || '',
-      role: card.querySelector('.proj-role')?.value || '',
-      period: card.querySelector('.proj-period')?.value || '',
-      description: card.querySelector('.proj-desc')?.value || '',
-    });
-  });
-
-  // Collect certifications
-  const certData = [];
-  document.querySelectorAll('#cert_list .cvb-entry-card').forEach(card => {
-    certData.push({
-      name: card.querySelector('.cert-name')?.value || '',
-      organization: card.querySelector('.cert-org')?.value || '',
-      year: card.querySelector('.cert-year')?.value || '',
-    });
-  });
-
   const payload = {
     _token: '{{ csrf_token() }}',
     resume_id: document.getElementById('resume_id').value,
-    title: document.getElementById('cv_title').value.trim() || 'CV Ứng Tuyển Chuyên Nghiệp',
+    title: document.getElementById('cv_title').value.trim() || 'CV Ứng Tuyển',
     fullname: document.getElementById('f_fullname').value.trim(),
-    candidate_title: document.getElementById('f_candidate_title').value.trim(),
+    candidate_title: document.getElementById('f_candidate_title').value.trim() || 'Ứng viên tìm việc',
     email: document.getElementById('f_email').value.trim(),
     phone: document.getElementById('f_phone').value.trim(),
     birthday: document.getElementById('f_birthday').value.trim(),
-    gender: document.getElementById('f_gender').value.trim(),
+    gender: document.getElementById('f_gender').value,
     address: document.getElementById('f_address').value.trim(),
-    website: document.getElementById('f_website').value.trim(),
     avatar: document.getElementById('cv_avatar_url').value,
     theme_color: document.getElementById('cv_theme_color').value,
     template: document.getElementById('cv_template_key').value,
-    objective: document.getElementById('f_objective').value.trim(),
     experience_data: JSON.stringify(expData),
     education_data: JSON.stringify(eduData),
     skills_data: JSON.stringify(skillsData),
-    projects_data: JSON.stringify(projData),
-    certifications_data: JSON.stringify(certData),
+    projects_data: '[]',
+    certifications_data: '[]',
   };
 
   $.ajax({
@@ -1259,33 +1145,22 @@ function saveCvData(callback) {
     success: function(res) {
       if (res.status) {
         document.getElementById('resume_id').value = res.resume_id;
-        toastr.success(res.message);
-        if (typeof callback === 'function') callback(res.resume_id);
+        toastr.success('Đã lưu CV thành công!');
+        window.open('{{ url("/cv-print") }}/' + res.resume_id, '_blank');
       } else if (res.require_login) {
         toastr.warning(res.message);
         setTimeout(() => { window.location.href = '{{ route("account.login") }}'; }, 1500);
       } else if (res.errors) {
-        const firstErr = Object.values(res.errors)[0][0];
-        toastr.error(firstErr);
+        toastr.error(Object.values(res.errors)[0][0]);
       }
     },
     error: function() {
-      toastr.error('Đã xảy ra lỗi khi lưu CV.');
+      toastr.error('Lỗi lưu CV.');
     }
   });
-}
-
-document.getElementById('btnSaveCv').addEventListener('click', function() {
-  saveCvData();
 });
 
-document.getElementById('btnExportPdf').addEventListener('click', function() {
-  saveCvData(function(resumeId) {
-    window.open('{{ url("/cv-print") }}/' + resumeId, '_blank');
-  });
-});
-
-// Initial render
+// Initial run
 renderPreview();
 </script>
 @endsection

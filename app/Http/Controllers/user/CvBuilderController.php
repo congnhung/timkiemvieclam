@@ -216,14 +216,12 @@ class CvBuilderController extends Controller
     public function index(Request $request)
     {
         $resume = null;
+        // Chỉ tải CV cũ nếu có truyền ID cụ thể trên URL
         if ($request->has('id')) {
             $resume = Resume::find($request->id);
             if ($resume && Auth::check() && $resume->user_id !== Auth::id()) {
                 $resume = null; // Không được sửa CV của người khác
             }
-        } elseif (Auth::check()) {
-            // Lấy CV mới nhất của user nếu có
-            $resume = Resume::where('user_id', Auth::id())->orderBy('updated_at', 'desc')->first();
         }
 
         $allTemplates = self::getTemplatesList();
@@ -233,74 +231,35 @@ class CvBuilderController extends Controller
         }
         $selectedTemplate = $allTemplates[$selectedTemplateKey];
 
-        // Dữ liệu mẫu chuẩn TopCV nếu chưa có dữ liệu
+        $user = Auth::user();
+        $defaultFullName = $user ? ($user->fullname ?? $user->name) : 'Nhung Nguyễn Công';
+        $defaultEmail = $user ? $user->email : 'congnhungdz2@gmail.com';
+        $defaultPhone = $user && $user->mobile ? $user->mobile : '';
+        $defaultAvatar = $user && $user->image 
+            ? asset('assets/user/profile_picture/thumb/' . $user->image) 
+            : asset('assets/user/images/avatar_silhouette.svg');
+
+        // Khởi tạo form trống chuẩn vieclam24h (chỉ lấy Tên và Email của tài khoản)
         $defaultData = [
-            'title' => 'CV Ứng Tuyển Chuyên Nghiệp',
-            'fullname' => Auth::check() ? (Auth::user()->fullname ?? Auth::user()->name) : 'NHUNG NGUYỄN CÔNG',
-            'candidate_title' => 'LẬP TRÌNH VIÊN FULLSTACK / WEB DEVELOPER',
-            'email' => Auth::check() ? Auth::user()->email : 'congnhung95@gmail.com',
-            'phone' => Auth::check() && Auth::user()->mobile ? Auth::user()->mobile : '0987 654 321',
-            'birthday' => '15/08/1998',
-            'gender' => 'Nam',
-            'address' => 'Trần Kim Xuyến, Yên Hòa, Cầu Giấy, Hà Nội',
-            'website' => 'https://github.com/congnhung',
-            'avatar' => Auth::check() && Auth::user()->image 
-                ? asset('assets/user/profile_picture/thumb/' . Auth::user()->image) 
-                : asset('assets/user/images/avatar7.png'),
-            'theme_color' => $selectedTemplate['primary_color'] ?? '#0f2942',
+            'title' => 'CV ' . $defaultFullName,
+            'fullname' => $defaultFullName,
+            'candidate_title' => '',
+            'email' => $defaultEmail,
+            'phone' => $defaultPhone,
+            'birthday' => '',
+            'gender' => '',
+            'address' => '',
+            'website' => '',
+            'avatar' => $defaultAvatar,
+            'theme_color' => $selectedTemplate['primary_color'] ?? '#004C82',
             'template' => $selectedTemplateKey,
             'font' => $selectedTemplate['font'] ?? 'Be Vietnam Pro',
-            'objective' => 'Với hơn 3 năm kinh nghiệm phát triển các ứng dụng web với Laravel, PHP và Vue.js. Mục tiêu trong 2 năm tới trở thành Technical Lead, đóng góp vào sự phát triển của các dự án quy mô lớn và tối ưu hiệu suất hệ thống cho doanh nghiệp.',
-            'experience' => [
-                [
-                    'company' => 'Công ty Cổ phần Công nghệ ABC',
-                    'position' => 'Senior Backend Developer (PHP / Laravel)',
-                    'period' => '03/2022 - Hiện tại',
-                    'description' => "• Phụ trách thiết kế cơ sở dữ liệu và xây dựng hệ thống Core API cho nền tảng thương mại điện tử với hơn 100.000 người dùng hàng tháng.\n• Tối ưu truy vấn SQL, giảm thời gian phản hồi API từ 800ms xuống còn 150ms.\n• Hướng dẫn và review code cho 4 thành viên Junior trong nhóm."
-                ],
-                [
-                    'company' => 'Công ty TNHH Giải pháp Phần mềm XYZ',
-                    'position' => 'Web Developer',
-                    'period' => '06/2020 - 02/2022',
-                    'description' => "• Xây dựng và bảo trì các website cổng thông tin tuyển dụng, bán hàng bằng Laravel và MySQL.\n• Tích hợp cổng thanh toán trực tuyến VNPAY, MoMo và đơn vị vận chuyển."
-                ]
-            ],
-            'education' => [
-                [
-                    'school' => 'Đại học Bách Khoa Hà Nội',
-                    'major' => 'Công nghệ Thông tin & Khoa học Máy tính',
-                    'period' => '2016 - 2020',
-                    'description' => 'Tốt nghiệp loại Giỏi (GPA: 3.4/4.0). Giải Nhì cuộc thi Lập trình sinh viên cấp viện năm 2019.'
-                ]
-            ],
-            'skills' => [
-                ['name' => 'PHP / Laravel Framework', 'level' => '90'],
-                ['name' => 'MySQL / Database Optimization', 'level' => '85'],
-                ['name' => 'JavaScript / jQuery / Vue.js', 'level' => '80'],
-                ['name' => 'RESTful API & Webhooks', 'level' => '85'],
-                ['name' => 'Git / Docker / Linux VPS', 'level' => '75'],
-                ['name' => 'Tiếng Anh giao tiếp & Đọc hiểu tài liệu', 'level' => '75']
-            ],
-            'projects' => [
-                [
-                    'name' => 'Hệ sinh thái Tuyển dụng & Tìm việc làm trực tuyến',
-                    'role' => 'Tech Lead / Lead Developer',
-                    'period' => '01/2023 - 08/2023',
-                    'description' => 'Phát triển nền tảng kết nối 50.000 ứng viên và 1.200 nhà tuyển dụng. Xây dựng bộ lọc tìm kiếm theo dải lương, công cụ tạo CV online xuất PDF và quản lý pipeline ứng tuyển.'
-                ]
-            ],
-            'certifications' => [
-                [
-                    'name' => 'Chứng chỉ TOEIC Quốc Tế 750/990',
-                    'organization' => 'IIG Việt Nam',
-                    'year' => '2021'
-                ],
-                [
-                    'name' => 'Laravel Certified Developer',
-                    'organization' => 'Laravel LLC',
-                    'year' => '2022'
-                ]
-            ]
+            'objective' => '',
+            'experience' => [],
+            'education' => [],
+            'skills' => [],
+            'projects' => [],
+            'certifications' => []
         ];
 
         // Nếu người dùng chọn template cụ thể qua URL

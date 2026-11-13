@@ -177,7 +177,7 @@
           ? (Str::startsWith($resume->avatar, 'http')
               ? $resume->avatar
               : asset('assets/user/cv_avatars/' . $resume->avatar))
-          : asset('assets/user/images/user-default.png');
+          : asset('assets/user/images/avatar_silhouette.svg');
       @endphp
       <img src="{{ $avatarSrc }}" alt="{{ $resume->fullname }}">
     </div>
