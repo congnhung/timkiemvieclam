@@ -282,6 +282,11 @@ html { scroll-behavior: smooth; }
 .tw-dropdown-user-card {
   z-index: 2100 !important;
   position: absolute !important;
+  font-size: 12.5px;
+}
+.tw-nav-dropdown .dropdown-menu .dropdown-item,
+.tw-user-dropdown .dropdown-menu .dropdown-item {
+  font-size: 12.5px !important;
 }
 
 /* Invisible bridge so mouse hover doesn't break between button and menu */
@@ -298,42 +303,42 @@ html { scroll-behavior: smooth; }
 
 /* Dropdown Việc làm (Matching Image 2) */
 .tw-dropdown-vieclam {
-  min-width: 290px;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
-  padding: 12px 10px;
-  margin-top: 6px !important;
-  background: #ffffff;
-}
-.tw-dd-main-link {
-  font-size: 14px; font-weight: 700; color: #1e293b;
-  padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px;
-}
-.tw-dd-main-link:hover { background: #f1f5f9; color: #4a0d8e; }
-.tw-dd-group-header {
-  font-size: 13.5px; font-weight: 700; color: #1e293b;
-  padding: 6px 12px; display: flex; align-items: center; justify-content: space-between;
-}
-.tw-dd-sublist { padding-left: 8px; }
-.tw-dd-subitem {
-  font-size: 13px; color: #475569; padding: 6px 12px; border-radius: 6px;
-}
-.tw-dd-subitem:hover { background: #f8fafc; color: #4a0d8e; font-weight: 600; }
-
-/* Dropdown Công cụ */
-.tw-dropdown-congcu {
-  min-width: 230px;
+  min-width: 260px;
   border-radius: 14px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.14);
   padding: 8px 6px;
   margin-top: 6px !important;
   background: #ffffff;
 }
+.tw-dd-main-link {
+  font-size: 12.5px !important; font-weight: 600 !important; color: #1e293b;
+  padding: 6px 10px !important; border-radius: 6px; display: flex; align-items: center; gap: 8px;
+}
+.tw-dd-main-link:hover { background: #f1f5f9; color: #4a0d8e; }
+.tw-dd-group-header {
+  font-size: 12px !important; font-weight: 600 !important; color: #1e293b;
+  padding: 5px 10px !important; display: flex; align-items: center; justify-content: space-between;
+}
+.tw-dd-sublist { padding-left: 6px; }
+.tw-dd-subitem {
+  font-size: 11.5px !important; font-weight: 400 !important; color: #475569; padding: 5px 10px !important; border-radius: 6px;
+}
+.tw-dd-subitem:hover { background: #f8fafc; color: #4a0d8e; font-weight: 500 !important; }
+
+/* Dropdown Công cụ */
+.tw-dropdown-congcu {
+  min-width: 210px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.14);
+  padding: 6px 4px;
+  margin-top: 6px !important;
+  background: #ffffff;
+}
 .tw-dropdown-congcu .dropdown-item {
-  font-size: 13.5px; font-weight: 500; color: #334155;
-  padding: 8px 12px; border-radius: 8px;
+  font-size: 12px !important; font-weight: 500 !important; color: #334155;
+  padding: 6px 10px !important; border-radius: 6px;
 }
 .tw-dropdown-congcu .dropdown-item:hover {
   background: #f1f5f9; color: #4a0d8e;
@@ -371,14 +376,15 @@ html { scroll-behavior: smooth; }
   font-size: 10px; color: #00b14f; margin-left: 2px;
 }
 .tw-dropdown-user-card {
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  min-width: 220px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.14);
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 6px 0;
-  margin-top: 8px;
+  border-radius: 12px;
+  padding: 4px 0;
+  margin-top: 6px !important;
 }
 .tw-dropdown-user-card .dropdown-item {
-  font-size: 13.5px; color: #334155; padding: 8px 18px;
+  font-size: 12px !important; font-weight: 500 !important; color: #334155; padding: 6px 14px !important;
 }
 .tw-dropdown-user-card .dropdown-item:hover {
   background: #f1f5f9; color: #4a0d8e;

@@ -161,9 +161,9 @@
 
               {{-- Dropdown Card (Matches Image 3) --}}
               <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 tw-dropdown-user-card">
-                <li class="px-3 py-2.5 border-bottom">
-                  <div class="fw-bold text-dark fs-6">{{ $displayName }}</div>
-                  <div class="text-muted small text-truncate" style="font-size: 12px;">{{ Auth::user()->email }}</div>
+                <li class="px-3 py-2 border-bottom">
+                  <div class="fw-bold text-dark" style="font-size: 13px;">{{ $displayName }}</div>
+                  <div class="text-muted small text-truncate" style="font-size: 11px;">{{ Auth::user()->email }}</div>
                 </li>
                 <li>
                   <a class="dropdown-item py-2" href="{{ route('account.profile') }}">
