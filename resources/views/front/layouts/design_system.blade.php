@@ -257,8 +257,10 @@ html { scroll-behavior: smooth; }
 .tw-nav-link.active {
   background: rgba(255, 255, 255, 0.2); color: #ffffff !important;
 }
-.tw-nav-dropdown .dropdown-toggle::after {
-  display: none;
+.tw-nav-dropdown .dropdown-toggle::after,
+.tw-user-pill.dropdown-toggle::after,
+.tw-user-dropdown .dropdown-toggle::after {
+  display: none !important;
 }
 .tw-nav-dropdown { position: relative; }
 
