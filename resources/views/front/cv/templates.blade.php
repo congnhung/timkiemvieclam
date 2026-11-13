@@ -523,58 +523,6 @@
             </a>
           </li>
         </ul>
-
-        <div class="cvt-filter-title">Lọc theo phong cách</div>
-        <ul class="cvt-category-list">
-          <li class="{{ $currentCategory === 'all' ? 'active' : '' }}">
-            <a href="{{ route('cv.templates') }}">
-              <span>Tất cả mẫu</span>
-              <span class="badge bg-light text-dark rounded-pill">12</span>
-            </a>
-          </li>
-          <li class="{{ $currentCategory === 'modern' ? 'active' : '' }}">
-            <a href="{{ route('cv.templates', ['category' => 'modern']) }}">
-              <span>Hiện đại</span>
-              <span class="badge bg-light text-dark rounded-pill">3</span>
-            </a>
-          </li>
-          <li class="{{ $currentCategory === 'professional' ? 'active' : '' }}">
-            <a href="{{ route('cv.templates', ['category' => 'professional']) }}">
-              <span>Chuyên nghiệp</span>
-              <span class="badge bg-light text-dark rounded-pill">2</span>
-            </a>
-          </li>
-          <li class="{{ $currentCategory === 'simple' ? 'active' : '' }}">
-            <a href="{{ route('cv.templates', ['category' => 'simple']) }}">
-              <span>Đơn giản / Chuẩn ATS</span>
-              <span class="badge bg-light text-dark rounded-pill">3</span>
-            </a>
-          </li>
-          <li class="{{ $currentCategory === 'elegant' ? 'active' : '' }}">
-            <a href="{{ route('cv.templates', ['category' => 'elegant']) }}">
-              <span>Thanh lịch</span>
-              <span class="badge bg-light text-dark rounded-pill">1</span>
-            </a>
-          </li>
-          <li class="{{ $currentCategory === 'creative' ? 'active' : '' }}">
-            <a href="{{ route('cv.templates', ['category' => 'creative']) }}">
-              <span>Sáng tạo</span>
-              <span class="badge bg-light text-dark rounded-pill">1</span>
-            </a>
-          </li>
-          <li class="{{ $currentCategory === 'it' ? 'active' : '' }}">
-            <a href="{{ route('cv.templates', ['category' => 'it']) }}">
-              <span>IT & Công nghệ</span>
-              <span class="badge bg-light text-dark rounded-pill">1</span>
-            </a>
-          </li>
-          <li class="{{ $currentCategory === 'classic' ? 'active' : '' }}">
-            <a href="{{ route('cv.templates', ['category' => 'classic']) }}">
-              <span>Cổ điển</span>
-              <span class="badge bg-light text-dark rounded-pill">1</span>
-            </a>
-          </li>
-        </ul>
       </aside>
 
       {{-- MAIN CONTENT --}}
