@@ -96,57 +96,78 @@ body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkM
 
 /* Control buttons above preview */
 .cvb-ctrl-btn {
-  background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
-  padding: 7px 14px; font-size: 13px; font-weight: 600; color: #334155;
-  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
-  transition: all 0.15s; text-decoration: none;
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;
+  padding: 5px 10px; font-size: 11.5px; font-weight: 600; color: #334155;
+  display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+  transition: all 0.15s; text-decoration: none; line-height: 1.4;
 }
 .cvb-ctrl-btn:hover { background: #f8fafc; border-color: #cbd5e1; color: #5e35b1; }
+.cvb-ctrl-btn::after { font-size: 9px; margin-left: 2px; }
+.cvb-ctrl-btn i { font-size: 11px; }
+
+.cvb-color-dot {
+  width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0;
+}
 
 .cvb-btn-finish {
   background: #5e35b1; color: #fff; border: 1px solid #512da8;
-  font-weight: 700; border-radius: 8px; padding: 7px 20px; font-size: 13.5px;
-  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
-  box-shadow: 0 2px 8px rgba(94, 53, 177, 0.25);
-  transition: all 0.15s; text-decoration: none;
+  font-weight: 700; border-radius: 6px; padding: 5px 14px; font-size: 12px;
+  display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+  box-shadow: 0 2px 6px rgba(94, 53, 177, 0.25);
+  transition: all 0.15s; text-decoration: none; line-height: 1.4;
 }
 .cvb-btn-finish:hover { background: #512da8; color: #fff; transform: translateY(-1px); }
 
 /* Language pills */
 .cvb-lang-pill {
-  padding: 5px 10px; border-radius: 999px; border: 1px solid #e2e8f0;
-  font-size: 12px; font-weight: 600; color: #64748b; background: #fff;
-  cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 8px; border-radius: 999px; border: 1px solid #e2e8f0;
+  font-size: 11px; font-weight: 600; color: #64748b; background: #fff;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 3px; line-height: 1.4;
 }
 .cvb-lang-pill.active {
   background: #f3e8ff; border-color: #d8b4fe; color: #7c3aed;
 }
 
-/* Palette swatches */
-.cvb-color-menu {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 8px; padding: 12px; min-width: 180px;
+/* Palette swatches: strictly hidden until dropdown toggle triggers */
+.dropdown-menu.cvb-color-menu {
+  display: none !important;
+  min-width: 176px; padding: 10px; border-radius: 8px;
+  border: 1px solid #e2e8f0; box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.dropdown-menu.cvb-color-menu.show {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
 }
 .cvb-color-swatch {
-  width: 32px; height: 32px; border-radius: 50%;
-  cursor: pointer; border: 2.5px solid transparent;
+  width: 28px; height: 28px; border-radius: 50%;
+  cursor: pointer; border: 2px solid transparent;
   transition: transform 0.15s; display: flex; align-items: center; justify-content: center;
 }
 .cvb-color-swatch:hover, .cvb-color-swatch.active {
   transform: scale(1.15); border-color: #fff; outline: 2px solid currentColor;
 }
 .cvb-color-swatch.active::after {
-  content: '✓'; color: #fff; font-size: 14px; font-weight: 900;
+  content: '✓'; color: #fff; font-size: 12px; font-weight: 900;
+}
+
+/* Template dropdown menu styling */
+.dropdown-menu.cvb-template-menu {
+  font-size: 12px; min-width: 200px; max-height: 320px; overflow-y: auto;
+  border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px;
+}
+.dropdown-menu.cvb-template-menu .dropdown-item {
+  font-size: 12px; padding: 6px 10px; border-radius: 6px;
 }
 
 /* ---- Layout Grid ---- */
 .cvb-layout {
   display: grid;
-  grid-template-columns: 520px 1fr;
+  grid-template-columns: 460px 1fr;
   min-height: calc(100vh - 58px);
 }
 @media (max-width: 1100px) {
-  .cvb-layout { grid-template-columns: 460px 1fr; }
+  .cvb-layout { grid-template-columns: 420px 1fr; }
 }
 @media (max-width: 860px) {
   .cvb-layout { grid-template-columns: 1fr; }
@@ -233,12 +254,39 @@ body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkM
 /* ---- Right Live Preview Pane (Matching Image 1) ---- */
 .cvb-preview-pane {
   background: #edf2f7;
-  overflow-y: auto; padding: 32px 20px;
+  overflow-y: auto; overflow-x: hidden;
+  padding: 16px 16px 60px;
   display: flex; flex-direction: column; align-items: center;
   height: calc(100vh - 58px);
+  position: relative;
 }
 .cvb-preview-pane::-webkit-scrollbar { width: 6px; }
 .cvb-preview-pane::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+/* Zoom toolbar */
+.cvb-zoom-bar {
+  display: flex; align-items: center; gap: 6px;
+  background: #ffffff; padding: 4px 10px; border-radius: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 14px;
+  z-index: 10; border: 1px solid #e2e8f0;
+}
+.cvb-zoom-btn {
+  background: none; border: none; color: #475569;
+  font-size: 11px; font-weight: 600; padding: 3px 7px;
+  border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+  transition: all 0.15s;
+}
+.cvb-zoom-btn:hover { background: #f1f5f9; color: #1e293b; }
+.cvb-zoom-level {
+  font-size: 11px; font-weight: 700; color: #334155; min-width: 38px; text-align: center;
+}
+
+/* Scaled A4 Container to preserve aspect ratio & scrolling */
+.cv-a4-scale-container {
+  display: flex; justify-content: center; align-items: flex-start;
+  transition: width 0.15s ease, height 0.15s ease;
+  position: relative;
+}
 
 /* A4 Paper */
 .cv-a4 {
@@ -251,19 +299,22 @@ body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkM
   --cv-theme: #004C82;
   --cv-sidebar-bg: #004C82;
   position: relative; overflow: hidden;
+  transform-origin: top center;
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
 }
 
 /* Sidebar (Navy Blue matching Image 1) */
 .cva-sidebar {
-  width: 34%;
+  width: 33%;
   background: var(--cv-sidebar-bg, #004C82);
   color: #fff;
-  padding: 36px 20px;
+  padding: 32px 18px;
   display: flex; flex-direction: column;
 }
-.cva-avatar-wrap { text-align: center; margin-bottom: 28px; }
+.cva-avatar-wrap { text-align: center; margin-bottom: 24px; }
 .cva-avatar-wrap img {
-  width: 116px; height: 116px; border-radius: 50%;
+  width: 104px; height: 104px; border-radius: 50%;
   object-fit: cover;
   border: 4px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -271,20 +322,20 @@ body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkM
 }
 
 .cva-sb-title {
-  font-size: 12px; font-weight: 800; text-transform: uppercase;
+  font-size: 11.5px; font-weight: 800; text-transform: uppercase;
   letter-spacing: 1.2px; color: #fff;
   border-bottom: 1.5px solid rgba(255, 255, 255, 0.25);
-  padding-bottom: 5px; margin: 20px 0 12px;
+  padding-bottom: 4px; margin: 18px 0 10px;
 }
 .cva-sb-title:first-of-type { margin-top: 0; }
 
 .cva-contact-item {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 10px; font-size: 12px; color: #e2e8f0;
-  word-break: break-word;
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px; font-size: 11.5px; color: #e2e8f0;
+  word-break: break-all;
 }
 .cva-contact-item i {
-  color: #60a5fa; width: 14px; text-align: center; font-size: 12px;
+  color: #60a5fa; width: 14px; text-align: center; font-size: 11px; flex-shrink: 0;
 }
 .cva-contact-placeholder {
   color: #93c5fd; opacity: 0.8; font-style: normal;
@@ -292,59 +343,60 @@ body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkM
 
 /* Main Column */
 .cva-main {
-  width: 66%;
-  padding: 36px 30px;
+  width: 67%;
+  padding: 32px 26px;
   background: #fff;
   display: flex; flex-direction: column;
 }
 .cva-name {
-  font-size: 24px; font-weight: 800; color: #0f172a;
-  text-transform: uppercase; line-height: 1.2; margin-bottom: 6px;
+  font-size: 23px; font-weight: 800; color: #0f172a;
+  text-transform: uppercase; line-height: 1.2; margin-bottom: 5px;
   letter-spacing: 0.5px;
 }
 .cva-jobtitle {
-  font-size: 12px; font-weight: 700; color: #64748b;
-  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 24px;
+  font-size: 11.5px; font-weight: 700; color: #64748b;
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 22px;
 }
 .cva-jobtitle.is-placeholder {
   color: #94a3b8; letter-spacing: 2px;
 }
 
 .cva-sec-title {
-  font-size: 12px; font-weight: 800; text-transform: uppercase;
+  font-size: 11.5px; font-weight: 800; text-transform: uppercase;
   letter-spacing: 1px; color: #0f172a;
   border-bottom: 2px solid var(--cv-theme);
-  padding-bottom: 4px; margin: 20px 0 12px;
+  padding-bottom: 4px; margin: 18px 0 10px;
   display: flex; align-items: center; gap: 8px;
 }
 .cva-sec-title::before {
-  content: ''; display: inline-block; width: 8px; height: 8px;
+  content: ''; display: inline-block; width: 7px; height: 7px;
   border-radius: 2px; background: var(--cv-theme);
 }
 .cva-sec-title:first-of-type { margin-top: 0; }
 
 .cva-item {
-  margin-bottom: 14px; page-break-inside: avoid;
+  margin-bottom: 12px; page-break-inside: avoid;
 }
 .cva-item-title {
-  font-size: 13.5px; font-weight: 700; color: #0f172a; margin-bottom: 2px;
+  font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 2px;
 }
 .cva-item-sub {
-  font-size: 12.5px; color: var(--cv-theme); font-weight: 600; margin-bottom: 2px;
+  font-size: 12px; color: var(--cv-theme); font-weight: 600; margin-bottom: 2px;
 }
 .cva-item-period {
-  font-size: 11px; color: #94a3b8; margin-bottom: 5px;
+  font-size: 11px; color: #94a3b8; margin-bottom: 4px;
 }
 .cva-item-desc {
-  font-size: 12px; color: #334155; line-height: 1.6; white-space: pre-wrap;
+  font-size: 11.5px; color: #334155; line-height: 1.6; white-space: pre-wrap;
 }
 
 /* Print styles */
 @media print {
-  .cvb-topbar, .cvb-panel, .tw-header, .tw-footer, #aiChatWrapper { display: none !important; }
+  .cvb-topbar, .cvb-panel, .tw-header, .tw-footer, #aiChatWrapper, .cvb-zoom-bar { display: none !important; }
   .cvb-layout { display: block; }
   .cvb-preview-pane { padding: 0; background: #fff; height: auto; overflow: visible; }
-  .cv-a4 { box-shadow: none; width: 210mm; min-height: 297mm; }
+  .cv-a4-scale-container { width: auto !important; height: auto !important; display: block; }
+  .cv-a4 { transform: none !important; box-shadow: none; width: 210mm; min-height: 297mm; }
   body { background: #fff; }
 }
 </style>
@@ -374,7 +426,7 @@ body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkM
     {{-- Đổi màu dropdown --}}
     <div class="dropdown">
       <button class="cvb-ctrl-btn dropdown-toggle" type="button" id="dropdownColor" data-bs-toggle="dropdown" aria-expanded="false">
-        <span style="width: 12px; height: 12px; border-radius: 50%; background: {{ $cd['theme_color'] }}; display: inline-block;" id="colorDot"></span>
+        <span class="cvb-color-dot" style="background: {{ $cd['theme_color'] }};" id="colorDot"></span>
         <span>Đổi màu</span>
       </button>
       <div class="dropdown-menu shadow cvb-color-menu" aria-labelledby="dropdownColor">
@@ -405,13 +457,13 @@ body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkM
         <i class="fa fa-th-large"></i>
         <span>Đổi mẫu</span>
       </button>
-      <ul class="dropdown-menu shadow" style="max-height: 320px; overflow-y: auto;" aria-labelledby="dropdownTemplate">
+      <ul class="dropdown-menu shadow cvb-template-menu" aria-labelledby="dropdownTemplate">
         @foreach($allTemplates as $k => $tpl)
           <li>
-            <a class="dropdown-item d-flex justify-content-between align-items-center py-2 {{ $cd['template'] === $k ? 'active' : '' }}"
+            <a class="dropdown-item d-flex justify-content-between align-items-center py-1.5 px-2.5 {{ $cd['template'] === $k ? 'active' : '' }}"
                href="{{ route('cv.builder', ['template' => $k]) }}">
               <span>{{ $tpl['name'] }}</span>
-              <span class="badge bg-light text-dark">{{ $tpl['badge'] }}</span>
+              <span class="badge bg-light text-dark" style="font-size: 10px;">{{ $tpl['badge'] }}</span>
             </a>
           </li>
         @endforeach
@@ -640,99 +692,110 @@ body { background: #f8fafc; font-family: 'Be Vietnam Pro', -apple-system, BlinkM
   </div><!-- /cvb-panel -->
 
   <!-- ========== RIGHT LIVE PREVIEW (MATCHING IMAGE 1) ========== -->
-  <div class="cvb-preview-pane">
-    <div class="cv-a4" id="cvA4" style="--cv-theme: {{ $cd['theme_color'] }}; --cv-sidebar-bg: {{ $cd['theme_color'] }};">
-      
-      <!-- LEFT NAVY SIDEBAR (Matching Image 1) -->
-      <div class="cva-sidebar" id="p_sidebar">
-        <div class="cva-avatar-wrap">
-          <img id="p_avatar" src="{{ $cd['avatar'] }}" alt="avatar">
-        </div>
+  <div class="cvb-preview-pane" id="cvbPreviewPane">
 
-        <div class="cva-sb-title">LIÊN HỆ</div>
+    <!-- Zoom toolbar -->
+    <div class="cvb-zoom-bar">
+      <button type="button" class="cvb-zoom-btn" onclick="adjustZoom(-0.05)" title="Thu nhỏ"><i class="fa fa-minus"></i></button>
+      <span class="cvb-zoom-level" id="zoomLevel">100%</span>
+      <button type="button" class="cvb-zoom-btn" onclick="adjustZoom(0.05)" title="Phóng to"><i class="fa fa-plus"></i></button>
+      <button type="button" class="cvb-zoom-btn" onclick="resetZoom()" title="Tự căn vừa màn hình"><i class="fa fa-arrows-alt"></i> Vừa màn hình</button>
+    </div>
+
+    <div class="cv-a4-scale-container" id="cvA4ScaleContainer">
+      <div class="cv-a4" id="cvA4" style="--cv-theme: {{ $cd['theme_color'] }}; --cv-sidebar-bg: {{ $cd['theme_color'] }};">
         
-        {{-- Phone --}}
-        <div class="cva-contact-item">
-          <i class="fa fa-phone"></i>
-          <span id="p_phone" class="{{ empty($cd['phone']) ? 'cva-contact-placeholder' : '' }}">
-            {{ !empty($cd['phone']) ? $cd['phone'] : 'Điền số điện thoại' }}
-          </span>
+        <!-- LEFT NAVY SIDEBAR (Matching Image 1) -->
+        <div class="cva-sidebar" id="p_sidebar">
+          <div class="cva-avatar-wrap">
+            <img id="p_avatar" src="{{ $cd['avatar'] }}" alt="avatar">
+          </div>
+
+          <div class="cva-sb-title">LIÊN HỆ</div>
+          
+          {{-- Phone --}}
+          <div class="cva-contact-item">
+            <i class="fa fa-phone"></i>
+            <span id="p_phone" class="{{ empty($cd['phone']) ? 'cva-contact-placeholder' : '' }}">
+              {{ !empty($cd['phone']) ? $cd['phone'] : 'Điền số điện thoại' }}
+            </span>
+          </div>
+
+          {{-- Email --}}
+          <div class="cva-contact-item">
+            <i class="fa fa-envelope"></i>
+            <span id="p_email">{{ $cd['email'] }}</span>
+          </div>
+
+          {{-- Birthday --}}
+          <div class="cva-contact-item">
+            <i class="fa fa-calendar"></i>
+            <span id="p_birthday" class="{{ empty($cd['birthday']) ? 'cva-contact-placeholder' : '' }}">
+              {{ !empty($cd['birthday']) ? $cd['birthday'] : 'Chọn ngày sinh' }}
+            </span>
+          </div>
+
+          {{-- Address --}}
+          <div class="cva-contact-item">
+            <i class="fa fa-map-marker"></i>
+            <span id="p_address" class="{{ empty($cd['address']) ? 'cva-contact-placeholder' : '' }}">
+              {{ !empty($cd['address']) ? $cd['address'] : 'VD: Trần Bình Trọng, Phường 1' }}
+            </span>
+          </div>
+
+          {{-- Skills (only if added) --}}
+          <div id="p_skills_wrap" style="display: none;">
+            <div class="cva-sb-title">KỸ NĂNG</div>
+            <div id="p_skills"></div>
+          </div>
+
+          {{-- Languages / IT (only if added) --}}
+          <div id="p_lang_wrap" style="display: none;">
+            <div class="cva-sb-title">NGOẠI NGỮ</div>
+            <div id="p_languages"></div>
+          </div>
         </div>
 
-        {{-- Email --}}
-        <div class="cva-contact-item">
-          <i class="fa fa-envelope"></i>
-          <span id="p_email">{{ $cd['email'] }}</span>
+        <!-- MAIN RIGHT COLUMN (Matching Image 1) -->
+        <div class="cva-main">
+          <div id="p_fullname" class="cva-name">{{ mb_strtoupper($cd['fullname'], 'UTF-8') }}</div>
+          <div id="p_candidate_title" class="cva-jobtitle {{ empty($cd['candidate_title']) ? 'is-placeholder' : '' }}">
+            {{ !empty($cd['candidate_title']) ? mb_strtoupper($cd['candidate_title'], 'UTF-8') : 'TIÊU ĐỀ HỒ SƠ' }}
+          </div>
+
+          {{-- Experience Section --}}
+          <div id="p_exp_wrap" style="display: none;">
+            <div class="cva-sec-title">KINH NGHIỆM LÀM VIỆC</div>
+            <div id="p_experience"></div>
+          </div>
+
+          {{-- Education Section --}}
+          <div id="p_edu_wrap" style="display: none;">
+            <div class="cva-sec-title">HỌC VẤN</div>
+            <div id="p_education"></div>
+          </div>
+
+          {{-- Certifications Section --}}
+          <div id="p_cert_wrap" style="display: none;">
+            <div class="cva-sec-title">CHỨNG CHỈ</div>
+            <div id="p_certs"></div>
+          </div>
+
+          {{-- Projects Section --}}
+          <div id="p_proj_wrap" style="display: none;">
+            <div class="cva-sec-title">HOẠT ĐỘNG / DỰ ÁN</div>
+            <div id="p_projects"></div>
+          </div>
+
+          {{-- Reference Section --}}
+          <div id="p_ref_wrap" style="display: none;">
+            <div class="cva-sec-title">NGƯỜI LIÊN HỆ</div>
+            <div id="p_references"></div>
+          </div>
         </div>
 
-        {{-- Birthday --}}
-        <div class="cva-contact-item">
-          <i class="fa fa-calendar"></i>
-          <span id="p_birthday" class="{{ empty($cd['birthday']) ? 'cva-contact-placeholder' : '' }}">
-            {{ !empty($cd['birthday']) ? $cd['birthday'] : 'Chọn ngày sinh' }}
-          </span>
-        </div>
-
-        {{-- Address --}}
-        <div class="cva-contact-item">
-          <i class="fa fa-map-marker"></i>
-          <span id="p_address" class="{{ empty($cd['address']) ? 'cva-contact-placeholder' : '' }}">
-            {{ !empty($cd['address']) ? $cd['address'] : 'VD: Trần Bình Trọng, Phường 1' }}
-          </span>
-        </div>
-
-        {{-- Skills (only if added) --}}
-        <div id="p_skills_wrap" style="display: none;">
-          <div class="cva-sb-title">KỸ NĂNG</div>
-          <div id="p_skills"></div>
-        </div>
-
-        {{-- Languages / IT (only if added) --}}
-        <div id="p_lang_wrap" style="display: none;">
-          <div class="cva-sb-title">NGOẠI NGỮ</div>
-          <div id="p_languages"></div>
-        </div>
-      </div>
-
-      <!-- MAIN RIGHT COLUMN (Matching Image 1) -->
-      <div class="cva-main">
-        <div id="p_fullname" class="cva-name">{{ mb_strtoupper($cd['fullname'], 'UTF-8') }}</div>
-        <div id="p_candidate_title" class="cva-jobtitle {{ empty($cd['candidate_title']) ? 'is-placeholder' : '' }}">
-          {{ !empty($cd['candidate_title']) ? mb_strtoupper($cd['candidate_title'], 'UTF-8') : 'TIÊU ĐỀ HỒ SƠ' }}
-        </div>
-
-        {{-- Experience Section --}}
-        <div id="p_exp_wrap" style="display: none;">
-          <div class="cva-sec-title">KINH NGHIỆM LÀM VIỆC</div>
-          <div id="p_experience"></div>
-        </div>
-
-        {{-- Education Section --}}
-        <div id="p_edu_wrap" style="display: none;">
-          <div class="cva-sec-title">HỌC VẤN</div>
-          <div id="p_education"></div>
-        </div>
-
-        {{-- Certifications Section --}}
-        <div id="p_cert_wrap" style="display: none;">
-          <div class="cva-sec-title">CHỨNG CHỈ</div>
-          <div id="p_certs"></div>
-        </div>
-
-        {{-- Projects Section --}}
-        <div id="p_proj_wrap" style="display: none;">
-          <div class="cva-sec-title">HOẠT ĐỘNG / DỰ ÁN</div>
-          <div id="p_projects"></div>
-        </div>
-
-        {{-- Reference Section --}}
-        <div id="p_ref_wrap" style="display: none;">
-          <div class="cva-sec-title">NGƯỜI LIÊN HỆ</div>
-          <div id="p_references"></div>
-        </div>
-      </div>
-
-    </div><!-- /cv-a4 -->
+      </div><!-- /cv-a4 -->
+    </div><!-- /cv-a4-scale-container -->
   </div><!-- /cvb-preview-pane -->
 
 </div><!-- /cvb-layout -->
@@ -880,6 +943,11 @@ function renderPreview() {
 
   // Calculate profile completeness score
   updateScore();
+
+  // Adjust A4 scale to fit viewport
+  if (typeof fitA4Preview === 'function') {
+    fitA4Preview();
+  }
 }
 
 function updateScore() {
@@ -1044,16 +1112,80 @@ function addActivity() {
   document.getElementById('act_list').insertAdjacentHTML('beforeend', html);
 }
 
-/* Color Palette */
+/* Color Palette: click swatch to change color and close dropdown */
 document.querySelectorAll('.cvb-color-swatch').forEach(swatch => {
-  swatch.addEventListener('click', () => {
+  swatch.addEventListener('click', (e) => {
+    e.stopPropagation();
     document.querySelectorAll('.cvb-color-swatch').forEach(s => s.classList.remove('active'));
     swatch.classList.add('active');
     const color = swatch.getAttribute('data-color');
     document.getElementById('cv_theme_color').value = color;
     document.getElementById('colorDot').style.background = color;
     renderPreview();
+
+    // Close Bootstrap dropdown after pick
+    const colorBtn = document.getElementById('dropdownColor');
+    if (colorBtn && window.bootstrap) {
+      const bsDropdown = bootstrap.Dropdown.getInstance(colorBtn);
+      if (bsDropdown) bsDropdown.hide();
+    }
   });
+});
+
+/* A4 Auto-Scale & Zoom Engine */
+let currentScale = 1.0;
+let userAdjustedZoom = false;
+
+function fitA4Preview(forceAuto = false) {
+  const pane = document.getElementById('cvbPreviewPane');
+  const a4 = document.getElementById('cvA4');
+  const container = document.getElementById('cvA4ScaleContainer');
+  if (!pane || !a4 || !container) return;
+
+  const availableWidth = pane.clientWidth - 48; // safety margin for padding & scrollbar
+  const baseWidth = 794;
+
+  if (!userAdjustedZoom || forceAuto) {
+    let autoScale = availableWidth / baseWidth;
+    autoScale = Math.min(1.0, Math.max(0.4, autoScale));
+    currentScale = Math.round(autoScale * 100) / 100;
+    if (forceAuto) userAdjustedZoom = false;
+  }
+
+  a4.style.transform = `scale(${currentScale})`;
+  container.style.width = `${Math.round(baseWidth * currentScale)}px`;
+  container.style.height = `${Math.round((a4.offsetHeight || 1123) * currentScale + 20)}px`;
+
+  const zoomText = document.getElementById('zoomLevel');
+  if (zoomText) {
+    zoomText.textContent = `${Math.round(currentScale * 100)}%`;
+  }
+}
+
+function adjustZoom(delta) {
+  userAdjustedZoom = true;
+  currentScale = Math.min(1.3, Math.max(0.4, currentScale + delta));
+  currentScale = Math.round(currentScale * 100) / 100;
+  const a4 = document.getElementById('cvA4');
+  const container = document.getElementById('cvA4ScaleContainer');
+  if (a4 && container) {
+    a4.style.transform = `scale(${currentScale})`;
+    container.style.width = `${Math.round(794 * currentScale)}px`;
+    container.style.height = `${Math.round((a4.offsetHeight || 1123) * currentScale + 20)}px`;
+    const zoomText = document.getElementById('zoomLevel');
+    if (zoomText) zoomText.textContent = `${Math.round(currentScale * 100)}%`;
+  }
+}
+
+function resetZoom() {
+  userAdjustedZoom = false;
+  fitA4Preview(true);
+}
+
+window.addEventListener('resize', () => {
+  if (!userAdjustedZoom) {
+    fitA4Preview();
+  }
 });
 
 /* Avatar Upload via AJAX */
@@ -1162,5 +1294,7 @@ document.getElementById('btnExportPdf').addEventListener('click', function() {
 
 // Initial run
 renderPreview();
+setTimeout(fitA4Preview, 60);
+window.addEventListener('load', fitA4Preview);
 </script>
 @endsection
