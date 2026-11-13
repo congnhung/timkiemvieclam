@@ -69,7 +69,7 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   display: flex; align-items: center; justify-content: center;
   text-decoration: none; font-size: 14px; transition: all 0.15s;
 }
-.cvb-btn-back:hover { background: #f1f5f9; color: #1e293b; }
+.cvb-btn-back:hover { background: #f3e8ff; color: #4a0d8e; border-color: #4a0d8e; }
 
 /* Progress score */
 .cvb-score-wrap {
@@ -101,7 +101,7 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
   transition: all 0.15s; text-decoration: none; line-height: 1.4;
 }
-.cvb-ctrl-btn:hover { background: #f8fafc; border-color: #cbd5e1; color: #5e35b1; }
+.cvb-ctrl-btn:hover { background: #f3e8ff; border-color: #4a0d8e; color: #4a0d8e; }
 .cvb-ctrl-btn::after { font-size: 9px; margin-left: 2px; }
 .cvb-ctrl-btn i { font-size: 11px; }
 
