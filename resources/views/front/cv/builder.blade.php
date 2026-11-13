@@ -56,7 +56,7 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
 
 /* ---- Top bar ---- */
 .cvb-topbar {
-  position: sticky; top: 0; z-index: 1000;
+  position: sticky; top: 60px; z-index: 900;
   background: #fff;
   border-bottom: 1px solid #e2e8f0;
   padding: 10px 24px;
@@ -179,8 +179,8 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   background: #fff;
   border-right: 1px solid #e2e8f0;
   overflow-y: auto;
-  height: calc(100vh - 58px);
-  position: sticky; top: 58px;
+  height: calc(100vh - 118px);
+  position: sticky; top: 118px;
   padding: 24px 28px 80px;
 }
 .cvb-panel::-webkit-scrollbar { width: 5px; }
@@ -257,7 +257,7 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   overflow-y: auto; overflow-x: hidden;
   padding: 16px 16px 60px;
   display: flex; flex-direction: column; align-items: center;
-  height: calc(100vh - 58px);
+  height: calc(100vh - 118px);
   position: relative;
 }
 .cvb-preview-pane::-webkit-scrollbar { width: 6px; }

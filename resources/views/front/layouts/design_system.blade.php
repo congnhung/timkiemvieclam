@@ -207,16 +207,17 @@ html { scroll-behavior: smooth; }
    HEADER — Vieclam24h Deep Purple Theme (#4a0d8e)
    ================================================= */
 .tw-header {
-  position: sticky; top: 0; z-index: 1000;
+  position: sticky; top: 0; z-index: 2000 !important;
   background: #4a0d8e;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
-.tw-navbar { width: 100%; }
+.tw-navbar { width: 100%; position: relative; }
 .tw-nav-inner {
   display: flex; align-items: center; justify-content: space-between;
   height: 60px;
   max-width: 1320px; margin: 0 auto; padding: 0 var(--sp-6);
+  position: relative;
 }
 .tw-logo {
   display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0;
@@ -263,14 +264,36 @@ html { scroll-behavior: smooth; }
 
 /* Desktop hover opening for nav dropdowns */
 @media (min-width: 992px) {
-  .tw-nav-dropdown:hover > .dropdown-menu {
+  .tw-nav-dropdown:hover > .dropdown-menu,
+  .tw-user-dropdown:hover > .dropdown-menu {
     display: block;
     animation: twDropdownFade 0.15s ease;
   }
 }
 @keyframes twDropdownFade {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.tw-nav-dropdown .dropdown-menu,
+.tw-user-dropdown .dropdown-menu,
+.tw-dropdown-vieclam,
+.tw-dropdown-congcu,
+.tw-dropdown-user-card {
+  z-index: 2100 !important;
+  position: absolute !important;
+}
+
+/* Invisible bridge so mouse hover doesn't break between button and menu */
+.tw-nav-dropdown .dropdown-menu::before,
+.tw-user-dropdown .dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: transparent;
 }
 
 /* Dropdown Việc làm (Matching Image 2) */
@@ -280,7 +303,7 @@ html { scroll-behavior: smooth; }
   border: 1px solid #e2e8f0;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
   padding: 12px 10px;
-  margin-top: 8px;
+  margin-top: 6px !important;
   background: #ffffff;
 }
 .tw-dd-main-link {
@@ -305,7 +328,7 @@ html { scroll-behavior: smooth; }
   border: 1px solid #e2e8f0;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
   padding: 8px 6px;
-  margin-top: 8px;
+  margin-top: 6px !important;
   background: #ffffff;
 }
 .tw-dropdown-congcu .dropdown-item {

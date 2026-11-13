@@ -21,7 +21,7 @@
           {{-- 1. Việc làm ▾ (Matches Image 2) --}}
           <li class="nav-item dropdown tw-nav-dropdown">
             <a href="javascript:void(0);" class="tw-nav-link dropdown-toggle {{ request()->routeIs('jobs*') ? 'active' : '' }}" 
-               id="navDropdownJobs" data-bs-toggle="dropdown" aria-expanded="false">
+               id="navDropdownJobs" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
               Việc làm <i class="fa fa-caret-down ms-1"></i>
             </a>
             <div class="dropdown-menu shadow-lg tw-dropdown-vieclam" aria-labelledby="navDropdownJobs">
@@ -67,7 +67,7 @@
           {{-- 2. Công cụ ▾ (Shows Tạo CV) --}}
           <li class="nav-item dropdown tw-nav-dropdown">
             <a href="javascript:void(0);" class="tw-nav-link dropdown-toggle {{ request()->routeIs('cv.*') ? 'active' : '' }}" 
-               id="navDropdownTools" data-bs-toggle="dropdown" aria-expanded="false">
+               id="navDropdownTools" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
               Công cụ <i class="fa fa-caret-down ms-1"></i>
             </a>
             <div class="dropdown-menu shadow-lg tw-dropdown-congcu" aria-labelledby="navDropdownTools">
@@ -99,7 +99,7 @@
 
           {{-- 5. Miền Bắc ▾ --}}
           <li class="nav-item dropdown d-none d-xl-block tw-nav-dropdown">
-            <a href="javascript:void(0);" class="tw-nav-link dropdown-toggle" id="navDropdownLoc" data-bs-toggle="dropdown" aria-expanded="false">
+            <a href="javascript:void(0);" class="tw-nav-link dropdown-toggle" id="navDropdownLoc" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
               Miền Bắc <i class="fa fa-caret-down ms-1"></i>
             </a>
             <ul class="dropdown-menu shadow-sm" aria-labelledby="navDropdownLoc">
@@ -152,8 +152,8 @@
 
             {{-- User Profile Pill (Matches Image 3) --}}
             <div class="dropdown tw-user-dropdown">
-              <a href="javascript:void(0);" class="tw-user-pill dropdown-toggle"
-                data-bs-toggle="dropdown" aria-expanded="false">
+              <a href="javascript:void(0);" class="tw-user-pill dropdown-toggle" id="navDropdownUser"
+                data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                 <img src="{{ $userAvatar }}" alt="{{ $displayName }}" class="tw-user-pill-avatar">
                 <span class="tw-user-pill-name">{{ $displayName }}</span>
                 <i class="fa fa-caret-down tw-user-pill-caret"></i>
