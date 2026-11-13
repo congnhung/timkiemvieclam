@@ -4,13 +4,16 @@
   <meta charset="UTF-8">
   <title>{{ $resume->title ?? 'CV' }} — {{ $resume->fullname }}</title>
   <link rel="stylesheet" href="{{ asset('assets/user/css/font-awesome.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root { --t: {{ $resume->theme_color ?? '#00b14f' }}; }
+    :root { --t: {{ $resume->theme_color ?? '#0f2942' }}; }
     *, *::before, *::after { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
     body {
       margin: 0; padding: 0;
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Be Vietnam Pro', 'Segoe UI', Roboto, sans-serif;
       background: #475569;
       color: #1e293b;
       font-size: 13px;
@@ -49,9 +52,34 @@
     /* ---- SIDEBAR ---- */
     .cv-sb {
       width: 36%;
-      background: #f8fafc;
-      border-right: 1px solid #e2e8f0;
+      background: var(--t);
+      color: #fff;
       padding: 30px 20px;
+    }
+    .cv-sb .s-title {
+      color: #fff;
+      border-bottom: 2px solid rgba(255,255,255,0.3);
+    }
+    .cv-sb .contact {
+      color: #f1f5f9;
+    }
+    .cv-sb .contact i {
+      color: #38bdf8;
+    }
+    .cv-sb .skill-label {
+      color: #f1f5f9;
+    }
+    .cv-sb .skill-bar {
+      background: rgba(255,255,255,0.2);
+    }
+    .cv-sb .skill-fill {
+      background: #38bdf8;
+    }
+    .cv-sb .cert-name {
+      color: #fff;
+    }
+    .cv-sb .cert-sub {
+      color: #cbd5e1;
     }
 
     /* avatar */

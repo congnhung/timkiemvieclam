@@ -12,6 +12,205 @@ use Illuminate\Support\Str;
 class CvBuilderController extends Controller
 {
     /**
+     * Danh sách 12 mẫu CV chuẩn nhà tuyển dụng
+     */
+    public static function getTemplatesList()
+    {
+        return [
+            'modern_navy' => [
+                'id' => 'modern_navy',
+                'name' => 'Hiện Đại (Navy)',
+                'badge' => 'HOT',
+                'badge_color' => 'danger',
+                'category' => 'modern',
+                'category_name' => 'Hiện đại',
+                'tags' => ['Hiện đại', 'Chuyên nghiệp'],
+                'description' => 'Thiết kế cột bên màu xanh navy sang trọng, tạo cảm giác tin cậy và vững chắc.',
+                'primary_color' => '#0f2942',
+                'accent_color' => '#38bdf8',
+                'font' => 'Be Vietnam Pro',
+                'layout' => 'sidebar_left',
+            ],
+            'teal_mint' => [
+                'id' => 'teal_mint',
+                'name' => 'Thanh Lịch (Teal Mint)',
+                'badge' => 'MỚI',
+                'badge_color' => 'success',
+                'category' => 'elegant',
+                'category_name' => 'Thanh lịch',
+                'tags' => ['Thanh lịch', 'Đơn giản'],
+                'description' => 'Tông màu xanh ngọc dịu mắt, đường viền mềm mại, phù hợp mọi ngành nghề.',
+                'primary_color' => '#0d9488',
+                'accent_color' => '#5eead4',
+                'font' => 'Inter',
+                'layout' => 'header_banner',
+            ],
+            'executive_dark' => [
+                'id' => 'executive_dark',
+                'name' => 'Chuyên Nghiệp (Executive)',
+                'badge' => 'HOT',
+                'badge_color' => 'danger',
+                'category' => 'professional',
+                'category_name' => 'Chuyên nghiệp',
+                'tags' => ['Chuyên nghiệp', 'Quản lý'],
+                'description' => 'Bố cục chuẩn mực cho cấp Senior, Trưởng nhóm và Giám đốc với tone xám than quyền lực.',
+                'primary_color' => '#1e293b',
+                'accent_color' => '#f59e0b',
+                'font' => 'Roboto',
+                'layout' => 'sidebar_left',
+            ],
+            'minimalist_clean' => [
+                'id' => 'minimalist_clean',
+                'name' => 'Đơn Giản Tinh Tế',
+                'badge' => 'ƯA THÍCH',
+                'badge_color' => 'primary',
+                'category' => 'simple',
+                'category_name' => 'Đơn giản',
+                'tags' => ['Đơn giản', 'Chuẩn ATS'],
+                'description' => 'Thiết kế 1 cột tối giản phong cách Bắc Âu, tương thích 100% với hệ thống quét ATS.',
+                'primary_color' => '#2563eb',
+                'accent_color' => '#64748b',
+                'font' => 'Inter',
+                'layout' => 'single_column',
+            ],
+            'creative_coral' => [
+                'id' => 'creative_coral',
+                'name' => 'Sáng Tạo (Creative)',
+                'badge' => 'MỚI',
+                'badge_color' => 'warning',
+                'category' => 'creative',
+                'category_name' => 'Sáng tạo',
+                'tags' => ['Sáng tạo', 'Marketing'],
+                'description' => 'Điểm nhấn màu cam san hô rực rỡ, thích hợp cho Designer, Copywriter, Marketing.',
+                'primary_color' => '#ea580c',
+                'accent_color' => '#fdba74',
+                'font' => 'Montserrat',
+                'layout' => 'header_split',
+            ],
+            'tech_slate' => [
+                'id' => 'tech_slate',
+                'name' => 'IT & Lập Trình Viên',
+                'badge' => 'HOT',
+                'badge_color' => 'danger',
+                'category' => 'it',
+                'category_name' => 'IT & Công nghệ',
+                'tags' => ['IT & Tech', 'Lập trình'],
+                'description' => 'Bố cục dạng block kỹ năng công nghệ rõ ràng, làm nổi bật dự án GitHub và tech stack.',
+                'primary_color' => '#0284c7',
+                'accent_color' => '#38bdf8',
+                'font' => 'Roboto',
+                'layout' => 'sidebar_left',
+            ],
+            'classic_serif' => [
+                'id' => 'classic_serif',
+                'name' => 'Cổ Điển Sang Trọng',
+                'badge' => 'CHUẨN',
+                'badge_color' => 'secondary',
+                'category' => 'classic',
+                'category_name' => 'Cổ điển',
+                'tags' => ['Cổ điển', 'Học thuật'],
+                'description' => 'Kiểu chữ có chân truyền thống, lịch sự, rất được lòng khối Giáo dục, Pháp lý, Tài chính.',
+                'primary_color' => '#475569',
+                'accent_color' => '#94a3b8',
+                'font' => 'Georgia',
+                'layout' => 'header_split',
+            ],
+            'fresh_graduate' => [
+                'id' => 'fresh_graduate',
+                'name' => 'Sinh Viên & Mới Ra Trường',
+                'badge' => 'PHỔ BIẾN',
+                'badge_color' => 'info',
+                'category' => 'simple',
+                'category_name' => 'Đơn giản',
+                'tags' => ['Sinh viên', 'Mới tốt nghiệp'],
+                'description' => 'Tập trung nêu bật học vấn, hoạt động ngoại khóa, kỹ năng mềm và tiềm năng phát triển.',
+                'primary_color' => '#059669',
+                'accent_color' => '#34d399',
+                'font' => 'Be Vietnam Pro',
+                'layout' => 'sidebar_left',
+            ],
+            'royal_purple' => [
+                'id' => 'royal_purple',
+                'name' => 'Thời Thượng (Royal)',
+                'badge' => 'VIP',
+                'badge_color' => 'dark',
+                'category' => 'modern',
+                'category_name' => 'Hiện đại',
+                'tags' => ['Thời thượng', 'Cao cấp'],
+                'description' => 'Sắc tím quý phái phối cùng nền trắng cao cấp, tạo ấn tượng mạnh mẽ ngay từ 3 giây đầu.',
+                'primary_color' => '#7c3aed',
+                'accent_color' => '#c084fc',
+                'font' => 'Montserrat',
+                'layout' => 'header_banner',
+            ],
+            'emerald_startup' => [
+                'id' => 'emerald_startup',
+                'name' => 'Năng Động (Startup)',
+                'badge' => 'MỚI',
+                'badge_color' => 'success',
+                'category' => 'modern',
+                'category_name' => 'Hiện đại',
+                'tags' => ['Hiện đại', 'Startup'],
+                'description' => 'Màu xanh lục bảo tươi sáng, thể hiện tinh thần bứt phá và thích nghi cao.',
+                'primary_color' => '#00b14f',
+                'accent_color' => '#4ade80',
+                'font' => 'Be Vietnam Pro',
+                'layout' => 'sidebar_left',
+            ],
+            'burgundy_luxury' => [
+                'id' => 'burgundy_luxury',
+                'name' => 'Đẳng Cấp (Burgundy)',
+                'badge' => 'HOT',
+                'badge_color' => 'danger',
+                'category' => 'professional',
+                'category_name' => 'Chuyên nghiệp',
+                'tags' => ['Chuyên nghiệp', 'Tài chính'],
+                'description' => 'Tone đỏ đô trầm ấm, tinh tế, phù hợp cho ngành Bất động sản, Bảo hiểm, Ngân hàng.',
+                'primary_color' => '#881337',
+                'accent_color' => '#fb7185',
+                'font' => 'Roboto',
+                'layout' => 'header_split',
+            ],
+            'ats_standard' => [
+                'id' => 'ats_standard',
+                'name' => 'Chuẩn Quốc Tế (ATS 100%)',
+                'badge' => 'ATS CHUẨN',
+                'badge_color' => 'dark',
+                'category' => 'simple',
+                'category_name' => 'Đơn giản',
+                'tags' => ['Chuẩn ATS', 'Quốc tế'],
+                'description' => 'Không đồ họa phức tạp, định dạng bảng chuẩn mực, tỷ lệ quét đậu ATS lên đến 99%.',
+                'primary_color' => '#18181b',
+                'accent_color' => '#71717a',
+                'font' => 'Arial',
+                'layout' => 'single_column',
+            ],
+        ];
+    }
+
+    /**
+     * Màn hình danh sách tất cả mẫu CV (Gallery)
+     */
+    public function templates(Request $request)
+    {
+        $allTemplates = self::getTemplatesList();
+        $category = $request->get('category', 'all');
+
+        $templates = $allTemplates;
+        if ($category !== 'all') {
+            $templates = array_filter($allTemplates, function ($t) use ($category) {
+                return $t['category'] === $category;
+            });
+        }
+
+        return view('front.cv.templates', [
+            'templates' => $templates,
+            'allTemplates' => $allTemplates,
+            'currentCategory' => $category,
+        ]);
+    }
+
+    /**
      * Màn hình tạo và chỉnh sửa CV Online
      */
     public function index(Request $request)
@@ -27,22 +226,30 @@ class CvBuilderController extends Controller
             $resume = Resume::where('user_id', Auth::id())->orderBy('updated_at', 'desc')->first();
         }
 
+        $allTemplates = self::getTemplatesList();
+        $selectedTemplateKey = $request->get('template', $resume->template ?? 'modern_navy');
+        if (!isset($allTemplates[$selectedTemplateKey])) {
+            $selectedTemplateKey = 'modern_navy';
+        }
+        $selectedTemplate = $allTemplates[$selectedTemplateKey];
+
         // Dữ liệu mẫu chuẩn TopCV nếu chưa có dữ liệu
         $defaultData = [
             'title' => 'CV Ứng Tuyển Chuyên Nghiệp',
-            'fullname' => Auth::check() ? Auth::user()->fullname : 'NGUYỄN VĂN A',
+            'fullname' => Auth::check() ? (Auth::user()->fullname ?? Auth::user()->name) : 'NHUNG NGUYỄN CÔNG',
             'candidate_title' => 'LẬP TRÌNH VIÊN FULLSTACK / WEB DEVELOPER',
-            'email' => Auth::check() ? Auth::user()->email : 'nguyenvana@gmail.com',
+            'email' => Auth::check() ? Auth::user()->email : 'congnhung95@gmail.com',
             'phone' => Auth::check() && Auth::user()->mobile ? Auth::user()->mobile : '0987 654 321',
             'birthday' => '15/08/1998',
             'gender' => 'Nam',
-            'address' => 'Cầu Giấy, Hà Nội',
-            'website' => 'https://github.com/nguyenvana',
+            'address' => 'Trần Kim Xuyến, Yên Hòa, Cầu Giấy, Hà Nội',
+            'website' => 'https://github.com/congnhung',
             'avatar' => Auth::check() && Auth::user()->image 
                 ? asset('assets/user/profile_picture/thumb/' . Auth::user()->image) 
-                : asset('assets/user/images/avatar_default.png'),
-            'theme_color' => '#00b14f', // TopCV signature green
-            'template' => 'modern',
+                : asset('assets/user/images/avatar7.png'),
+            'theme_color' => $selectedTemplate['primary_color'] ?? '#0f2942',
+            'template' => $selectedTemplateKey,
+            'font' => $selectedTemplate['font'] ?? 'Be Vietnam Pro',
             'objective' => 'Với hơn 3 năm kinh nghiệm phát triển các ứng dụng web với Laravel, PHP và Vue.js. Mục tiêu trong 2 năm tới trở thành Technical Lead, đóng góp vào sự phát triển của các dự án quy mô lớn và tối ưu hiệu suất hệ thống cho doanh nghiệp.',
             'experience' => [
                 [
@@ -96,9 +303,18 @@ class CvBuilderController extends Controller
             ]
         ];
 
+        // Nếu người dùng chọn template cụ thể qua URL
+        if ($request->has('template') && isset($allTemplates[$request->template])) {
+            $defaultData['template'] = $request->template;
+            $defaultData['theme_color'] = $selectedTemplate['primary_color'];
+            $defaultData['font'] = $selectedTemplate['font'];
+        }
+
         return view('front.cv.builder', [
             'resume' => $resume,
             'defaultData' => $defaultData,
+            'allTemplates' => $allTemplates,
+            'selectedTemplate' => $selectedTemplate,
         ]);
     }
 

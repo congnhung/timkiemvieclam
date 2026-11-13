@@ -42,6 +42,7 @@ Route::post('/apply-job', [JobsController::class, 'applyJob'])->name('applyJob')
 Route::post('/save-job', [JobsController::class, 'saveJob'])->name('saveJob');
 Route::get('/download-cv/{cvPath}', [JobsController::class, 'downloadCv'])->name('download-cv');
 Route::get('/view-cv/{cvPath}', [JobsController::class, 'viewCv'])->name('view-cv');
+Route::get('/cv-templates', [CvBuilderController::class, 'templates'])->name('cv.templates');
 Route::get('/cv-builder', [CvBuilderController::class, 'index'])->name('cv.builder');
 Route::get('/cv-preview/{id}', [CvBuilderController::class, 'preview'])->name('cv.preview');
 Route::get('/cv-print/{id}', [CvBuilderController::class, 'printPdf'])->name('cv.print');

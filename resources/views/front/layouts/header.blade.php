@@ -13,7 +13,7 @@
         <ul class="tw-nav-links">
           <li><a href="{{ route('home') }}" class="tw-nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Trang chủ</a></li>
           <li><a href="{{ route('jobs') }}" class="tw-nav-link {{ request()->routeIs('jobs') ? 'active' : '' }}">Tìm việc</a></li>
-          <li><a href="{{ route('cv.builder') }}" class="tw-nav-link tw-nav-cv {{ request()->routeIs('cv.*') ? 'active' : '' }}">Tạo CV</a></li>
+          <li><a href="{{ route('cv.templates') }}" class="tw-nav-link tw-nav-cv {{ request()->routeIs('cv.*') ? 'active' : '' }}">Tạo CV</a></li>
           @if(Auth::check() && Auth::user()->role === 'user')
             <li><a href="{{ route('account.notification') }}" class="tw-nav-link {{ request()->routeIs('account.notification') ? 'active' : '' }}">Thông báo</a></li>
           @endif
