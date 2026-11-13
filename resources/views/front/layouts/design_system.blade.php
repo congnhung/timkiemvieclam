@@ -204,87 +204,210 @@ h1, h2, h3, h4, h5, h6, b, strong, th, .fw-bold, .font-weight-bold {
 html { scroll-behavior: smooth; }
 
 /* ===================================================
-   HEADER — GitHub Primer style: clean white, subtle border
+   HEADER — Vieclam24h Deep Purple Theme (#4a0d8e)
    ================================================= */
 .tw-header {
   position: sticky; top: 0; z-index: 1000;
-  background: var(--c-white);
-  border-bottom: 1px solid var(--c-border);
+  background: #4a0d8e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 .tw-navbar { width: 100%; }
 .tw-nav-inner {
-  display: flex; align-items: center;
-  height: 56px;
-  max-width: 1200px; margin: 0 auto; padding: 0 var(--sp-6);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+  max-width: 1320px; margin: 0 auto; padding: 0 var(--sp-6);
 }
-.tw-logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
-.tw-logo-img { height: 34px; width: auto; object-fit: contain; }
+.tw-logo {
+  display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0;
+}
+.tw-logo-img {
+  height: 36px; width: 36px; object-fit: cover; border-radius: 8px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+.tw-logo-text {
+  color: #fff; font-weight: 800; font-size: 19px; display: flex; flex-direction: column;
+  line-height: 1; letter-spacing: -0.5px;
+}
+.tw-logo-text small {
+  font-size: 8px; font-weight: 700; color: #fde047; letter-spacing: 0.8px; margin-top: 2px;
+}
 
 .tw-hamburger {
   display: none; flex-direction: column; justify-content: center; gap: 5px;
   background: none; border: none; cursor: pointer; padding: var(--sp-2); margin-left: auto;
 }
-.tw-hamburger span { display: block; width: 20px; height: 2px; background: var(--c-gray-700); border-radius: 2px; }
+.tw-hamburger span { display: block; width: 20px; height: 2px; background: #fff; border-radius: 2px; }
 
 .tw-nav-collapse { display: flex !important; align-items: center; flex: 1; }
 .tw-nav-links {
-  display: flex; align-items: center; gap: 0;
-  list-style: none; margin: 0 0 0 var(--sp-5); padding: 0; flex: 1;
+  display: flex; align-items: center; gap: 4px;
+  list-style: none; margin: 0 0 0 24px; padding: 0; flex: 1;
 }
 .tw-nav-link {
-  display: inline-block;
-  padding: var(--sp-2) var(--sp-3); border-radius: var(--r-md);
-  font-size: var(--text-base); font-weight: 500; color: var(--c-gray-600);
-  text-decoration: none; transition: color 0.15s, background 0.15s; white-space: nowrap;
-}
-.tw-nav-link:hover { color: var(--c-brand); background: var(--c-brand-light); }
-.tw-nav-link.active { color: var(--c-brand); font-weight: 600; }
-.tw-nav-cv { color: var(--c-brand); font-weight: 600; }
-
-.tw-nav-actions { display: flex; align-items: center; gap: var(--sp-2); flex-shrink: 0; }
-
-/* Buttons — Primer style */
-.tw-btn {
-  display: inline-block;
-  padding: 6px var(--sp-4); border-radius: var(--r-md);
-  font-size: var(--text-base); font-weight: 500; font-family: var(--font);
+  display: inline-flex; align-items: center;
+  padding: 8px 12px; border-radius: 8px;
+  font-size: 14px; font-weight: 600; color: #ffffff !important;
   text-decoration: none; transition: all 0.15s; white-space: nowrap;
-  border: 1px solid var(--c-border); cursor: pointer; line-height: 20px;
 }
-.tw-btn-outline { color: var(--c-gray-700); background: var(--c-white); }
-.tw-btn-outline:hover { background: var(--c-gray-50); border-color: var(--c-gray-300); color: var(--c-gray-900); }
-.tw-btn-primary { background: var(--c-brand); color: var(--c-white); border-color: var(--c-brand-dark); }
-.tw-btn-primary:hover { background: var(--c-brand-dark); color: var(--c-white); border-color: var(--c-brand-dark); }
+.tw-nav-link:hover, .tw-nav-dropdown:hover > .tw-nav-link {
+  background: rgba(255, 255, 255, 0.14); color: #ffffff !important;
+}
+.tw-nav-link.active {
+  background: rgba(255, 255, 255, 0.2); color: #ffffff !important;
+}
+.tw-nav-dropdown .dropdown-toggle::after {
+  display: none;
+}
+.tw-nav-dropdown { position: relative; }
 
-/* User Profile Badge in Header */
-.tw-user-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 12px 4px 5px;
-  background: var(--c-white);
-  border: 1px solid var(--c-border);
-  border-radius: 999px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+/* Desktop hover opening for nav dropdowns */
+@media (min-width: 992px) {
+  .tw-nav-dropdown:hover > .dropdown-menu {
+    display: block;
+    animation: twDropdownFade 0.15s ease;
+  }
 }
-.tw-user-badge:hover {
-  background: var(--c-gray-50);
-  border-color: var(--c-brand);
-  box-shadow: 0 2px 8px rgba(0,177,79,0.15);
+@keyframes twDropdownFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.tw-user-badge::after {
-  margin-left: 6px;
-  vertical-align: middle;
+
+/* Dropdown Việc làm (Matching Image 2) */
+.tw-dropdown-vieclam {
+  min-width: 290px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  padding: 12px 10px;
+  margin-top: 8px;
+  background: #ffffff;
 }
-.tw-user-dropdown .dropdown-menu {
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  border: 1px solid var(--c-gray-200);
+.tw-dd-main-link {
+  font-size: 14px; font-weight: 700; color: #1e293b;
+  padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px;
 }
-.tw-user-dropdown .dropdown-item:hover {
-  background-color: var(--c-brand-light);
-  color: var(--c-brand-dark);
+.tw-dd-main-link:hover { background: #f1f5f9; color: #4a0d8e; }
+.tw-dd-group-header {
+  font-size: 13.5px; font-weight: 700; color: #1e293b;
+  padding: 6px 12px; display: flex; align-items: center; justify-content: space-between;
+}
+.tw-dd-sublist { padding-left: 8px; }
+.tw-dd-subitem {
+  font-size: 13px; color: #475569; padding: 6px 12px; border-radius: 6px;
+}
+.tw-dd-subitem:hover { background: #f8fafc; color: #4a0d8e; font-weight: 600; }
+
+/* Dropdown Công cụ */
+.tw-dropdown-congcu {
+  min-width: 230px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  padding: 8px 6px;
+  margin-top: 8px;
+  background: #ffffff;
+}
+.tw-dropdown-congcu .dropdown-item {
+  font-size: 13.5px; font-weight: 500; color: #334155;
+  padding: 8px 12px; border-radius: 8px;
+}
+.tw-dropdown-congcu .dropdown-item:hover {
+  background: #f1f5f9; color: #4a0d8e;
+}
+
+/* Nav Actions on the right */
+.tw-nav-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+/* Bell icon (Thông báo) */
+.tw-nav-bell {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #ffffff; background: rgba(255, 255, 255, 0.12);
+  text-decoration: none; font-size: 16px; transition: all 0.15s; position: relative;
+}
+.tw-nav-bell:hover { background: rgba(255, 255, 255, 0.22); color: #fff; }
+
+/* User Profile Pill & Dropdown (Matching Image 3) */
+.tw-user-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 3px 12px 3px 4px; background: #ffffff;
+  color: #1e293b !important; border-radius: 999px;
+  text-decoration: none; font-weight: 600; font-size: 13px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12); transition: all 0.15s;
+}
+.tw-user-pill:hover { background: #f8fafc; transform: translateY(-1px); }
+.tw-user-pill-avatar {
+  width: 32px; height: 32px; border-radius: 50%; object-fit: cover;
+  border: 1.5px solid #e2e8f0;
+}
+.tw-user-pill-name {
+  max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tw-user-pill-caret {
+  font-size: 10px; color: #00b14f; margin-left: 2px;
+}
+.tw-dropdown-user-card {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 6px 0;
+  margin-top: 8px;
+}
+.tw-dropdown-user-card .dropdown-item {
+  font-size: 13.5px; color: #334155; padding: 8px 18px;
+}
+.tw-dropdown-user-card .dropdown-item:hover {
+  background: #f1f5f9; color: #4a0d8e;
+}
+
+/* Button DÀNH CHO Nhà Tuyển Dụng */
+.tw-btn-ntd {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: #ffffff; text-decoration: none; padding: 4px 10px;
+  border-radius: 8px; transition: all 0.15s; font-size: 13px;
+}
+.tw-btn-ntd:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+.tw-btn-ntd i { font-size: 20px; color: #38bdf8; }
+.tw-ntd-text { display: flex; flex-direction: column; line-height: 1.15; }
+.tw-ntd-text small { font-size: 9px; opacity: 0.8; text-transform: uppercase; font-weight: 600; }
+.tw-ntd-text span { font-size: 12px; font-weight: 700; white-space: nowrap; }
+
+/* Guest buttons */
+.tw-btn-guest-login {
+  color: #fff; text-decoration: none; font-size: 13.5px; font-weight: 600;
+  padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.4);
+  transition: all 0.15s;
+}
+.tw-btn-guest-login:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.tw-btn-guest-reg {
+  background: #fff; color: #4a0d8e !important; text-decoration: none;
+  font-size: 13.5px; font-weight: 700; padding: 6px 14px; border-radius: 8px;
+  transition: all 0.15s;
+}
+.tw-btn-guest-reg:hover { background: #f3e8ff; }
+
+/* Language Flag */
+.tw-lang-pill {
+  display: inline-flex; align-items: center; padding: 4px 6px;
+  background: rgba(255, 255, 255, 0.12); border-radius: 6px; cursor: pointer;
+}
+.tw-flag-img { width: 20px; height: 14px; border-radius: 2px; }
+
+/* Mobile navigation collapse */
+@media (max-width: 991px) {
+  .tw-hamburger { display: flex; }
+  .tw-nav-collapse {
+    display: none !important;
+    position: absolute; top: 60px; left: 0; right: 0;
+    background: #4a0d8e; padding: 16px 20px;
+    flex-direction: column; align-items: flex-start;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  }
+  .tw-nav-collapse.open { display: flex !important; }
+  .tw-nav-links { flex-direction: column; margin: 0; width: 100%; gap: 6px; }
+  .tw-nav-link { width: 100%; }
+  .tw-nav-actions { margin-top: 14px; width: 100%; flex-wrap: wrap; }
 }
 
 /* Hero Carousel Banners */
