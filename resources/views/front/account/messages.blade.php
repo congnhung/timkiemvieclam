@@ -69,6 +69,23 @@
     overscroll-behavior: contain !important;
     -webkit-overflow-scrolling: touch;
   }
+
+  /* 9. Nút xóa tin nhắn khi hover */
+  .tw-msg-item .btn-delete-single-msg {
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.15s ease;
+    line-height: 1;
+    padding: 4px !important;
+    font-size: 12px;
+    text-decoration: none;
+  }
+  .tw-msg-item:hover .btn-delete-single-msg {
+    opacity: 0.6;
+  }
+  .tw-msg-item .btn-delete-single-msg:hover {
+    opacity: 1 !important;
+    transform: scale(1.15);
+  }
 </style>
 
 <section class="tw-messages-section">
@@ -130,12 +147,21 @@
                       @endif
 
                       <div class="d-flex justify-content-between align-items-center">
-                        <span class="text-muted text-truncate small d-inline-block" style="max-width: 190px; font-size: 12px;">
+                        <span class="text-muted text-truncate small d-inline-block" style="max-width: 170px; font-size: 12px;">
                           {{ $conv->latestMessage ? $conv->latestMessage->message : 'Chưa có tin nhắn' }}
                         </span>
-                        @if ($conv->unread_count > 0)
-                          <span class="badge rounded-pill bg-danger" style="font-size: 11px;">{{ $conv->unread_count }}</span>
-                        @endif
+                        <div class="d-flex align-items-center gap-1">
+                          @if ($conv->unread_count > 0)
+                            <span class="badge rounded-pill bg-danger" style="font-size: 11px;">{{ $conv->unread_count }}</span>
+                          @endif
+                          <button type="button" class="btn btn-sm text-muted p-0 btn-delete-conv-item" 
+                                  data-id="{{ $conv->id }}" title="Xóa cuộc trò chuyện này"
+                                  style="width: 24px; height: 24px; line-height: 1; opacity: 0.5; transition: all 0.15s; background: none; border: none;"
+                                  onmouseover="this.style.opacity='1'; this.style.color='#dc3545';" 
+                                  onmouseout="this.style.opacity='0.5'; this.style.color='#6c757d';">
+                            <i class="fa fa-trash" style="font-size: 12px;"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </a>
@@ -180,10 +206,16 @@
                 </div>
               </div>
 
-              <div>
+              <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-light text-success border">
                   <i class="fa fa-circle text-success me-1" style="font-size: 8px;"></i>Trực tuyến
                 </span>
+                <button type="button" class="btn btn-sm btn-outline-danger btn-delete-conversation d-flex align-items-center gap-1" 
+                        data-id="{{ $activeConversation->id }}" title="Xóa toàn bộ cuộc trò chuyện này"
+                        style="font-size: 12.5px; padding: 4px 10px; border-radius: 6px;">
+                  <i class="fa fa-trash"></i>
+                  <span class="d-none d-sm-inline">Xóa hội thoại</span>
+                </button>
               </div>
             </div>
 
@@ -194,10 +226,16 @@
                 @php
                   $isMe = ($msg->sender_id == Auth::id());
                 @endphp
-                <div style="display: flex; flex-shrink: 0; width: 100%; align-items: flex-end; justify-content: {{ $isMe ? 'flex-end' : 'flex-start' }}; gap: 8px;" data-msg-id="{{ $msg->id }}">
+                <div class="tw-msg-item" style="display: flex; flex-shrink: 0; width: 100%; align-items: flex-end; justify-content: {{ $isMe ? 'flex-end' : 'flex-start' }}; gap: 6px;" data-msg-id="{{ $msg->id }}">
                   @if (!$isMe)
                     <img src="{{ !empty($msg->sender->image) ? asset('assets/user/profile_picture/thumb/'.$msg->sender->image) : asset('assets/user/images/avatar7.png') }}" 
                          alt="" class="rounded-circle border flex-shrink-0" style="width: 30px; height: 30px; object-fit: cover;">
+                  @endif
+
+                  @if ($isMe)
+                    <button type="button" class="btn-delete-single-msg btn btn-link text-muted p-0" data-id="{{ $msg->id }}" title="Xóa tin nhắn này">
+                      <i class="fa fa-trash text-danger"></i>
+                    </button>
                   @endif
 
                   <div style="max-width: 65%; padding: 9px 13px; border-radius: 14px; word-break: break-word; font-size: 13.5px; line-height: 1.45; display: inline-block;
@@ -207,6 +245,12 @@
                       {{ $msg->created_at->format('H:i - d/m/Y') }}
                     </small>
                   </div>
+
+                  @if (!$isMe)
+                    <button type="button" class="btn-delete-single-msg btn btn-link text-muted p-0" data-id="{{ $msg->id }}" title="Xóa tin nhắn này">
+                      <i class="fa fa-trash text-danger"></i>
+                    </button>
+                  @endif
                 </div>
               @empty
                 <div class="text-center text-muted py-5 my-auto" id="emptyChatNotice">
@@ -247,6 +291,86 @@
 @endsection
 
 @section('customJs')
+<script>
+$(document).ready(function() {
+  // Xóa cuộc trò chuyện
+  $(document).on('click', '.btn-delete-conversation, .btn-delete-conv-item', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var convId = $(this).data('id');
+    if (!convId) return;
+
+    if (!confirm('Bạn có chắc chắn muốn xóa cuộc trò chuyện này? Toàn bộ tin nhắn trao đổi sẽ bị xóa vĩnh viễn.')) {
+      return;
+    }
+
+    var $btn = $(this);
+    $btn.prop('disabled', true);
+
+    $.ajax({
+      url: '/account/chat/conversation/delete/' + convId,
+      type: 'POST',
+      data: {
+        _token: '{{ csrf_token() }}'
+      },
+      success: function(res) {
+        if (res.status) {
+          if (typeof toastr !== 'undefined') {
+            toastr.success(res.message);
+          } else {
+            alert(res.message);
+          }
+          setTimeout(function() {
+            window.location.href = "{{ route('account.messages') }}";
+          }, 350);
+        }
+      },
+      error: function(xhr) {
+        $btn.prop('disabled', false);
+        var msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Không thể xóa cuộc trò chuyện.';
+        if (typeof toastr !== 'undefined') toastr.error(msg); else alert(msg);
+      }
+    });
+  });
+
+  // Xóa từng tin nhắn
+  $(document).on('click', '.btn-delete-single-msg', function(e) {
+    e.preventDefault();
+    var msgId = $(this).data('id');
+    if (!msgId) return;
+
+    if (!confirm('Bạn có muốn xóa tin nhắn này?')) {
+      return;
+    }
+
+    var $msgRow = $(this).closest('[data-msg-id]');
+
+    $.ajax({
+      url: '/account/chat/message/delete/' + msgId,
+      type: 'POST',
+      data: {
+        _token: '{{ csrf_token() }}'
+      },
+      success: function(res) {
+        if (res.status) {
+          $msgRow.fadeOut(200, function() {
+            $(this).remove();
+            if ($('#fullChatMessages').find('[data-msg-id]').length === 0) {
+              $('#fullChatMessages').html('<div class="text-center text-muted py-5 my-auto" id="emptyChatNotice"><i class="fa fa-paper-plane-o fa-2x mb-2" style="opacity: 0.4;"></i><p class="small mb-0">Chưa có tin nhắn nào.<br>Hãy bắt đầu cuộc trò chuyện!</p></div>');
+            }
+          });
+          if (typeof toastr !== 'undefined') toastr.success(res.message);
+        }
+      },
+      error: function(xhr) {
+        var msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Không thể xóa tin nhắn.';
+        if (typeof toastr !== 'undefined') toastr.error(msg); else alert(msg);
+      }
+    });
+  });
+});
+</script>
+
 @if ($activeConversation)
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 <script>
@@ -312,14 +436,22 @@ $(document).ready(function() {
       : 'background:white;color:#1e293b;border:1px solid #e2e8f0;border-bottom-left-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.06);';
     var timeColor = isMe ? 'color:rgba(255,255,255,0.85);' : 'color:#94a3b8;';
 
-    var html = '<div style="display:flex;flex-shrink:0;width:100%;align-items:flex-end;justify-content:' + flexDir + ';gap:8px;" data-msg-id="' + msg.id + '">';
+    var delBtn = '<button type="button" class="btn-delete-single-msg btn btn-link text-muted p-0" data-id="' + msg.id + '" title="Xóa tin nhắn này"><i class="fa fa-trash text-danger"></i></button>';
+
+    var html = '<div class="tw-msg-item" style="display:flex;flex-shrink:0;width:100%;align-items:flex-end;justify-content:' + flexDir + ';gap:6px;" data-msg-id="' + msg.id + '">';
     if (!isMe) {
       html += '<img src="' + (msg.sender_avatar || '/assets/user/images/avatar7.png') + '" class="rounded-circle border flex-shrink-0" style="width:30px;height:30px;object-fit:cover;">';
+    } else {
+      html += delBtn;
     }
     html += '<div style="max-width:65%;padding:9px 13px;border-radius:14px;word-break:break-word;font-size:13.5px;line-height:1.45;display:inline-block;' + bubbleStyle + '">'
           + '<div>' + safeText + '</div>'
           + '<small style="display:block;margin-top:3px;text-align:right;font-size:10px;opacity:0.75;' + timeColor + '">' + (msg.created_at || 'Vừa xong') + '</small>'
-          + '</div></div>';
+          + '</div>';
+    if (!isMe) {
+      html += delBtn;
+    }
+    html += '</div>';
 
     $('#fullChatMessages').append(html);
     scrollFullChat();

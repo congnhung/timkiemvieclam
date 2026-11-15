@@ -247,7 +247,7 @@
 /* Micro CV: Left Sidebar style */
 .cvt-ms-sidebar {
   width: 35%;
-  background: var(--mc-bg, #0f2942);
+  background: var(--mc-bg, #00b14f);
   padding: 8px 6px;
   display: flex;
   flex-direction: column;
@@ -272,7 +272,7 @@
 .cvt-ms-line-accent {
   height: 3px;
   border-radius: 2px;
-  background: var(--mc-accent, #38bdf8);
+  background: var(--mc-accent, #4ade80);
   width: 60%;
   margin-bottom: 4px;
 }
@@ -286,7 +286,7 @@
 .cvt-ms-title {
   height: 6px;
   width: 75%;
-  background: var(--mc-bg, #0f2942);
+  background: var(--mc-bg, #00b14f);
   border-radius: 2px;
   margin-bottom: 1px;
 }
@@ -546,7 +546,7 @@
         {{-- 4 Columns Grid --}}
         <div class="cvt-grid">
           @foreach($templates as $key => $tpl)
-            <div class="cvt-card">
+            <div class="cvt-card" onclick="window.location.href='{{ route('cv.builder', ['template' => $key]) }}'" style="cursor: pointer;" title="Chọn mẫu {{ $tpl['name'] }}">
               {{-- Mockup Preview --}}
               <div class="cvt-mockup">
                 {{-- Badge --}}

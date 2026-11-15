@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Mail\ResetPasswordEmail;
 use App\Notifications\NewJobNotification;
+use App\Notifications\NewEmployerNotification;
+use App\Services\GeminiService;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Str;
@@ -32,50 +34,143 @@ class AccountController extends Controller
     return view('front.account.registration_2');
   }
 
+  public function employerRegistration()
+  {
+    return view('front.account.registration_2', ['defaultRole' => 'employer']);
+  }
+
   public function processRegistration(Request $request)
   {
-    $request->merge([
-      'name' => preg_replace('/\s+/', ' ', trim($request->input('name'))),
-    ]);
+    $role = $request->input('role', 'user');
 
-    $messages = [
-      'name.required' => 'Trường họ và tên không được để trống.',
-      'name.min' => 'Tên người dùng phải chứa ít nhất 6 ký tự.',
-      'name.max' => 'Tên người dùng chỉ chứa tối đa 18 ký tự.',
-      'name.regex' => 'Tên người dùng không hợp lệ.',
-      'email.required' => 'Trường email không được để trống.',
-      'email.email' => 'Email không hợp lệ.',
-      'email.unique' => 'Email này đã được đăng ký.',
-      'password.required' => 'Trường mật khẩu không được để trống.',
-      'password.regex' => 'Mật khẩu phải chứa ít nhất 6 ký tự, có ít nhất 1 chữ cái in hoa, 1 số, và 1 ký tự đặc biệt.',
-      'confirm_password.same' => 'Mật khẩu xác nhận không khớp.',
-      'confirm_password.required' => 'Trường xác nhận mật khẩu không được để trống.',
-    ];
+    if ($role === 'employer') {
+      $request->merge([
+        'name' => preg_replace('/\s+/', ' ', trim($request->input('name', ''))),
+        'company_name' => preg_replace('/\s+/', ' ', trim($request->input('company_name', ''))),
+        'location_detail' => preg_replace('/\s+/', ' ', trim($request->input('location_detail', ''))),
+      ]);
 
-    $validator = Validator::make($request->all(), [
-      'name' => 'required|min:6|max:18|regex:/^(?!\s)(?!.*\s{2,})(?<!\s)/',
-      'email' => 'required|email|unique:users,email',
-      'password' => [
-        'required',
-        'regex:/^(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/'
-      ],
-      'confirm_password' => 'required|same:password',
-    ], $messages);
+      $messages = [
+        'company_name.required' => 'Vui lòng nhập tên công ty / doanh nghiệp.',
+        'company_name.min' => 'Tên công ty phải có ít nhất 3 ký tự.',
+        'company_name.max' => 'Tên công ty không được vượt quá 150 ký tự.',
+        'mobile.required' => 'Vui lòng nhập số điện thoại liên hệ.',
+        'mobile.regex' => 'Số điện thoại không hợp lệ, vui lòng nhập đúng 10 chữ số.',
+        'location_detail.required' => 'Vui lòng nhập địa chỉ trụ sở công ty.',
+        'location_detail.min' => 'Địa chỉ phải có ít nhất 3 ký tự.',
+        'name.required' => 'Trường họ và tên người đại diện không được để trống.',
+        'name.min' => 'Họ và tên phải có ít nhất 2 ký tự.',
+        'name.max' => 'Họ và tên không được vượt quá 100 ký tự.',
+        'email.required' => 'Trường email không được để trống.',
+        'email.email' => 'Email không hợp lệ.',
+        'email.unique' => 'Email này đã được đăng ký, vui lòng dùng email khác.',
+        'password.required' => 'Trường mật khẩu không được để trống.',
+        'password.regex' => 'Mật khẩu phải chứa ít nhất 6 ký tự, có ít nhất 1 chữ cái in hoa, 1 số, và 1 ký tự đặc biệt.',
+        'confirm_password.same' => 'Mật khẩu xác nhận không khớp.',
+        'confirm_password.required' => 'Trường xác nhận mật khẩu không được để trống.',
+      ];
+
+      $rules = [
+        'company_name' => 'required|min:3|max:150',
+        'mobile' => ['required', 'regex:/^([0-9]{10})$/'],
+        'location_detail' => 'required|min:3|max:255',
+        'company_website' => 'nullable|max:255',
+        'name' => 'required|min:2|max:100',
+        'email' => 'required|email|unique:users,email',
+        'password' => [
+          'required',
+          'regex:/^(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/'
+        ],
+        'confirm_password' => 'required|same:password',
+      ];
+    } else {
+      $request->merge([
+        'name' => preg_replace('/\s+/', ' ', trim($request->input('name', ''))),
+      ]);
+
+      $messages = [
+        'name.required' => 'Trường họ và tên không được để trống.',
+        'name.min' => 'Họ và tên phải chứa ít nhất 2 ký tự.',
+        'name.max' => 'Họ và tên không được quá 60 ký tự.',
+        'email.required' => 'Trường email không được để trống.',
+        'email.email' => 'Email không hợp lệ.',
+        'email.unique' => 'Email này đã được đăng ký.',
+        'password.required' => 'Trường mật khẩu không được để trống.',
+        'password.regex' => 'Mật khẩu phải chứa ít nhất 6 ký tự, có ít nhất 1 chữ cái in hoa, 1 số, và 1 ký tự đặc biệt.',
+        'confirm_password.same' => 'Mật khẩu xác nhận không khớp.',
+        'confirm_password.required' => 'Trường xác nhận mật khẩu không được để trống.',
+      ];
+
+      $rules = [
+        'name' => 'required|min:2|max:60',
+        'email' => 'required|email|unique:users,email',
+        'password' => [
+          'required',
+          'regex:/^(?!.*\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/'
+        ],
+        'confirm_password' => 'required|same:password',
+      ];
+    }
+
+    $validator = Validator::make($request->all(), $rules, $messages);
 
     if ($validator->passes()) {
       $user = new User();
       $user->fullname = $request->name;
       $user->email = $request->email;
       $user->password = Hash::make($request->password);
-      $user->role = $request->input('role', 'user');
-      $user->save();
+      $user->role = $role;
 
-      session()->flash('toastr', ['success' => 'Đăng ký thành công']);
+      if ($role === 'employer') {
+        // Lưu các thông tin riêng của công ty
+        $user->company_name = trim($request->company_name);
+        $user->mobile = trim($request->mobile);
+        $user->location_detail = trim($request->location_detail);
+        $user->company_website = !empty($request->company_website) ? trim($request->company_website) : null;
+        $user->status = 0; // 0 = Chờ duyệt
+        $user->save();
 
-      return response()->json([
-        'status' => true,
-        'errors' => []
-      ]);
+        // Gửi thông báo cho toàn bộ Admin về NTD mới đăng ký
+        try {
+          $adminUsers = User::where('role', 'admin')->get();
+          foreach ($adminUsers as $adminUser) {
+            $adminUser->notify(new NewEmployerNotification($user));
+          }
+        } catch (\Throwable $e) {
+          Log::error('Lỗi gửi NewEmployerNotification cho Admin: ' . $e->getMessage());
+        }
+
+        session()->flash('warning', 'Đăng ký tài khoản Nhà tuyển dụng thành công! Tài khoản đang chờ Quản trị viên xem xét và phê duyệt trước khi có thể đăng nhập.');
+        session()->flash('toastr', ['warning' => 'Tài khoản Nhà tuyển dụng đang chờ Quản trị viên xét duyệt!']);
+
+        return response()->json([
+          'status' => true,
+          'is_employer' => true,
+          'data' => [
+            'company_name' => $user->company_name,
+            'fullname' => $user->fullname,
+            'email' => $user->email,
+            'mobile' => $user->mobile,
+            'location_detail' => $user->location_detail,
+            'company_website' => $user->company_website,
+          ],
+          'message' => 'Đăng ký tài khoản Nhà tuyển dụng thành công! Tài khoản của bạn đang chờ Quản trị viên xem xét, phê duyệt trước khi có thể đăng nhập.',
+          'errors' => []
+        ]);
+      } else {
+        // Người tìm việc: kích hoạt ngay
+        $user->status = 1;
+        $user->save();
+
+        session()->flash('toastr', ['success' => 'Đăng ký tài khoản thành công!']);
+
+        return response()->json([
+          'status' => true,
+          'is_employer' => false,
+          'message' => 'Đăng ký tài khoản thành công!',
+          'errors' => []
+        ]);
+      }
     } else {
       return response()->json([
         'status' => false,
@@ -103,18 +198,36 @@ class AccountController extends Controller
     ], $messages);
 
     if ($validator->passes()) {
-      if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-        $user = Auth::user();
+      $user = User::where('email', $request->email)->first();
+
+      if ($user && Hash::check($request->password, $user->password)) {
+        // 1. Kiểm tra nếu là Nhà tuyển dụng và đang chờ duyệt (status = 0)
+        if ($user->role === 'employer' && (int)$user->status === 0) {
+          session()->flash('warning', 'Tài khoản Nhà tuyển dụng của bạn đang chờ Quản trị viên xem xét và phê duyệt. Vui lòng quay lại sau!');
+          session()->flash('toastr', ['warning' => 'Tài khoản đang chờ Quản trị viên xem xét!']);
+          return redirect()->route('account.login')->withInput($request->only('email'));
+        }
+
+        // 2. Kiểm tra nếu tài khoản bị khóa (status = 2)
+        if ((int)$user->status === 2) {
+          session()->flash('error', 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Quản trị viên để được hỗ trợ.');
+          session()->flash('toastr', ['error' => 'Tài khoản của bạn đã bị khóa!']);
+          return redirect()->route('account.login')->withInput($request->only('email'));
+        }
+
+        // 3. Đăng nhập thành công
+        Auth::login($user, $request->has('remember'));
+
         if ($user->role === 'admin') {
-          // Nếu là admin, chuyển hướng đến trang admin
           return redirect()->route('admin.home');
-        } else
-          session()->flash('toastr', ['success' => 'Chào mừng bạn đến với website tìm kiếm việc làm']);
-        // toastr()->success('Chào mừng bạn đến với website tìm kiếm việc làm');
-        return redirect()->route('account.profile');
+        } else {
+          session()->flash('toastr', ['success' => 'Chào mừng bạn đến với website tìm kiếm việc làm TopWork']);
+          return redirect()->route('account.profile');
+        }
       } else {
+        session()->flash('error', 'Email hoặc mật khẩu không chính xác.');
         session()->flash('toastr', ['error' => 'Email hoặc mật khẩu không chính xác']);
-        return redirect()->route('account.login');
+        return redirect()->route('account.login')->withInput($request->only('email'));
       }
     } else {
       return redirect()->route('account.login')
@@ -334,6 +447,39 @@ class AccountController extends Controller
     ]);
   }
 
+  /**
+   * Tạo mô tả công việc (JD) tự động bằng AI (Google Gemini + Fallback Engine)
+   */
+  public function generateAiJd(Request $request, GeminiService $gemini)
+  {
+    $title = trim($request->input('title', ''));
+    if (empty($title)) {
+      return response()->json([
+        'status' => false,
+        'message' => 'Vui lòng nhập "Tiêu đề công việc" trước để AI có thể soạn thảo JD chính xác!'
+      ], 422);
+    }
+
+    $skills = trim($request->input('skills', ''));
+    $level = trim($request->input('level', 'Nhân viên'));
+    $careerId = $request->input('category_id') ?? $request->input('category');
+    $careerName = '';
+    if (!empty($careerId)) {
+      $career = Careers::find($careerId);
+      if ($career) {
+        $careerName = $career->name;
+      }
+    }
+
+    $jdData = $gemini->generateStructuredJobDescription($title, $skills, $level, $careerName);
+
+    return response()->json([
+      'status' => true,
+      'message' => 'Đã tạo bản mô tả công việc bằng AI thành công!',
+      'data' => $jdData
+    ]);
+  }
+
   public function saveJob(Request $request)
   {
 
@@ -373,13 +519,27 @@ class AccountController extends Controller
       $job->job_type_id  = $request->jobType;
       $job->user_id = Auth::user()->id;
       $job->vacancy = $request->vacancy;
-      $job->salary = $request->salary;
+      $job->salary = !empty($request->salary) ? trim($request->salary) : 'Thỏa thuận';
       $job->job_level = $request->level;
       $job->description = $request->description;
       $job->benefits = $request->benefits;
       $job->responsibility = $request->responsibility;
       $job->qualifications = $request->qualifications;
-      $job->keywords = $request->keywords;
+      
+      $keywords = $request->keywords;
+      if (!empty($keywords)) {
+        if (is_string($keywords) && Str::startsWith(trim($keywords), '[') && Str::endsWith(trim($keywords), ']')) {
+          $decoded = json_decode($keywords, true);
+          if (is_array($decoded)) {
+            $keywords = implode(', ', array_map('trim', $decoded));
+          }
+        }
+        $keywords = trim($keywords, " \t\n\r\0\x0B[]\"'");
+        $parts = array_filter(array_map('trim', explode(',', $keywords)));
+        $job->keywords = implode(', ', $parts);
+      } else {
+        $job->keywords = '';
+      }
       $job->experience = $request->experience;
       $job->company_name = $request->company_name;
       $job->province = $request->province_name;
@@ -390,6 +550,16 @@ class AccountController extends Controller
       $job->expiration_date = $request->expiration_date ? $request->expiration_date : null;
       $job->status = "0";
       $job->save();
+
+      // Gửi thông báo cho Admin khi có việc làm mới cần duyệt
+      try {
+        $adminUsers = User::where('role', 'admin')->get();
+        foreach ($adminUsers as $adminUser) {
+          $adminUser->notify(new NewJobNotification($job));
+        }
+      } catch (\Throwable $e) {
+        Log::error('Lỗi gửi NewJobNotification cho Admin: ' . $e->getMessage());
+      }
 
       session()->flash('toastr', ['success' => 'Thêm việc làm thành công']);
 
@@ -492,21 +662,26 @@ class AccountController extends Controller
       $job->job_type_id  = $request->jobType;
       $job->user_id = Auth::user()->id;
       $job->vacancy = $request->vacancy;
-      $job->salary = $request->salary;
+      $job->salary = !empty($request->salary) ? trim($request->salary) : 'Thỏa thuận';
       $levelsArray = explode(',', $request->level);
       $job->job_level = implode(', ', array_map('trim', $levelsArray));
       $job->description = $request->description;
       $job->benefits = $request->benefits;
       $job->responsibility = $request->responsibility;
       $job->qualifications = $request->qualifications;
-      $keywordsString = $request->keywords;
-      if (trim($keywordsString) === '') {
-        $job->keywords = '';
+      $keywords = $request->keywords;
+      if (!empty($keywords)) {
+        if (is_string($keywords) && Str::startsWith(trim($keywords), '[') && Str::endsWith(trim($keywords), ']')) {
+          $decoded = json_decode($keywords, true);
+          if (is_array($decoded)) {
+            $keywords = implode(', ', array_map('trim', $decoded));
+          }
+        }
+        $keywords = trim($keywords, " \t\n\r\0\x0B[]\"'");
+        $parts = array_filter(array_map('trim', explode(',', $keywords)));
+        $job->keywords = implode(', ', $parts);
       } else {
-        $keywordsString = trim($keywordsString, '[]"');
-        $keywordsArray = explode(',', $keywordsString);
-        $keywordsArray = array_map('trim', $keywordsArray);
-        $job->keywords = implode(', ', $keywordsArray);
+        $job->keywords = '';
       }
       $job->experience = $request->experience;
       $job->company_name = $request->company_name;

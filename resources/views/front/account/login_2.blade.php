@@ -23,6 +23,19 @@
                 <div class="form-welcome-row">
                     <h1>Đăng nhập</h1>
                 </div>
+
+                @if (session()->has('warning'))
+                    <div style="background: #fff8e6; border: 1px solid #ffd591; color: #d46b08; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13.5px; line-height: 1.5; text-align: left;">
+                        <strong>⏳ Đang chờ xét duyệt:</strong><br>
+                        {{ session('warning') }}
+                    </div>
+                @endif
+
+                @if (session()->has('error'))
+                    <div style="background: #fff1f0; border: 1px solid #ffa39e; color: #cf1322; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13.5px; line-height: 1.5; text-align: left;">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <div class="socials-row">
                     <a href="{{ route('google-auth') }}" title="Use Github">
                         <img src="{{ asset('assets/user/images/login/google.png') }}" alt="Google">

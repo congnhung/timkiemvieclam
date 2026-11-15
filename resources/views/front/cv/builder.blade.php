@@ -1,13 +1,19 @@
 @extends('front.layouts.app')
 
 @php
-  $currentTemplateKey = request()->get('template', $resume->template ?? ($defaultData['template'] ?? 'modern_navy'));
-  $selectedTpl = $allTemplates[$currentTemplateKey] ?? ($allTemplates['modern_navy'] ?? [
-    'name' => 'Hiện Đại (Navy)',
-    'primary_color' => '#004C82',
-    'font' => 'Be Vietnam Pro',
-    'layout' => 'sidebar_left'
-  ]);
+  // Ưu tiên template từ query string, nếu không có lấy từ resume, cuối cùng là emerald_startup (TopWork chuẩn)
+  $reqTpl = request()->get('template');
+  $currentTemplateKey = ($reqTpl && isset($allTemplates[$reqTpl]))
+      ? $reqTpl
+      : ($resume->template ?? ($defaultData['template'] ?? 'emerald_startup'));
+  if (!isset($allTemplates[$currentTemplateKey])) {
+      $currentTemplateKey = 'emerald_startup';
+  }
+  $selectedTpl = $allTemplates[$currentTemplateKey];
+
+  $chosenThemeColor = request()->has('template')
+      ? ($selectedTpl['primary_color'] ?? '#00b14f')
+      : ($resume->theme_color ?? ($selectedTpl['primary_color'] ?? '#00b14f'));
 
   $cd = $resume ? [
     'id'               => $resume->id,
@@ -25,9 +31,9 @@
                                ? $resume->avatar
                                : asset('assets/user/cv_avatars/' . $resume->avatar))
                            : asset('assets/user/images/avatar_silhouette.svg'),
-    'theme_color'      => $resume->theme_color ?? ($selectedTpl['primary_color'] ?? '#004C82'),
-    'template'         => $resume->template ?? $currentTemplateKey,
-    'font'             => $selectedTpl['font'] ?? 'Be Vietnam Pro',
+    'theme_color'      => $chosenThemeColor,
+    'template'         => $currentTemplateKey,
+    'font'             => $selectedTpl['font'] ?? 'Lexend',
     'objective'        => $resume->objective,
     'experience'       => !empty($resume->experience_data)     ? $resume->experience_data     : [],
     'education'        => !empty($resume->education_data)      ? $resume->education_data      : [],
@@ -37,8 +43,8 @@
   ] : array_merge($defaultData, [
     'id' => '',
     'template' => $currentTemplateKey,
-    'theme_color' => $selectedTpl['primary_color'] ?? '#004C82',
-    'font' => $selectedTpl['font'] ?? 'Be Vietnam Pro'
+    'theme_color' => $chosenThemeColor,
+    'font' => $selectedTpl['font'] ?? 'Lexend'
   ]);
 @endphp
 
@@ -46,11 +52,11 @@
 <!-- Google Fonts: Lexend and CV Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
-   CV BUILDER — VIEC LAM 24H EXACT CLONE
+   CV BUILDER — TOPWORK BRAND GREEN & MODERN INTERACTION
    ============================================================ */
 body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
 
@@ -69,30 +75,7 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   display: flex; align-items: center; justify-content: center;
   text-decoration: none; font-size: 14px; transition: all 0.15s;
 }
-.cvb-btn-back:hover { background: #f3e8ff; color: #4a0d8e; border-color: #4a0d8e; }
-
-/* Progress score */
-.cvb-score-wrap {
-  display: flex; flex-direction: column; min-width: 200px;
-}
-.cvb-score-header {
-  display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 4px;
-}
-.cvb-score-badge {
-  color: #ef4444; font-weight: 700;
-}
-.cvb-score-label {
-  color: #475569; font-weight: 600;
-}
-.cvb-score-tip {
-  color: #059669; font-weight: 600; font-size: 11.5px;
-}
-.cvb-progress-bar {
-  height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; width: 140px;
-}
-.cvb-progress-fill {
-  height: 100%; background: #ef4444; width: 10%; border-radius: 2px; transition: width 0.3s;
-}
+.cvb-btn-back:hover { background: #ecfdf5; color: #00b14f; border-color: #00b14f; }
 
 /* Control buttons above preview */
 .cvb-ctrl-btn {
@@ -101,7 +84,7 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
   transition: all 0.15s; text-decoration: none; line-height: 1.4;
 }
-.cvb-ctrl-btn:hover { background: #f3e8ff; border-color: #4a0d8e; color: #4a0d8e; }
+.cvb-ctrl-btn:hover { background: #ecfdf5; border-color: #00b14f; color: #00b14f; }
 .cvb-ctrl-btn::after { font-size: 9px; margin-left: 2px; }
 .cvb-ctrl-btn i { font-size: 11px; }
 
@@ -110,22 +93,26 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
 }
 
 .cvb-btn-finish {
-  background: #5e35b1; color: #fff; border: 1px solid #512da8;
+  background: #00b14f; color: #fff; border: 1px solid #009140;
   font-weight: 700; border-radius: 6px; padding: 5px 14px; font-size: 12px;
   display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
-  box-shadow: 0 2px 6px rgba(94, 53, 177, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 177, 79, 0.25);
   transition: all 0.15s; text-decoration: none; line-height: 1.4;
 }
-.cvb-btn-finish:hover { background: #512da8; color: #fff; transform: translateY(-1px); }
+.cvb-btn-finish:hover { background: #009140; color: #fff; transform: translateY(-1px); }
 
 /* Language pills */
 .cvb-lang-pill {
   padding: 4px 8px; border-radius: 999px; border: 1px solid #e2e8f0;
   font-size: 11px; font-weight: 600; color: #64748b; background: #fff;
   cursor: pointer; display: inline-flex; align-items: center; gap: 3px; line-height: 1.4;
+  transition: all 0.15s;
 }
 .cvb-lang-pill.active {
-  background: #f3e8ff; border-color: #d8b4fe; color: #7c3aed;
+  background: #ecfdf5; border-color: #a7f3d0; color: #00b14f;
+}
+.cvb-lang-pill:hover {
+  border-color: #00b14f; color: #00b14f;
 }
 
 /* Palette swatches: strictly hidden until dropdown toggle triggers */
@@ -201,7 +188,7 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   outline: none; transition: all 0.15s; background: #fff;
 }
 .cvb-input:focus {
-  border-color: #5e35b1; box-shadow: 0 0 0 3px rgba(94, 53, 177, 0.12);
+  border-color: #00b14f; box-shadow: 0 0 0 3px rgba(0, 177, 79, 0.15);
 }
 .cvb-input::placeholder { color: #9ca3af; font-size: 13px; }
 
@@ -221,7 +208,7 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   transition: all 0.15s; text-decoration: none;
 }
 .cvb-btn-upload:hover {
-  background: #f1f5f9; color: #1e293b; border-color: #cbd5e1;
+  background: #ecfdf5; color: #00b14f; border-color: #00b14f;
 }
 
 /* Add section links (Matching Image 1) */
@@ -233,10 +220,11 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 12px;
 }
 .cvb-link-add {
-  color: #2563eb; font-size: 13.5px; font-weight: 600; text-decoration: none;
+  color: #00b14f; font-size: 13.5px; font-weight: 600; text-decoration: none;
   display: inline-flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; cursor: pointer;
+  transition: all 0.15s;
 }
-.cvb-link-add:hover { color: #1d4ed8; text-decoration: underline; }
+.cvb-link-add:hover { color: #009140; text-decoration: underline; }
 
 /* Entry Card for added items */
 .cvb-entry-card {
@@ -276,7 +264,7 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
   transition: all 0.15s;
 }
-.cvb-zoom-btn:hover { background: #f1f5f9; color: #1e293b; }
+.cvb-zoom-btn:hover { background: #ecfdf5; color: #00b14f; }
 .cvb-zoom-level {
   font-size: 11px; font-weight: 700; color: #334155; min-width: 38px; text-align: center;
 }
@@ -294,101 +282,335 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
   background: #fff;
   box-shadow: 0 10px 30px rgba(0,0,0,0.12);
   display: flex;
-  font-family: 'Lexend', sans-serif !important;
   font-size: 13px; color: #1e293b;
-  --cv-theme: #004C82;
-  --cv-sidebar-bg: #004C82;
+  --cv-theme: #00b14f;
+  --cv-sidebar-bg: #00b14f;
+  --cv-accent: #4ade80;
   position: relative; overflow: hidden;
   transform-origin: top center;
   transition: transform 0.15s ease;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
-/* Sidebar (Navy Blue matching Image 1) */
-.cva-sidebar {
-  width: 33%;
-  background: var(--cv-sidebar-bg, #004C82);
+/* Common Item Entry */
+.cva-item { margin-bottom: 12px; page-break-inside: avoid; }
+.cva-item-title { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+.cva-item-sub { font-size: 12px; color: var(--cv-theme); font-weight: 600; margin-bottom: 2px; }
+.cva-item-period { font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+.cva-item-desc { font-size: 11.5px; color: #334155; line-height: 1.6; white-space: pre-wrap; }
+
+/* ============================================================
+   TEMPLATE-SPECIFIC DISTINCT STYLING
+   ============================================================ */
+/* 1. Emerald Startup (TopWork Brand Green) */
+.cv-template-emerald_startup .cva-avatar-wrap img {
+  border: 3.5px solid #fff;
+  box-shadow: 0 0 0 3px var(--cv-theme, #00b14f), 0 8px 20px rgba(0,0,0,0.2);
+}
+.cv-template-emerald_startup .cva-contact-item {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 5px 10px; border-radius: 6px;
+}
+.cv-template-emerald_startup .cva-sec-title::before {
+  border-radius: 50%;
+  background: #00b14f;
+}
+
+/* 2. Tech Slate (IT & Developers) */
+.cv-template-tech_slate .cva-avatar-wrap img {
+  border-radius: 12px;
+  border: 2px solid #38bdf8;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+}
+.cv-template-tech_slate .cva-sb-title {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+  color: #38bdf8;
+}
+.cva-tech-badge {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #e0f2fe;
+  padding: 3px 8px; border-radius: 4px;
+  font-size: 11px; font-weight: 600;
+  font-family: 'Courier New', monospace;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+
+/* 3. Executive Dark (Senior & Managers) */
+.cv-template-executive_dark .cva-avatar-wrap img {
+  border: 3px solid #f59e0b;
+}
+.cv-template-executive_dark .cva-sec-title {
+  border-bottom: 2px solid #f59e0b;
+  color: #1e293b;
+}
+.cv-template-executive_dark .cva-sec-title::before {
+  background: #f59e0b;
+}
+.cv-template-executive_dark .cva-item {
+  border-left: 2px solid #e2e8f0;
+  padding-left: 12px;
+  margin-left: 4px;
+  position: relative;
+}
+.cv-template-executive_dark .cva-item::before {
+  content: ''; position: absolute; left: -6px; top: 4px;
+  width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;
+  border: 2px solid #fff;
+}
+
+/* 4. Fresh Graduate (Students & New Grads) */
+.cv-template-fresh_graduate .cva-avatar-wrap img {
+  border: 3px dashed rgba(255, 255, 255, 0.8);
+  padding: 2px;
+}
+.cv-template-fresh_graduate .cva-sec-title {
+  color: #059669;
+  border-bottom: 2px solid #059669;
+}
+.cv-template-fresh_graduate .cva-sec-title::before {
+  background: #059669;
+  border-radius: 50%;
+}
+
+/* 5. Modern Navy */
+.cv-template-modern_navy .cva-avatar-wrap img {
+  border-radius: 16px;
+  border: 4px solid #fff;
+}
+
+/* 6. Creative Coral */
+.cv-template-creative_coral .cva-split-avatar {
+  border-radius: 20px;
+  border: 4px solid #ea580c;
+  box-shadow: 0 8px 20px rgba(234, 88, 12, 0.25);
+}
+.cv-template-creative_coral .cva-split-body > div:last-child {
+  background: #fff7ed;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+/* 7. Classic Serif */
+.cv-template-classic_serif {
+  font-family: 'Georgia', serif !important;
+}
+.cv-template-classic_serif .cva-split-name {
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  letter-spacing: 1px;
+}
+.cv-template-classic_serif .cva-split-avatar {
+  border-radius: 50%;
+  border: 2px solid #475569;
+}
+
+/* 8. Royal Purple */
+.cv-template-royal_purple .cva-banner-top {
+  flex-direction: column;
+  text-align: center;
+  padding: 24px 20px;
+}
+.cv-template-royal_purple .cva-banner-contact {
+  justify-content: center;
+}
+.cv-template-royal_purple .cva-banner-body {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* 9. Burgundy Luxury */
+.cv-template-burgundy_luxury .cva-split-top {
+  background: linear-gradient(to right, #881337, #4c0519);
   color: #fff;
-  padding: 32px 18px;
-  display: flex; flex-direction: column;
+  border-bottom: none;
 }
-.cva-avatar-wrap { text-align: center; margin-bottom: 24px; }
-.cva-avatar-wrap img {
-  width: 104px; height: 104px; border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  background: #fff;
+.cv-template-burgundy_luxury .cva-split-name {
+  color: #fff;
+}
+.cv-template-burgundy_luxury .cva-split-title {
+  color: #fda4af;
+}
+.cv-template-burgundy_luxury .cva-split-contact {
+  color: #ffe4e6;
+}
+.cv-template-burgundy_luxury .cva-split-contact i {
+  color: #fda4af !important;
 }
 
-.cva-sb-title {
+/* 10. ATS Standard */
+.cv-template-ats_standard .cva-single-top {
+  border-bottom: 2px solid #000;
+  padding-bottom: 12px;
+}
+.cv-template-ats_standard .cva-single-name {
+  font-family: Arial, sans-serif;
+  letter-spacing: 2px;
+}
+.cv-template-ats_standard .cva-single-sec-title {
+  border-bottom: 1.5px solid #000;
+  color: #000;
+  font-weight: 800;
+}
+
+/* ============================================================
+   LAYOUT 1: SIDEBAR LEFT (Modern Navy, Executive, Tech, Startup)
+   ============================================================ */
+.cv-layout-sidebar_left { flex-direction: row; }
+.cv-layout-sidebar_left .cva-sidebar {
+  width: 34%; background: var(--cv-sidebar-bg, #00b14f);
+  color: #fff; padding: 32px 18px; display: flex; flex-direction: column;
+}
+.cv-layout-sidebar_left .cva-avatar-wrap { text-align: center; margin-bottom: 22px; }
+.cv-layout-sidebar_left .cva-avatar-wrap img {
+  width: 104px; height: 104px; border-radius: 50%;
+  object-fit: cover; border: 4px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2); background: #fff;
+}
+.cv-layout-sidebar_left .cva-sb-title {
   font-size: 11.5px; font-weight: 800; text-transform: uppercase;
   letter-spacing: 1.2px; color: #fff;
   border-bottom: 1.5px solid rgba(255, 255, 255, 0.25);
   padding-bottom: 4px; margin: 18px 0 10px;
 }
-.cva-sb-title:first-of-type { margin-top: 0; }
-
-.cva-contact-item {
+.cv-layout-sidebar_left .cva-sb-title:first-of-type { margin-top: 0; }
+.cv-layout-sidebar_left .cva-contact-item {
   display: flex; align-items: center; gap: 8px;
-  margin-bottom: 8px; font-size: 11.5px; color: #e2e8f0;
-  word-break: break-all;
+  margin-bottom: 8px; font-size: 11.5px; color: #e2e8f0; word-break: break-all;
 }
-.cva-contact-item i {
-  color: #60a5fa; width: 14px; text-align: center; font-size: 11px; flex-shrink: 0;
+.cv-layout-sidebar_left .cva-contact-item i {
+  color: var(--cv-accent, #60a5fa); width: 14px; text-align: center; font-size: 11px; flex-shrink: 0;
 }
-.cva-contact-placeholder {
-  color: #93c5fd; opacity: 0.8; font-style: normal;
+.cv-layout-sidebar_left .cva-contact-placeholder { color: #93c5fd; opacity: 0.8; font-style: normal; }
+.cv-layout-sidebar_left .cva-main {
+  width: 66%; padding: 32px 26px; background: #fff; display: flex; flex-direction: column;
 }
-
-/* Main Column */
-.cva-main {
-  width: 67%;
-  padding: 32px 26px;
-  background: #fff;
-  display: flex; flex-direction: column;
-}
-.cva-name {
+.cv-layout-sidebar_left .cva-name {
   font-size: 23px; font-weight: 800; color: #0f172a;
-  text-transform: uppercase; line-height: 1.2; margin-bottom: 5px;
-  letter-spacing: 0.5px;
+  text-transform: uppercase; line-height: 1.2; margin-bottom: 5px; letter-spacing: 0.5px;
 }
-.cva-jobtitle {
+.cv-layout-sidebar_left .cva-jobtitle {
   font-size: 11.5px; font-weight: 700; color: #64748b;
   text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 22px;
 }
-.cva-jobtitle.is-placeholder {
-  color: #94a3b8; letter-spacing: 2px;
-}
-
-.cva-sec-title {
+.cv-layout-sidebar_left .cva-jobtitle.is-placeholder { color: #94a3b8; letter-spacing: 2px; }
+.cv-layout-sidebar_left .cva-sec-title {
   font-size: 11.5px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 1px; color: #0f172a;
-  border-bottom: 2px solid var(--cv-theme);
-  padding-bottom: 4px; margin: 18px 0 10px;
-  display: flex; align-items: center; gap: 8px;
+  letter-spacing: 1px; color: #0f172a; border-bottom: 2px solid var(--cv-theme);
+  padding-bottom: 4px; margin: 18px 0 10px; display: flex; align-items: center; gap: 8px;
 }
-.cva-sec-title::before {
-  content: ''; display: inline-block; width: 7px; height: 7px;
-  border-radius: 2px; background: var(--cv-theme);
+.cv-layout-sidebar_left .cva-sec-title::before {
+  content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 2px; background: var(--cv-theme);
 }
-.cva-sec-title:first-of-type { margin-top: 0; }
+.cv-layout-sidebar_left .cva-sec-title:first-of-type { margin-top: 0; }
 
-.cva-item {
-  margin-bottom: 12px; page-break-inside: avoid;
+/* ============================================================
+   LAYOUT 2: HEADER BANNER (Teal Mint, Royal Purple)
+   ============================================================ */
+.cv-layout-header_banner { flex-direction: column; }
+.cva-banner-top {
+  width: 100%; background: var(--cv-theme, #0d9488);
+  color: #fff; padding: 26px 30px; display: flex; align-items: center; gap: 20px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
-.cva-item-title {
-  font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 2px;
+.cva-banner-avatar {
+  width: 96px; height: 96px; border-radius: 50%;
+  object-fit: cover; border: 3.5px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2); background: #fff; flex-shrink: 0;
 }
-.cva-item-sub {
-  font-size: 12px; color: var(--cv-theme); font-weight: 600; margin-bottom: 2px;
+.cva-banner-info { flex: 1; }
+.cva-banner-name {
+  font-size: 24px; font-weight: 800; color: #fff;
+  text-transform: uppercase; line-height: 1.2; margin-bottom: 4px; letter-spacing: 0.5px;
 }
-.cva-item-period {
-  font-size: 11px; color: #94a3b8; margin-bottom: 4px;
+.cva-banner-title {
+  font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.92);
+  text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px;
 }
-.cva-item-desc {
-  font-size: 11.5px; color: #334155; line-height: 1.6; white-space: pre-wrap;
+.cva-banner-title.is-placeholder { color: rgba(255,255,255,0.7); }
+.cva-banner-contact { display: flex; flex-wrap: wrap; gap: 6px 12px; }
+.cva-b-pill {
+  font-size: 11px; color: #fff; background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.25); padding: 3px 10px; border-radius: 20px;
+  display: inline-flex; align-items: center; gap: 6px;
 }
+.cva-banner-body {
+  width: 100%; padding: 26px 30px; display: grid; grid-template-columns: 35% 65%;
+  gap: 24px; background: #fff; flex: 1;
+}
+.cva-banner-sec-title {
+  font-size: 11.5px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--cv-theme); border-bottom: 2px solid var(--cv-theme);
+  padding-bottom: 4px; margin: 16px 0 10px;
+}
+.cva-banner-sec-title:first-of-type { margin-top: 0; }
+
+/* ============================================================
+   LAYOUT 3: HEADER SPLIT (Creative Coral, Classic Serif, Burgundy)
+   ============================================================ */
+.cv-layout-header_split { flex-direction: column; }
+.cva-split-top {
+  width: 100%; padding: 28px 32px 20px; display: flex; justify-content: space-between;
+  align-items: center; border-bottom: 3px solid var(--cv-theme); background: #fff;
+}
+.cva-split-info { flex: 1; }
+.cva-split-name {
+  font-size: 25px; font-weight: 800; color: var(--cv-theme);
+  text-transform: uppercase; line-height: 1.2; margin-bottom: 4px; letter-spacing: 0.5px;
+}
+.cva-split-title {
+  font-size: 12px; font-weight: 700; color: #64748b;
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px;
+}
+.cva-split-title.is-placeholder { color: #94a3b8; }
+.cva-split-contact { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 11.5px; color: #475569; }
+.cva-split-avatar-wrap { flex-shrink: 0; margin-left: 20px; }
+.cva-split-avatar {
+  width: 96px; height: 96px; border-radius: 12px; object-fit: cover;
+  border: 3px solid var(--cv-theme); box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #fff;
+}
+.cva-split-body {
+  width: 100%; padding: 24px 32px; display: grid; grid-template-columns: 60% 40%;
+  gap: 24px; background: #fff; flex: 1;
+}
+.cva-split-sec-title {
+  font-size: 11.5px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; color: #1e293b; border-bottom: 2px solid var(--cv-theme);
+  padding-bottom: 4px; margin: 16px 0 10px;
+}
+.cva-split-sec-title:first-of-type { margin-top: 0; }
+
+/* ============================================================
+   LAYOUT 4: SINGLE COLUMN / ATS MINIMALIST (ATS Standard, Minimalist)
+   ============================================================ */
+.cv-layout-single_column { flex-direction: column; background: #fff; }
+.cva-single-top {
+  width: 100%; padding: 32px 36px 16px; text-align: center; border-bottom: 2px solid #0f172a;
+}
+.cva-single-name {
+  font-size: 26px; font-weight: 800; color: #0f172a;
+  text-transform: uppercase; line-height: 1.2; margin-bottom: 4px; letter-spacing: 1px;
+}
+.cva-single-title {
+  font-size: 12px; font-weight: 700; color: #475569;
+  text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
+}
+.cva-single-title.is-placeholder { color: #94a3b8; }
+.cva-single-contact {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 14px;
+  font-size: 11.5px; color: #334155;
+}
+.cva-single-body {
+  width: 100%; padding: 22px 36px 40px; display: flex; flex-direction: column;
+  gap: 14px; background: #fff; flex: 1;
+}
+.cva-single-sec-title {
+  font-size: 12px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; color: #0f172a; border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 3px; margin: 10px 0 8px;
+}
+.cva-single-sec-title:first-of-type { margin-top: 0; }
 
 /* Print styles */
 @media print {
@@ -407,18 +629,6 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
     <a href="{{ route('cv.templates') }}" class="cvb-btn-back" title="Quay lại danh sách mẫu">
       <i class="fa fa-arrow-left"></i>
     </a>
-
-    {{-- Điểm hồ sơ progress bar --}}
-    <div class="cvb-score-wrap">
-      <div class="cvb-score-header">
-        <span class="cvb-score-badge" id="scoreBadge">10%</span>
-        <span class="cvb-score-label">Điểm hồ sơ</span>
-        <span class="cvb-score-tip" id="scoreTip">+90% Thêm thông tin cơ bản <i class="fa fa-info-circle"></i></span>
-      </div>
-      <div class="cvb-progress-bar">
-        <div class="cvb-progress-fill" id="scoreBar" style="width: 10%;"></div>
-      </div>
-    </div>
   </div>
 
   {{-- Right Controls (Positioned directly above preview like Image 1) --}}
@@ -432,14 +642,14 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
       <div class="dropdown-menu shadow cvb-color-menu" aria-labelledby="dropdownColor">
         @php
           $swatches = [
-            '#004C82' => 'Navy (Vieclam24h)',
-            '#00b14f' => 'Xanh lá (TopCV)',
-            '#2563eb' => 'Xanh dương',
-            '#881337' => 'Đỏ đô',
-            '#ea580c' => 'Cam san hô',
-            '#7c3aed' => 'Tím',
+            '#00b14f' => 'TopWork (Xanh lục chuẩn)',
+            '#059669' => 'Xanh ngọc lục bảo',
+            '#0d9488' => 'Teal Mint',
+            '#0f2942' => 'Navy',
             '#1e293b' => 'Xám than',
-            '#0d9488' => 'Xanh ngọc',
+            '#ea580c' => 'Cam san hô',
+            '#881337' => 'Đỏ đô',
+            '#7c3aed' => 'Tím',
           ];
         @endphp
         @foreach($swatches as $hex => $name)
@@ -455,16 +665,17 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
     <div class="dropdown">
       <button class="cvb-ctrl-btn dropdown-toggle" type="button" id="dropdownTemplate" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="fa fa-th-large"></i>
-        <span>Đổi mẫu</span>
+        <span id="currentTemplateName">{{ $selectedTpl['name'] }}</span>
       </button>
       <ul class="dropdown-menu shadow cvb-template-menu" aria-labelledby="dropdownTemplate">
         @foreach($allTemplates as $k => $tpl)
           <li>
-            <a class="dropdown-item d-flex justify-content-between align-items-center py-1.5 px-2.5 {{ $cd['template'] === $k ? 'active' : '' }}"
-               href="{{ route('cv.builder', ['template' => $k]) }}">
+            <button type="button" class="dropdown-item d-flex justify-content-between align-items-center py-1.5 px-2.5 cvb-template-option {{ $cd['template'] === $k ? 'active' : '' }}"
+                    data-template="{{ $k }}"
+                    onclick="selectTemplate('{{ $k }}')">
               <span>{{ $tpl['name'] }}</span>
               <span class="badge bg-light text-dark" style="font-size: 10px;">{{ $tpl['badge'] }}</span>
-            </a>
+            </button>
           </li>
         @endforeach
       </ul>
@@ -703,97 +914,8 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
     </div>
 
     <div class="cv-a4-scale-container" id="cvA4ScaleContainer">
-      <div class="cv-a4" id="cvA4" style="--cv-theme: {{ $cd['theme_color'] }}; --cv-sidebar-bg: {{ $cd['theme_color'] }};">
-        
-        <!-- LEFT NAVY SIDEBAR (Matching Image 1) -->
-        <div class="cva-sidebar" id="p_sidebar">
-          <div class="cva-avatar-wrap">
-            <img id="p_avatar" src="{{ $cd['avatar'] }}" alt="avatar">
-          </div>
-
-          <div class="cva-sb-title">LIÊN HỆ</div>
-          
-          {{-- Phone --}}
-          <div class="cva-contact-item">
-            <i class="fa fa-phone"></i>
-            <span id="p_phone" class="{{ empty($cd['phone']) ? 'cva-contact-placeholder' : '' }}">
-              {{ !empty($cd['phone']) ? $cd['phone'] : 'Điền số điện thoại' }}
-            </span>
-          </div>
-
-          {{-- Email --}}
-          <div class="cva-contact-item">
-            <i class="fa fa-envelope"></i>
-            <span id="p_email">{{ $cd['email'] }}</span>
-          </div>
-
-          {{-- Birthday --}}
-          <div class="cva-contact-item">
-            <i class="fa fa-calendar"></i>
-            <span id="p_birthday" class="{{ empty($cd['birthday']) ? 'cva-contact-placeholder' : '' }}">
-              {{ !empty($cd['birthday']) ? $cd['birthday'] : 'Chọn ngày sinh' }}
-            </span>
-          </div>
-
-          {{-- Address --}}
-          <div class="cva-contact-item">
-            <i class="fa fa-map-marker"></i>
-            <span id="p_address" class="{{ empty($cd['address']) ? 'cva-contact-placeholder' : '' }}">
-              {{ !empty($cd['address']) ? $cd['address'] : 'VD: Trần Bình Trọng, Phường 1' }}
-            </span>
-          </div>
-
-          {{-- Skills (only if added) --}}
-          <div id="p_skills_wrap" style="display: none;">
-            <div class="cva-sb-title">KỸ NĂNG</div>
-            <div id="p_skills"></div>
-          </div>
-
-          {{-- Languages / IT (only if added) --}}
-          <div id="p_lang_wrap" style="display: none;">
-            <div class="cva-sb-title">NGOẠI NGỮ</div>
-            <div id="p_languages"></div>
-          </div>
-        </div>
-
-        <!-- MAIN RIGHT COLUMN (Matching Image 1) -->
-        <div class="cva-main">
-          <div id="p_fullname" class="cva-name">{{ mb_strtoupper($cd['fullname'], 'UTF-8') }}</div>
-          <div id="p_candidate_title" class="cva-jobtitle {{ empty($cd['candidate_title']) ? 'is-placeholder' : '' }}">
-            {{ !empty($cd['candidate_title']) ? mb_strtoupper($cd['candidate_title'], 'UTF-8') : 'TIÊU ĐỀ HỒ SƠ' }}
-          </div>
-
-          {{-- Experience Section --}}
-          <div id="p_exp_wrap" style="display: none;">
-            <div class="cva-sec-title">KINH NGHIỆM LÀM VIỆC</div>
-            <div id="p_experience"></div>
-          </div>
-
-          {{-- Education Section --}}
-          <div id="p_edu_wrap" style="display: none;">
-            <div class="cva-sec-title">HỌC VẤN</div>
-            <div id="p_education"></div>
-          </div>
-
-          {{-- Certifications Section --}}
-          <div id="p_cert_wrap" style="display: none;">
-            <div class="cva-sec-title">CHỨNG CHỈ</div>
-            <div id="p_certs"></div>
-          </div>
-
-          {{-- Projects Section --}}
-          <div id="p_proj_wrap" style="display: none;">
-            <div class="cva-sec-title">HOẠT ĐỘNG / DỰ ÁN</div>
-            <div id="p_projects"></div>
-          </div>
-
-          {{-- Reference Section --}}
-          <div id="p_ref_wrap" style="display: none;">
-            <div class="cva-sec-title">NGƯỜI LIÊN HỆ</div>
-            <div id="p_references"></div>
-          </div>
-        </div>
-
+      <div class="cv-a4 cv-layout-{{ $selectedTpl['layout'] ?? 'sidebar_left' }} cv-template-{{ $currentTemplateKey }}" id="cvA4" style="--cv-theme: {{ $cd['theme_color'] }}; --cv-sidebar-bg: {{ $cd['theme_color'] }}; font-family: '{{ $selectedTpl['font'] ?? 'Lexend' }}', sans-serif !important;">
+        {{-- Nội dung mẫu CV được render tự động và thời gian thực qua renderPreview() --}}
       </div><!-- /cv-a4 -->
     </div><!-- /cv-a4-scale-container -->
   </div><!-- /cvb-preview-pane -->
@@ -805,177 +927,702 @@ body { background: #f8fafc; font-family: 'Lexend', sans-serif !important; }
 @section('customJs')
 <script>
 /* ============================================================
-   REAL-TIME CV LIVE PREVIEW & VIECLAM24H REPLICA ENGINE
+   REAL-TIME CV LIVE PREVIEW & MULTI-TEMPLATE ENGINE
 ============================================================ */
+const CV_TEMPLATES = @json($allTemplates);
 
-function renderPreview() {
-  const theme = document.getElementById('cv_theme_color').value || '#004C82';
-  const cvA4 = document.getElementById('cvA4');
-  cvA4.style.setProperty('--cv-theme', theme);
-  cvA4.style.setProperty('--cv-sidebar-bg', theme);
+function selectTemplate(tplKey) {
+  if (!CV_TEMPLATES[tplKey]) return;
+  const tpl = CV_TEMPLATES[tplKey];
 
-  // 1. Candidate Name
-  const fName = (document.getElementById('f_fullname').value || '').trim();
-  document.getElementById('p_fullname').textContent = fName ? fName.toUpperCase() : 'HỌ VÀ TÊN';
+  // 1. Cập nhật hidden inputs
+  document.getElementById('cv_template_key').value = tplKey;
+  document.getElementById('cv_theme_color').value = tpl.primary_color;
 
-  // 2. Candidate Title (Placeholder "TIÊU ĐỀ HỒ SƠ" if empty like Image 1)
-  const fTitle = (document.getElementById('f_candidate_title').value || '').trim();
-  const pTitle = document.getElementById('p_candidate_title');
-  if (fTitle) {
-    pTitle.textContent = fTitle.toUpperCase();
-    pTitle.classList.remove('is-placeholder');
-  } else {
-    pTitle.textContent = 'TIÊU ĐỀ HỒ SƠ';
-    pTitle.classList.add('is-placeholder');
+  // 2. Cập nhật nút Đổi màu
+  const colorDot = document.getElementById('colorDot');
+  if (colorDot) colorDot.style.background = tpl.primary_color;
+
+  // 3. Cập nhật nút Đổi mẫu & danh sách dropdown
+  const nameEl = document.getElementById('currentTemplateName');
+  if (nameEl) nameEl.textContent = tpl.name;
+
+  document.querySelectorAll('.cvb-template-option').forEach(el => {
+    if (el.getAttribute('data-template') === tplKey) {
+      el.classList.add('active');
+    } else {
+      el.classList.remove('active');
+    }
+  });
+
+  // 4. Cập nhật swatch màu tương ứng
+  document.querySelectorAll('.cvb-color-swatch').forEach(swatch => {
+    if (swatch.getAttribute('data-color').toLowerCase() === tpl.primary_color.toLowerCase()) {
+      swatch.classList.add('active');
+    } else {
+      swatch.classList.remove('active');
+    }
+  });
+
+  // 5. Cập nhật query parameter trên URL mà không reload trang
+  const url = new URL(window.location.href);
+  url.searchParams.set('template', tplKey);
+  window.history.replaceState({}, '', url.toString());
+
+  // 6. Đóng dropdown bootstrap
+  const tplBtn = document.getElementById('dropdownTemplate');
+  if (tplBtn && window.bootstrap) {
+    const bsDropdown = bootstrap.Dropdown.getInstance(tplBtn);
+    if (bsDropdown) bsDropdown.hide();
   }
 
-  // 3. Email
-  const fEmail = (document.getElementById('f_email').value || '').trim();
-  document.getElementById('p_email').textContent = fEmail || 'email@example.com';
+  // 7. Render lại preview thời gian thực với layout mới
+  renderPreview();
 
-  // 4. Phone (Placeholder "Điền số điện thoại" if empty like Image 1)
-  const fPhone = (document.getElementById('f_phone').value || '').trim();
-  const pPhone = document.getElementById('p_phone');
-  if (fPhone) {
-    pPhone.textContent = fPhone;
-    pPhone.classList.remove('cva-contact-placeholder');
-  } else {
-    pPhone.textContent = 'Điền số điện thoại';
-    pPhone.classList.add('cva-contact-placeholder');
-  }
-
-  // 5. Birthday (Placeholder "Chọn ngày sinh" if empty like Image 1)
-  const fBirthday = (document.getElementById('f_birthday').value || '').trim();
-  const pBirthday = document.getElementById('p_birthday');
-  if (fBirthday) {
-    pBirthday.textContent = fBirthday;
-    pBirthday.classList.remove('cva-contact-placeholder');
-  } else {
-    pBirthday.textContent = 'Chọn ngày sinh';
-    pBirthday.classList.add('cva-contact-placeholder');
-  }
-
-  // 6. Address (Placeholder "VD: Trần Bình Trọng, Phường 1" if empty like Image 1)
-  const fAddress = (document.getElementById('f_address').value || '').trim();
-  const pAddress = document.getElementById('p_address');
-  if (fAddress) {
-    pAddress.textContent = fAddress;
-    pAddress.classList.remove('cva-contact-placeholder');
-  } else {
-    pAddress.textContent = 'VD: Trần Bình Trọng, Phường 1';
-    pAddress.classList.add('cva-contact-placeholder');
-  }
-
-  // 7. Experience List
-  const expCards = document.querySelectorAll('#exp_list .cvb-entry-card');
-  const expWrap = document.getElementById('p_exp_wrap');
-  if (expCards.length > 0) {
-    expWrap.style.display = 'block';
-    let expHtml = '';
-    expCards.forEach(card => {
-      const pos = card.querySelector('.exp-position')?.value || '';
-      const comp = card.querySelector('.exp-company')?.value || '';
-      const per = card.querySelector('.exp-period')?.value || '';
-      const desc = card.querySelector('.exp-desc')?.value || '';
-      expHtml += `
-        <div class="cva-item">
-          <div class="cva-item-title">${esc(pos)}</div>
-          <div class="cva-item-sub">${esc(comp)}</div>
-          <div class="cva-item-period"><i class="fa fa-clock-o me-1"></i>${esc(per)}</div>
-          <div class="cva-item-desc">${esc(desc)}</div>
-        </div>
-      `;
-    });
-    document.getElementById('p_experience').innerHTML = expHtml;
-  } else {
-    expWrap.style.display = 'none';
-  }
-
-  // 8. Education List
-  const eduCards = document.querySelectorAll('#edu_list .cvb-entry-card');
-  const eduWrap = document.getElementById('p_edu_wrap');
-  if (eduCards.length > 0) {
-    eduWrap.style.display = 'block';
-    let eduHtml = '';
-    eduCards.forEach(card => {
-      const sch = card.querySelector('.edu-school')?.value || '';
-      const maj = card.querySelector('.edu-major')?.value || '';
-      const per = card.querySelector('.edu-period')?.value || '';
-      const desc = card.querySelector('.edu-desc')?.value || '';
-      eduHtml += `
-        <div class="cva-item">
-          <div class="cva-item-title">${esc(sch)}</div>
-          <div class="cva-item-sub">${esc(maj)}</div>
-          <div class="cva-item-period"><i class="fa fa-calendar me-1"></i>${esc(per)}</div>
-          <div class="cva-item-desc">${esc(desc)}</div>
-        </div>
-      `;
-    });
-    document.getElementById('p_education').innerHTML = eduHtml;
-  } else {
-    eduWrap.style.display = 'none';
-  }
-
-  // 9. Skills List
-  const skillRows = document.querySelectorAll('#skill_list .skill-row');
-  const skillsWrap = document.getElementById('p_skills_wrap');
-  if (skillRows.length > 0) {
-    skillsWrap.style.display = 'block';
-    let skHtml = '';
-    skillRows.forEach(row => {
-      const name = row.querySelector('.skill-name')?.value || '';
-      const lvl = row.querySelector('.skill-range')?.value || '80';
-      skHtml += `
-        <div style="margin-bottom: 8px;">
-          <div style="display:flex; justify-content:space-between; font-size:11.5px; color:#e2e8f0; margin-bottom:2px;">
-            <span>${esc(name)}</span><span>${lvl}%</span>
-          </div>
-          <div style="height:4px; background:rgba(255,255,255,0.2); border-radius:2px;">
-            <div style="height:100%; width:${lvl}%; background:#60a5fa; border-radius:2px;"></div>
-          </div>
-        </div>
-      `;
-    });
-    document.getElementById('p_skills').innerHTML = skHtml;
-  } else {
-    skillsWrap.style.display = 'none';
-  }
-
-  // Calculate profile completeness score
-  updateScore();
-
-  // Adjust A4 scale to fit viewport
-  if (typeof fitA4Preview === 'function') {
-    fitA4Preview();
+  if (typeof toastr !== 'undefined') {
+    toastr.success('Đã chuyển sang mẫu: ' + tpl.name);
   }
 }
 
-function updateScore() {
-  let score = 10;
-  if (document.getElementById('f_candidate_title').value.trim()) score += 20;
-  if (document.getElementById('f_phone').value.trim()) score += 15;
-  if (document.getElementById('f_address').value.trim()) score += 15;
-  if (document.querySelectorAll('#exp_list .cvb-entry-card').length > 0) score += 20;
-  if (document.querySelectorAll('#edu_list .cvb-entry-card').length > 0) score += 10;
-  if (document.querySelectorAll('#skill_list .skill-row').length > 0) score += 10;
+/* Helpers lấy dữ liệu từ form */
+function getExpData() {
+  const items = [];
+  document.querySelectorAll('#exp_list .cvb-entry-card').forEach(card => {
+    const pos = (card.querySelector('.exp-position')?.value || '').trim();
+    const comp = (card.querySelector('.exp-company')?.value || '').trim();
+    const per = (card.querySelector('.exp-period')?.value || '').trim();
+    const desc = (card.querySelector('.exp-desc')?.value || '').trim();
+    if (pos || comp || per || desc) {
+      items.push({ position: pos, company: comp, period: per, description: desc });
+    }
+  });
+  return items;
+}
 
-  score = Math.min(score, 100);
-  document.getElementById('scoreBadge').textContent = score + '%';
-  document.getElementById('scoreBar').style.width = score + '%';
-  if (score >= 80) {
-    document.getElementById('scoreBar').style.background = '#059669';
-    document.getElementById('scoreTip').textContent = 'Hồ sơ đạt chuẩn xuất sắc';
-  } else if (score >= 40) {
-    document.getElementById('scoreBar').style.background = '#eab308';
-    document.getElementById('scoreTip').textContent = `+${100 - score}% Điền thêm kinh nghiệm`;
-  } else {
-    document.getElementById('scoreBar').style.background = '#ef4444';
-    document.getElementById('scoreTip').textContent = `+${100 - score}% Thêm thông tin cơ bản`;
-  }
+function getEduData() {
+  const items = [];
+  document.querySelectorAll('#edu_list .cvb-entry-card').forEach(card => {
+    const sch = (card.querySelector('.edu-school')?.value || '').trim();
+    const maj = (card.querySelector('.edu-major')?.value || '').trim();
+    const per = (card.querySelector('.edu-period')?.value || '').trim();
+    const desc = (card.querySelector('.edu-desc')?.value || '').trim();
+    if (sch || maj || per || desc) {
+      items.push({ school: sch, major: maj, period: per, description: desc });
+    }
+  });
+  return items;
+}
+
+function getSkillsData() {
+  const items = [];
+  document.querySelectorAll('#skill_list .skill-row').forEach(row => {
+    const name = (row.querySelector('.skill-name')?.value || '').trim();
+    const lvl = row.querySelector('.skill-range')?.value || '80';
+    if (name) {
+      items.push({ name: name, level: lvl });
+    }
+  });
+  return items;
+}
+
+function getLanguagesData() {
+  const items = [];
+  document.querySelectorAll('#lang_list .lang-item-text').forEach(el => {
+    const txt = el.textContent.trim();
+    if (txt) items.push(txt);
+  });
+  return items;
+}
+
+function getItSkillsData() {
+  const items = [];
+  document.querySelectorAll('#it_list .it-item-text').forEach(el => {
+    const txt = el.textContent.trim();
+    if (txt) items.push(txt);
+  });
+  return items;
+}
+
+function getReferencesData() {
+  const items = [];
+  document.querySelectorAll('#ref_list .ref-item-text').forEach(el => {
+    const txt = el.textContent.trim();
+    if (txt) items.push(txt);
+  });
+  return items;
+}
+
+function getActivitiesData() {
+  const items = [];
+  document.querySelectorAll('#act_list .act-item-text').forEach(el => {
+    const txt = el.textContent.trim();
+    if (txt) items.push(txt);
+  });
+  return items;
+}
+
+function getCertsData() {
+  const items = [];
+  document.querySelectorAll('#cert_list .cvb-entry-card').forEach(card => {
+    const name = (card.querySelector('.cert-name')?.value || '').trim();
+    const org = (card.querySelector('.cert-org')?.value || '').trim();
+    const year = (card.querySelector('.cert-year')?.value || '').trim();
+    if (name || org || year) {
+      items.push({ name: name, organization: org, year: year });
+    }
+  });
+  return items;
 }
 
 function esc(str) {
-  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* Renderers các khối con */
+function renderSkillsHtml(skills, isSidebar, barColor) {
+  return skills.map(s => `
+    <div style="margin-bottom: 8px;">
+      <div style="display:flex; justify-content:space-between; font-size:11.5px; color:${isSidebar ? '#e2e8f0' : '#334155'}; margin-bottom:2px;">
+        <span>${esc(s.name)}</span><span>${s.level}%</span>
+      </div>
+      <div style="height:4px; background:${isSidebar ? 'rgba(255,255,255,0.2)' : '#e2e8f0'}; border-radius:2px;">
+        <div style="height:100%; width:${s.level}%; background:${barColor || 'var(--cv-accent, #38bdf8)'}; border-radius:2px;"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderSkillsAtsHtml(skills) {
+  return `
+    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+      ${skills.map(s => `
+        <span style="background:#f1f5f9; border:1px solid #e2e8f0; color:#1e293b; padding:3px 10px; border-radius:4px; font-size:11.5px; font-weight:600;">
+          ${esc(s.name)} (${s.level}%)
+        </span>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderExperienceHtml(expList) {
+  return expList.map(item => `
+    <div class="cva-item">
+      <div class="cva-item-title">${esc(item.position)}</div>
+      <div class="cva-item-sub">${esc(item.company)}</div>
+      <div class="cva-item-period"><i class="fa fa-clock-o me-1"></i>${esc(item.period)}</div>
+      <div class="cva-item-desc">${esc(item.description)}</div>
+    </div>
+  `).join('');
+}
+
+function renderExperienceAtsHtml(expList) {
+  return expList.map(item => `
+    <div class="cva-item" style="margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:2px;">
+        <span style="font-weight:700; font-size:13px; color:#0f172a;">${esc(item.position)}</span>
+        <span style="font-size:11px; color:#64748b;">${esc(item.period)}</span>
+      </div>
+      <div style="font-size:12px; font-weight:600; color:var(--cv-theme); margin-bottom:4px;">${esc(item.company)}</div>
+      <div class="cva-item-desc">${esc(item.description)}</div>
+    </div>
+  `).join('');
+}
+
+function renderEducationHtml(eduList) {
+  return eduList.map(item => `
+    <div class="cva-item">
+      <div class="cva-item-title">${esc(item.school)}</div>
+      <div class="cva-item-sub">${esc(item.major)}</div>
+      <div class="cva-item-period"><i class="fa fa-calendar me-1"></i>${esc(item.period)}</div>
+      <div class="cva-item-desc">${esc(item.description)}</div>
+    </div>
+  `).join('');
+}
+
+function renderEducationAtsHtml(eduList) {
+  return eduList.map(item => `
+    <div class="cva-item" style="margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:2px;">
+        <span style="font-weight:700; font-size:13px; color:#0f172a;">${esc(item.school)}</span>
+        <span style="font-size:11px; color:#64748b;">${esc(item.period)}</span>
+      </div>
+      <div style="font-size:12px; font-weight:600; color:var(--cv-theme); margin-bottom:4px;">${esc(item.major)}</div>
+      <div class="cva-item-desc">${esc(item.description)}</div>
+    </div>
+  `).join('');
+}
+
+function renderCertsHtml(certs) {
+  return certs.map(c => `
+    <div class="cva-item" style="margin-bottom:8px;">
+      <div style="font-size:12px; font-weight:700; color:#0f172a;">${esc(c.name)}</div>
+      <div style="font-size:11px; color:#64748b;">${esc(c.organization)}${c.year ? ' · ' + esc(c.year) : ''}</div>
+    </div>
+  `).join('');
+}
+
+function renderTagsHtml(tags, isSidebar) {
+  return `
+    <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:8px;">
+      ${tags.map(t => `
+        <div style="font-size:11.5px; color:${isSidebar ? '#e2e8f0' : '#334155'};">
+          <i class="fa fa-check-circle me-1" style="font-size:10px; color:${isSidebar ? 'var(--cv-accent, #38bdf8)' : 'var(--cv-theme)'}"></i> ${esc(t)}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+/* ============================================================
+   BỐ CỤC 1: SIDEBAR LEFT (Modern Navy, Executive, Tech, Startup)
+   ============================================================ */
+function renderSidebarLeftHtml(d) {
+  const isFreshGrad = (d.tplKey === 'fresh_graduate');
+  const isTech = (d.tplKey === 'tech_slate');
+  const isExec = (d.tplKey === 'executive_dark');
+  const isStartup = (d.tplKey === 'emerald_startup');
+
+  let skillsHtml = '';
+  if (d.skills.length > 0) {
+    if (isTech) {
+      skillsHtml = `
+        <div class="cva-sb-title">// TECH STACK</div>
+        <div style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px;">
+          ${d.skills.map(s => `
+            <span class="cva-tech-badge"><i class="fa fa-code"></i> ${esc(s.name)} <strong>${s.level}%</strong></span>
+          `).join('')}
+        </div>
+      `;
+    } else {
+      skillsHtml = `
+        <div class="cva-sb-title">KỸ NĂNG</div>
+        <div>${renderSkillsHtml(d.skills, true, d.accent)}</div>
+      `;
+    }
+  }
+
+  // Executive summary banner if executive_dark
+  const execSummaryHtml = isExec ? `
+    <div style="background:#f8fafc; border-left:4px solid #f59e0b; padding:10px 14px; margin-bottom:18px; border-radius:0 6px 6px 0; font-size:11.5px; color:#475569; font-style:italic;">
+      <i class="fa fa-quote-left me-2 text-warning"></i>${esc(d.title || 'Chuyên viên cao cấp')} với định hướng chiến lược, năng lực lãnh đạo đội ngũ và tối ưu hóa hiệu suất vận hành doanh nghiệp.
+    </div>
+  ` : '';
+
+  // Order of sections:
+  // For Fresh Graduate: HỌC VẤN & HOẠT ĐỘNG được ưu tiên lên hàng đầu trước kinh nghiệm!
+  let mainSectionsHtml = '';
+  if (isFreshGrad) {
+    mainSectionsHtml = `
+      ${d.educations.length > 0 ? `
+        <div class="cva-sec-title">HỌC VẤN & BẰNG CẤP</div>
+        <div>${renderEducationHtml(d.educations)}</div>
+      ` : ''}
+      ${d.activities.length > 0 ? `
+        <div class="cva-sec-title">HOẠT ĐỘNG NGOẠI KHÓA & DỰ ÁN</div>
+        <div>${renderTagsHtml(d.activities, false)}</div>
+      ` : ''}
+      ${d.experiences.length > 0 ? `
+        <div class="cva-sec-title">KINH NGHIỆM THỰC TẬP / LÀM VIỆC</div>
+        <div>${renderExperienceHtml(d.experiences)}</div>
+      ` : ''}
+      ${d.certifications.length > 0 ? `
+        <div class="cva-sec-title">CHỨNG CHỈ & GIẢI THƯỞNG</div>
+        <div>${renderCertsHtml(d.certifications)}</div>
+      ` : ''}
+      ${d.references.length > 0 ? `
+        <div class="cva-sec-title">NGƯỜI LIÊN HỆ / THAM CHIẾU</div>
+        <div>${renderTagsHtml(d.references, false)}</div>
+      ` : ''}
+    `;
+  } else {
+    mainSectionsHtml = `
+      ${d.experiences.length > 0 ? `
+        <div class="cva-sec-title">KINH NGHIỆM LÀM VIỆC</div>
+        <div>${renderExperienceHtml(d.experiences)}</div>
+      ` : ''}
+      ${d.educations.length > 0 ? `
+        <div class="cva-sec-title">HỌC VẤN</div>
+        <div>${renderEducationHtml(d.educations)}</div>
+      ` : ''}
+      ${d.certifications.length > 0 ? `
+        <div class="cva-sec-title">CHỨNG CHỈ</div>
+        <div>${renderCertsHtml(d.certifications)}</div>
+      ` : ''}
+      ${d.activities.length > 0 ? `
+        <div class="cva-sec-title">HOẠT ĐỘNG / DỰ ÁN</div>
+        <div>${renderTagsHtml(d.activities, false)}</div>
+      ` : ''}
+      ${d.references.length > 0 ? `
+        <div class="cva-sec-title">NGƯỜI LIÊN HỆ</div>
+        <div>${renderTagsHtml(d.references, false)}</div>
+      ` : ''}
+    `;
+  }
+
+  return `
+    <div class="cva-sidebar">
+      <div class="cva-avatar-wrap">
+        <img src="${esc(d.avatar)}" alt="avatar">
+      </div>
+      <div class="cva-sb-title">${isTech ? '// LIÊN HỆ' : 'LIÊN HỆ'}</div>
+      <div class="cva-contact-item">
+        <i class="fa fa-phone"></i>
+        <span class="${d.phone ? '' : 'cva-contact-placeholder'}">${esc(d.phone || 'Điền số điện thoại')}</span>
+      </div>
+      <div class="cva-contact-item">
+        <i class="fa fa-envelope"></i>
+        <span>${esc(d.email)}</span>
+      </div>
+      <div class="cva-contact-item">
+        <i class="fa fa-calendar"></i>
+        <span class="${d.birthday ? '' : 'cva-contact-placeholder'}">${esc(d.birthday || 'Chọn ngày sinh')}</span>
+      </div>
+      <div class="cva-contact-item">
+        <i class="fa fa-map-marker"></i>
+        <span class="${d.address ? '' : 'cva-contact-placeholder'}">${esc(d.address || 'VD: Trần Bình Trọng, Phường 1')}</span>
+      </div>
+      ${skillsHtml}
+      ${d.languages.length > 0 ? `
+        <div class="cva-sb-title">${isTech ? '// NGOẠI NGỮ' : 'NGOẠI NGỮ'}</div>
+        <div>${renderTagsHtml(d.languages, true)}</div>
+      ` : ''}
+      ${d.itSkills.length > 0 ? `
+        <div class="cva-sb-title">${isTech ? '// CÔNG CỤ DEV' : 'TIN HỌC'}</div>
+        <div>${renderTagsHtml(d.itSkills, true)}</div>
+      ` : ''}
+    </div>
+    <div class="cva-main">
+      <div class="cva-name">${esc(d.name.toUpperCase())}</div>
+      <div class="cva-jobtitle ${d.isTitlePlaceholder ? 'is-placeholder' : ''}">${esc(d.title.toUpperCase())}</div>
+      ${execSummaryHtml}
+      ${mainSectionsHtml}
+    </div>
+  `;
+}
+
+/* ============================================================
+   BỐ CỤC 2: HEADER BANNER (Teal Mint, Royal Purple)
+   ============================================================ */
+function renderHeaderBannerHtml(d) {
+  const isRoyal = (d.tplKey === 'royal_purple');
+  if (isRoyal) {
+    return `
+      <div class="cva-banner-top" style="flex-direction:column; text-align:center; padding:28px 24px;">
+        <img src="${esc(d.avatar)}" alt="avatar" class="cva-banner-avatar" style="margin:0 auto 10px; width:92px; height:92px;">
+        <div class="cva-banner-name" style="font-size:24px; letter-spacing:1px;">${esc(d.name.toUpperCase())}</div>
+        <div class="cva-banner-title ${d.isTitlePlaceholder ? 'is-placeholder' : ''}" style="margin-bottom:12px;">${esc(d.title.toUpperCase())}</div>
+        <div class="cva-banner-contact" style="justify-content:center;">
+          <span class="cva-b-pill"><i class="fa fa-envelope"></i> ${esc(d.email)}</span>
+          <span class="cva-b-pill"><i class="fa fa-phone"></i> ${esc(d.phone || 'Điền số điện thoại')}</span>
+          ${d.birthday ? `<span class="cva-b-pill"><i class="fa fa-calendar"></i> ${esc(d.birthday)}</span>` : ''}
+          ${d.address ? `<span class="cva-b-pill"><i class="fa fa-map-marker"></i> ${esc(d.address)}</span>` : ''}
+        </div>
+      </div>
+      <div class="cva-banner-body" style="grid-template-columns: 50% 50%; gap:24px;">
+        <div>
+          ${d.experiences.length > 0 ? `
+            <div class="cva-banner-sec-title">KINH NGHIỆM LÀM VIỆC</div>
+            <div>${renderExperienceHtml(d.experiences)}</div>
+          ` : ''}
+          ${d.activities.length > 0 ? `
+            <div class="cva-banner-sec-title">HOẠT ĐỘNG & DỰ ÁN</div>
+            <div>${renderTagsHtml(d.activities, false)}</div>
+          ` : ''}
+        </div>
+        <div>
+          ${d.educations.length > 0 ? `
+            <div class="cva-banner-sec-title">HỌC VẤN</div>
+            <div>${renderEducationHtml(d.educations)}</div>
+          ` : ''}
+          ${d.skills.length > 0 ? `
+            <div class="cva-banner-sec-title">KỸ NĂNG CHUYÊN MÔN</div>
+            <div>${renderSkillsHtml(d.skills, false, d.theme)}</div>
+          ` : ''}
+          ${d.languages.length > 0 ? `
+            <div class="cva-banner-sec-title">NGOẠI NGỮ</div>
+            <div>${renderTagsHtml(d.languages, false)}</div>
+          ` : ''}
+          ${d.certifications.length > 0 ? `
+            <div class="cva-banner-sec-title">CHỨNG CHỈ</div>
+            <div>${renderCertsHtml(d.certifications)}</div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  // Teal Mint (Standard Banner)
+  return `
+    <div class="cva-banner-top">
+      <img src="${esc(d.avatar)}" alt="avatar" class="cva-banner-avatar">
+      <div class="cva-banner-info">
+        <div class="cva-banner-name">${esc(d.name.toUpperCase())}</div>
+        <div class="cva-banner-title ${d.isTitlePlaceholder ? 'is-placeholder' : ''}">${esc(d.title.toUpperCase())}</div>
+        <div class="cva-banner-contact">
+          <span class="cva-b-pill"><i class="fa fa-envelope"></i> ${esc(d.email)}</span>
+          <span class="cva-b-pill"><i class="fa fa-phone"></i> ${esc(d.phone || 'Điền số điện thoại')}</span>
+          ${d.birthday ? `<span class="cva-b-pill"><i class="fa fa-calendar"></i> ${esc(d.birthday)}</span>` : ''}
+          ${d.address ? `<span class="cva-b-pill"><i class="fa fa-map-marker"></i> ${esc(d.address)}</span>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="cva-banner-body">
+      <div>
+        ${d.skills.length > 0 ? `
+          <div class="cva-banner-sec-title">KỸ NĂNG CHUYÊN MÔN</div>
+          <div>${renderSkillsHtml(d.skills, false, d.theme)}</div>
+        ` : ''}
+        ${d.educations.length > 0 ? `
+          <div class="cva-banner-sec-title">HỌC VẤN</div>
+          <div>${renderEducationHtml(d.educations)}</div>
+        ` : ''}
+        ${d.languages.length > 0 ? `
+          <div class="cva-banner-sec-title">NGOẠI NGỮ</div>
+          <div>${renderTagsHtml(d.languages, false)}</div>
+        ` : ''}
+        ${d.itSkills.length > 0 ? `
+          <div class="cva-banner-sec-title">TIN HỌC</div>
+          <div>${renderTagsHtml(d.itSkills, false)}</div>
+        ` : ''}
+        ${d.certifications.length > 0 ? `
+          <div class="cva-banner-sec-title">CHỨNG CHỈ</div>
+          <div>${renderCertsHtml(d.certifications)}</div>
+        ` : ''}
+      </div>
+      <div>
+        ${d.experiences.length > 0 ? `
+          <div class="cva-banner-sec-title">KINH NGHIỆM LÀM VIỆC</div>
+          <div>${renderExperienceHtml(d.experiences)}</div>
+        ` : ''}
+        ${d.activities.length > 0 ? `
+          <div class="cva-banner-sec-title">HOẠT ĐỘNG & DỰ ÁN</div>
+          <div>${renderTagsHtml(d.activities, false)}</div>
+        ` : ''}
+        ${d.references.length > 0 ? `
+          <div class="cva-banner-sec-title">NGƯỜI LIÊN HỆ</div>
+          <div>${renderTagsHtml(d.references, false)}</div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   BỐ CỤC 3: HEADER SPLIT (Creative Coral, Classic Serif, Burgundy)
+   ============================================================ */
+function renderHeaderSplitHtml(d) {
+  return `
+    <div class="cva-split-top">
+      <div class="cva-split-info">
+        <div class="cva-split-name">${esc(d.name.toUpperCase())}</div>
+        <div class="cva-split-title ${d.isTitlePlaceholder ? 'is-placeholder' : ''}">${esc(d.title.toUpperCase())}</div>
+        <div class="cva-split-contact">
+          <span><i class="fa fa-envelope" style="color:var(--cv-theme)"></i> ${esc(d.email)}</span>
+          <span><i class="fa fa-phone" style="color:var(--cv-theme)"></i> ${esc(d.phone || 'Điền số điện thoại')}</span>
+          ${d.birthday ? `<span><i class="fa fa-calendar" style="color:var(--cv-theme)"></i> ${esc(d.birthday)}</span>` : ''}
+          ${d.address ? `<span><i class="fa fa-map-marker" style="color:var(--cv-theme)"></i> ${esc(d.address)}</span>` : ''}
+        </div>
+      </div>
+      <div class="cva-split-avatar-wrap">
+        <img src="${esc(d.avatar)}" alt="avatar" class="cva-split-avatar">
+      </div>
+    </div>
+    <div class="cva-split-body">
+      <div>
+        ${d.experiences.length > 0 ? `
+          <div class="cva-split-sec-title">KINH NGHIỆM LÀM VIỆC</div>
+          <div>${renderExperienceHtml(d.experiences)}</div>
+        ` : ''}
+        ${d.activities.length > 0 ? `
+          <div class="cva-split-sec-title">DỰ ÁN & HOẠT ĐỘNG</div>
+          <div>${renderTagsHtml(d.activities, false)}</div>
+        ` : ''}
+      </div>
+      <div>
+        ${d.educations.length > 0 ? `
+          <div class="cva-split-sec-title">HỌC VẤN</div>
+          <div>${renderEducationHtml(d.educations)}</div>
+        ` : ''}
+        ${d.skills.length > 0 ? `
+          <div class="cva-split-sec-title">KỸ NĂNG</div>
+          <div>${renderSkillsHtml(d.skills, false, d.theme)}</div>
+        ` : ''}
+        ${d.certifications.length > 0 ? `
+          <div class="cva-split-sec-title">CHỨNG CHỈ</div>
+          <div>${renderCertsHtml(d.certifications)}</div>
+        ` : ''}
+        ${d.languages.length > 0 ? `
+          <div class="cva-split-sec-title">NGOẠI NGỮ</div>
+          <div>${renderTagsHtml(d.languages, false)}</div>
+        ` : ''}
+        ${d.references.length > 0 ? `
+          <div class="cva-split-sec-title">NGƯỜI LIÊN HỆ</div>
+          <div>${renderTagsHtml(d.references, false)}</div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   BỐ CỤC 4: SINGLE COLUMN / ATS MINIMALIST (ATS Standard, Minimalist)
+   ============================================================ */
+function renderSingleColumnHtml(d) {
+  const isAts = (d.tplKey === 'ats_standard');
+  if (isAts) {
+    return `
+      <div class="cva-single-top" style="border-bottom: 2px solid #000; padding: 28px 36px 14px; text-align:center;">
+        <div class="cva-single-name" style="font-size:24px; font-weight:800; letter-spacing:1px; color:#000;">${esc(d.name.toUpperCase())}</div>
+        <div class="cva-single-title ${d.isTitlePlaceholder ? 'is-placeholder' : ''}" style="color:#333; margin-bottom:8px; font-weight:600;">${esc(d.title.toUpperCase())}</div>
+        <div class="cva-single-contact" style="justify-content:center; gap:8px 14px; font-size:11.5px; color:#111;">
+          <span><strong>Email:</strong> ${esc(d.email)}</span>
+          <span>|</span>
+          <span><strong>Phone:</strong> ${esc(d.phone || 'Chưa điền')}</span>
+          ${d.address ? `<span>|</span><span><strong>Địa chỉ:</strong> ${esc(d.address)}</span>` : ''}
+          ${d.birthday ? `<span>|</span><span><strong>Ngày sinh:</strong> ${esc(d.birthday)}</span>` : ''}
+        </div>
+      </div>
+      <div class="cva-single-body" style="padding: 20px 36px 40px;">
+        ${d.experiences.length > 0 ? `
+          <div class="cva-single-sec-title" style="border-bottom:1.5px solid #000; color:#000;">KINH NGHIỆM LÀM VIỆC</div>
+          <div>${renderExperienceAtsHtml(d.experiences)}</div>
+        ` : ''}
+        ${d.educations.length > 0 ? `
+          <div class="cva-single-sec-title" style="border-bottom:1.5px solid #000; color:#000;">TRÌNH ĐỘ HỌC VẤN</div>
+          <div>${renderEducationAtsHtml(d.educations)}</div>
+        ` : ''}
+        ${d.skills.length > 0 ? `
+          <div class="cva-single-sec-title" style="border-bottom:1.5px solid #000; color:#000;">KỸ NĂNG CHUYÊN MÔN</div>
+          <div>${renderSkillsAtsHtml(d.skills)}</div>
+        ` : ''}
+        ${d.certifications.length > 0 ? `
+          <div class="cva-single-sec-title" style="border-bottom:1.5px solid #000; color:#000;">CHỨNG CHỈ</div>
+          <div>${renderCertsHtml(d.certifications)}</div>
+        ` : ''}
+        ${d.activities.length > 0 ? `
+          <div class="cva-single-sec-title" style="border-bottom:1.5px solid #000; color:#000;">DỰ ÁN & HOẠT ĐỘNG</div>
+          <div>${renderTagsHtml(d.activities, false)}</div>
+        ` : ''}
+        ${d.languages.length > 0 ? `
+          <div class="cva-single-sec-title" style="border-bottom:1.5px solid #000; color:#000;">NGOẠI NGỮ</div>
+          <div>${renderTagsHtml(d.languages, false)}</div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  // Minimalist clean with avatar
+  return `
+    <div class="cva-single-top" style="display:flex; align-items:center; justify-content:space-between; padding:28px 36px 18px; text-align:left; border-bottom:2px solid var(--cv-theme);">
+      <div>
+        <div class="cva-single-name" style="color:var(--cv-theme);">${esc(d.name.toUpperCase())}</div>
+        <div class="cva-single-title ${d.isTitlePlaceholder ? 'is-placeholder' : ''}">${esc(d.title.toUpperCase())}</div>
+        <div class="cva-single-contact" style="justify-content:flex-start; margin-top:8px;">
+          <span><i class="fa fa-envelope me-1" style="color:var(--cv-theme)"></i>${esc(d.email)}</span>
+          <span>•</span>
+          <span><i class="fa fa-phone me-1" style="color:var(--cv-theme)"></i>${esc(d.phone || 'Chưa điền SĐT')}</span>
+          ${d.address ? `<span>•</span><span><i class="fa fa-map-marker me-1" style="color:var(--cv-theme)"></i>${esc(d.address)}</span>` : ''}
+        </div>
+      </div>
+      <img src="${esc(d.avatar)}" alt="avatar" style="width:76px; height:76px; border-radius:50%; object-fit:cover; border:2.5px solid var(--cv-theme); box-shadow:0 3px 10px rgba(0,0,0,0.1);">
+    </div>
+    <div class="cva-single-body">
+      ${d.experiences.length > 0 ? `
+        <div class="cva-single-sec-title" style="color:var(--cv-theme); border-bottom:1.5px solid var(--cv-theme);">KINH NGHIỆM LÀM VIỆC</div>
+        <div>${renderExperienceAtsHtml(d.experiences)}</div>
+      ` : ''}
+      ${d.educations.length > 0 ? `
+        <div class="cva-single-sec-title" style="color:var(--cv-theme); border-bottom:1.5px solid var(--cv-theme);">TRÌNH ĐỘ HỌC VẤN</div>
+        <div>${renderEducationAtsHtml(d.educations)}</div>
+      ` : ''}
+      ${d.skills.length > 0 ? `
+        <div class="cva-single-sec-title" style="color:var(--cv-theme); border-bottom:1.5px solid var(--cv-theme);">KỸ NĂNG CHUYÊN MÔN</div>
+        <div>${renderSkillsAtsHtml(d.skills)}</div>
+      ` : ''}
+      ${d.certifications.length > 0 ? `
+        <div class="cva-single-sec-title" style="color:var(--cv-theme); border-bottom:1.5px solid var(--cv-theme);">CHỨNG CHỈ & GIẢI THƯỞNG</div>
+        <div>${renderCertsHtml(d.certifications)}</div>
+      ` : ''}
+      ${d.activities.length > 0 ? `
+        <div class="cva-single-sec-title" style="color:var(--cv-theme); border-bottom:1.5px solid var(--cv-theme);">DỰ ÁN & HOẠT ĐỘNG</div>
+        <div>${renderTagsHtml(d.activities, false)}</div>
+      ` : ''}
+      ${d.languages.length > 0 ? `
+        <div class="cva-single-sec-title" style="color:var(--cv-theme); border-bottom:1.5px solid var(--cv-theme);">NGOẠI NGỮ</div>
+        <div>${renderTagsHtml(d.languages, false)}</div>
+      ` : ''}
+      ${d.references.length > 0 ? `
+        <div class="cva-single-sec-title" style="color:var(--cv-theme); border-bottom:1.5px solid var(--cv-theme);">NGƯỜI LIÊN HỆ</div>
+        <div>${renderTagsHtml(d.references, false)}</div>
+      ` : ''}
+    </div>
+  `;
+}
+
+/* ============================================================
+   MAIN RENDER FUNCTION
+   ============================================================ */
+function renderPreview() {
+  const theme = document.getElementById('cv_theme_color').value || '#00b14f';
+  const tplKey = document.getElementById('cv_template_key').value || 'emerald_startup';
+  const tpl = (typeof CV_TEMPLATES !== 'undefined' && CV_TEMPLATES[tplKey]) 
+      ? CV_TEMPLATES[tplKey] 
+      : { layout: 'sidebar_left', primary_color: '#00b14f', accent_color: '#4ade80', font: 'Lexend' };
+
+  const cvA4 = document.getElementById('cvA4');
+  if (!cvA4) return;
+
+  cvA4.style.setProperty('--cv-theme', theme);
+  cvA4.style.setProperty('--cv-sidebar-bg', theme);
+  cvA4.style.setProperty('--cv-accent', tpl.accent_color || '#4ade80');
+  cvA4.style.fontFamily = `'${tpl.font || 'Lexend'}', sans-serif`;
+
+  const layout = tpl.layout || 'sidebar_left';
+  cvA4.className = 'cv-a4 cv-layout-' + layout + ' cv-template-' + tplKey;
+
+  const fName = (document.getElementById('f_fullname').value || '').trim();
+  const fTitle = (document.getElementById('f_candidate_title').value || '').trim();
+  const fEmail = (document.getElementById('f_email').value || '').trim() || 'email@example.com';
+  const fPhone = (document.getElementById('f_phone').value || '').trim();
+  const fBirthday = (document.getElementById('f_birthday').value || '').trim();
+  const fAddress = (document.getElementById('f_address').value || '').trim();
+  const avatarUrl = document.getElementById('cv_avatar_url').value;
+
+  const data = {
+    tplKey: tplKey,
+    name: fName || 'HỌ VÀ TÊN',
+    title: fTitle || 'TIÊU ĐỀ HỒ SƠ',
+    isTitlePlaceholder: !fTitle,
+    email: fEmail,
+    phone: fPhone,
+    birthday: fBirthday,
+    address: fAddress,
+    avatar: avatarUrl,
+    theme: theme,
+    accent: tpl.accent_color || '#4ade80',
+    experiences: getExpData(),
+    educations: getEduData(),
+    skills: getSkillsData(),
+    languages: getLanguagesData(),
+    itSkills: getItSkillsData(),
+    references: getReferencesData(),
+    activities: getActivitiesData(),
+    certifications: getCertsData(),
+  };
+
+  if (layout === 'header_banner') {
+    cvA4.innerHTML = renderHeaderBannerHtml(data);
+  } else if (layout === 'header_split') {
+    cvA4.innerHTML = renderHeaderSplitHtml(data);
+  } else if (layout === 'single_column') {
+    cvA4.innerHTML = renderSingleColumnHtml(data);
+  } else {
+    cvA4.innerHTML = renderSidebarLeftHtml(data);
+  }
+
+  if (typeof fitA4Preview === 'function') {
+    fitA4Preview();
+  }
 }
 
 /* Event binding */
@@ -1036,6 +1683,27 @@ function addCard(type) {
       </div>
     `;
     document.getElementById('edu_list').insertAdjacentHTML('beforeend', html);
+  } else if (type === 'cert') {
+    html = `
+      <div class="cvb-entry-card" data-section="cert">
+        <button type="button" class="cvb-del-btn" onclick="delCard(this)"><i class="fa fa-times"></i></button>
+        <div class="mb-2">
+          <label class="cvb-label">Tên chứng chỉ / Giải thưởng</label>
+          <input class="cvb-input cert-name" placeholder="VD: Chứng chỉ IELTS 7.5">
+        </div>
+        <div class="row g-2">
+          <div class="col-7">
+            <label class="cvb-label">Tổ chức cấp</label>
+            <input class="cvb-input cert-org" placeholder="VD: British Council">
+          </div>
+          <div class="col-5">
+            <label class="cvb-label">Năm cấp</label>
+            <input class="cvb-input cert-year" placeholder="VD: 2023">
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById('cert_list').insertAdjacentHTML('beforeend', html);
   }
 
   document.querySelectorAll('.cvb-panel input, .cvb-panel textarea').forEach(el => {
@@ -1069,11 +1737,12 @@ function addLanguage() {
   if (!name) return;
   const html = `
     <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-light border rounded">
-      <span class="fw-bold">${esc(name)}</span>
-      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove()"><i class="fa fa-times"></i></button>
+      <span class="fw-bold lang-item-text">${esc(name)}</span>
+      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove(); renderPreview()"><i class="fa fa-times"></i></button>
     </div>
   `;
   document.getElementById('lang_list').insertAdjacentHTML('beforeend', html);
+  renderPreview();
 }
 
 function addItSkill() {
@@ -1081,11 +1750,12 @@ function addItSkill() {
   if (!name) return;
   const html = `
     <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-light border rounded">
-      <span class="fw-bold">${esc(name)}</span>
-      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove()"><i class="fa fa-times"></i></button>
+      <span class="fw-bold it-item-text">${esc(name)}</span>
+      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove(); renderPreview()"><i class="fa fa-times"></i></button>
     </div>
   `;
   document.getElementById('it_list').insertAdjacentHTML('beforeend', html);
+  renderPreview();
 }
 
 function addReference() {
@@ -1093,11 +1763,12 @@ function addReference() {
   if (!name) return;
   const html = `
     <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-light border rounded">
-      <span>${esc(name)}</span>
-      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove()"><i class="fa fa-times"></i></button>
+      <span class="ref-item-text">${esc(name)}</span>
+      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove(); renderPreview()"><i class="fa fa-times"></i></button>
     </div>
   `;
   document.getElementById('ref_list').insertAdjacentHTML('beforeend', html);
+  renderPreview();
 }
 
 function addActivity() {
@@ -1105,11 +1776,12 @@ function addActivity() {
   if (!name) return;
   const html = `
     <div class="d-flex align-items-center justify-content-between p-2 mb-2 bg-light border rounded">
-      <span>${esc(name)}</span>
-      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove()"><i class="fa fa-times"></i></button>
+      <span class="act-item-text">${esc(name)}</span>
+      <button type="button" class="btn btn-sm text-danger" onclick="this.parentElement.remove(); renderPreview()"><i class="fa fa-times"></i></button>
     </div>
   `;
   document.getElementById('act_list').insertAdjacentHTML('beforeend', html);
+  renderPreview();
 }
 
 /* Color Palette: click swatch to change color and close dropdown */
@@ -1205,8 +1877,8 @@ document.getElementById('avatarFileInput').addEventListener('change', function()
     success: function(res) {
       if (res.status) {
         document.getElementById('avatarPreview').src = res.avatar_url;
-        document.getElementById('p_avatar').src = res.avatar_url;
         document.getElementById('cv_avatar_url').value = res.avatar_url;
+        renderPreview();
         toastr.success(res.message);
       } else {
         toastr.error(res.message);
@@ -1220,33 +1892,11 @@ document.getElementById('avatarFileInput').addEventListener('change', function()
 
 /* Save CV and Finish */
 document.getElementById('btnExportPdf').addEventListener('click', function() {
-  const expData = [];
-  document.querySelectorAll('#exp_list .cvb-entry-card').forEach(card => {
-    expData.push({
-      position: card.querySelector('.exp-position')?.value || '',
-      company: card.querySelector('.exp-company')?.value || '',
-      period: card.querySelector('.exp-period')?.value || '',
-      description: card.querySelector('.exp-desc')?.value || '',
-    });
-  });
-
-  const eduData = [];
-  document.querySelectorAll('#edu_list .cvb-entry-card').forEach(card => {
-    eduData.push({
-      school: card.querySelector('.edu-school')?.value || '',
-      major: card.querySelector('.edu-major')?.value || '',
-      period: card.querySelector('.edu-period')?.value || '',
-      description: card.querySelector('.edu-desc')?.value || '',
-    });
-  });
-
-  const skillsData = [];
-  document.querySelectorAll('#skill_list .skill-row').forEach(row => {
-    skillsData.push({
-      name: row.querySelector('.skill-name')?.value || '',
-      level: row.querySelector('.skill-range')?.value || '80',
-    });
-  });
+  const expData = getExpData();
+  const eduData = getEduData();
+  const skillsData = getSkillsData();
+  const certData = getCertsData();
+  const actData = getActivitiesData();
 
   const payload = {
     _token: '{{ csrf_token() }}',
@@ -1265,8 +1915,8 @@ document.getElementById('btnExportPdf').addEventListener('click', function() {
     experience_data: JSON.stringify(expData),
     education_data: JSON.stringify(eduData),
     skills_data: JSON.stringify(skillsData),
-    projects_data: '[]',
-    certifications_data: '[]',
+    projects_data: JSON.stringify(actData),
+    certifications_data: JSON.stringify(certData),
   };
 
   $.ajax({

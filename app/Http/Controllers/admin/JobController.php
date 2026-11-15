@@ -21,8 +21,17 @@ class JobController extends Controller
     if (!empty($request->date)) {
       $jobs = $jobs->whereDate('created_at', $request->date);
     }
-    $jobs = $jobs->with('career')->paginate(7);
-    return view('admin.job.list', compact('jobs'));
+    if ($request->has('status') && $request->status !== '' && $request->status !== 'all') {
+      $jobs = $jobs->where('status', $request->status);
+    }
+    $jobs = $jobs->with('career')->paginate(7)->withQueryString();
+
+    $pendingCount = Job::where('status', env('STATUS_PENDING', 0))->count();
+    $approvedCount = Job::where('status', env('STATUS_APPROVED', 1))->count();
+    $lockedCount = Job::where('status', env('STATUS_LOCKED', 2))->count();
+    $allCount = Job::count();
+
+    return view('admin.job.list', compact('jobs', 'pendingCount', 'approvedCount', 'lockedCount', 'allCount'));
   }
   public function editJob($id)
   {
@@ -30,6 +39,18 @@ class JobController extends Controller
       return view("errors.404");
     }
     $job = Job::with('jobType')->findOrFail($id);
+
+    // Tự động đánh dấu đã đọc thông báo của công việc này khi admin mở xem
+    if (auth()->check()) {
+      try {
+        auth()->user()->unreadNotifications
+          ->filter(fn($n) => isset($n->data['job_id']) && $n->data['job_id'] == $id)
+          ->markAsRead();
+      } catch (\Throwable $e) {
+        // bỏ qua nếu lỗi
+      }
+    }
+
     $jobTypes = JobType::orderBy('name', 'ASC')->get();
     $careers = Career::orderBy('name', 'ASC')->get();
     $provinces = config('vietnam_provinces_34.provinces', []);
@@ -50,7 +71,7 @@ class JobController extends Controller
         'responsibility' => 'required',
         'qualifications' => 'required',
         'benefits' => 'required',
-        'salary' => 'required|integer',
+        'salary' => 'nullable|string|max:255',
       ],
       [
         'title.required' => 'Tiêu đề công việc là bắt buộc.',
@@ -65,15 +86,13 @@ class JobController extends Controller
         'responsibility.required' => 'Trách nhiệm công việc là bắt buộc.',
         'qualifications.required' => 'Kỹ năng & chuyên môn là bắt buộc.',
         'benefits.required' => ' Phúc lợi là bắt buộc.',
-        'salary.integer' => 'Mức lương phải là một con số hợp lệ.',
-        'salary.required' => 'Mức lương là bắt buộc',
       ]
     );
     if ($validator->passes()) {
       $job = Job::find($id);
       $job->title = $request->title;
       $job->company_name = $request->company_name;
-      $job->salary = $request->salary;
+      $job->salary = !empty($request->salary) ? trim($request->salary) : 'Thỏa thuận';
       $job->career_id = $request->career;
       $job->experience = $request->experience;
       $job->status = $request->status;
@@ -84,7 +103,21 @@ class JobController extends Controller
       $job->responsibility = $request->responsibility;
       $job->qualifications = $request->qualifications;
       $job->benefits = $request->benefits;
-      $job->keywords = $request->keywords;
+      
+      $keywords = $request->keywords;
+      if (!empty($keywords)) {
+        if (is_string($keywords) && str_starts_with(trim($keywords), '[') && str_ends_with(trim($keywords), ']')) {
+          $decoded = json_decode($keywords, true);
+          if (is_array($decoded)) {
+            $keywords = implode(', ', array_map('trim', $decoded));
+          }
+        }
+        $keywords = trim($keywords, " \t\n\r\0\x0B[]\"'");
+        $parts = array_filter(array_map('trim', explode(',', $keywords)));
+        $job->keywords = implode(', ', $parts);
+      } else {
+        $job->keywords = '';
+      }
       $job->province = $request->province_name ? $request->province_name : $job->province;
       $job->district = $request->district_name ? $request->district_name : $job->district;
       $job->wards = $request->ward_name ? $request->ward_name : $job->wards;

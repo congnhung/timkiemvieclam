@@ -63,7 +63,7 @@
                             <i class="fa fa-pencil me-1"></i> Chỉnh sửa
                           </a>
 
-                          <a href="{{ route('cv.print', $resume->id) }}" target="_blank" class="btn btn-sm btn-outline-primary flex-grow-1 fw-semibold">
+                          <a href="{{ route('cv.print', $resume->id) }}" target="_blank" class="btn btn-sm btn-outline-success flex-grow-1 fw-semibold">
                             <i class="fa fa-download me-1"></i> Tải PDF
                           </a>
 

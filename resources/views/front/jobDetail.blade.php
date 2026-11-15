@@ -70,41 +70,53 @@
           </div>
 
           <!-- Top Actions -->
-          <div class="d-flex flex-row flex-md-column gap-2 ms-md-auto mt-3 mt-md-0 w-100 w-md-auto" style="min-width: 180px;">
+          <div class="tw-job-actions-wrap ms-md-auto mt-3 mt-md-0">
             @if (Auth::check() && Auth::user()->role === 'user')
               @if ($userHasApplied)
-                <button class="tw-btn tw-btn-outline w-100 justify-content-center text-center" disabled>
-                  Đã ứng tuyển
+                <button class="tw-btn-apply" disabled style="background: #94a3b8 !important; border-color: #94a3b8 !important; cursor: not-allowed; opacity: 0.9;">
+                  <i class="fa fa-check-circle me-1"></i> Đã ứng tuyển
                 </button>
               @else
-                <button class="tw-btn tw-btn-primary w-100 justify-content-center text-center" data-bs-toggle="modal" data-bs-target="#applyJobModal">
-                  Ứng tuyển ngay
+                <button class="tw-btn-apply" data-bs-toggle="modal" data-bs-target="#applyJobModal">
+                  <i class="fa fa-paper-plane me-1.5"></i> Ứng tuyển ngay
                 </button>
               @endif
-              <button type="button" class="tw-btn tw-btn-outline w-100 justify-content-center text-center btn-open-chat"
-                data-job-id="{{ $job->id }}" style="border-color: #00b14f; color: #00b14f; font-weight: 600;">
-                <i class="fa fa-comments me-1"></i> Chat với NTD
-              </button>
-            @elseif (Auth::check() && Auth::user()->role === 'employer')
-              <a href="{{ route('JobDetail_employer', $job->id) }}" class="tw-btn tw-btn-outline w-100 justify-content-center text-center">
-                Quản lý ứng viên
-              </a>
-            @else
-              <a href="{{ route('account.login') }}" class="tw-btn tw-btn-primary w-100 justify-content-center text-center">
-                Đăng nhập để ứng tuyển
-              </a>
-              <a href="{{ route('account.login') }}" class="tw-btn tw-btn-outline w-100 justify-content-center text-center"
-                style="border-color: #00b14f; color: #00b14f; font-weight: 600;">
-                <i class="fa fa-comments me-1"></i> Chat với NTD
-              </a>
-            @endif
 
-            <!-- Save Job Button -->
-            <button type="button" class="tw-btn tw-btn-outline w-100 justify-content-center text-center"
-              onclick="saveJobHeart({{ $job->id }}, this)">
-              <i class="fa {{ $count == 1 ? 'fa-heart text-danger' : 'fa-heart-o' }} me-1"></i>
-              <span class="save-text">{{ $count == 1 ? 'Đã lưu' : 'Lưu tin' }}</span>
-            </button>
+              <div class="d-flex gap-2 mt-2">
+                <button type="button" class="tw-btn-chat-ntd btn-open-chat" data-job-id="{{ $job->id }}" title="Nhắn tin với nhà tuyển dụng">
+                  <i class="fa fa-comments me-1"></i> Chat với NTD
+                </button>
+                <button type="button" class="tw-btn-save-job" onclick="saveJobHeart({{ $job->id }}, this)" title="{{ $count == 1 ? 'Bỏ lưu tin' : 'Lưu tin tuyển dụng này' }}">
+                  <i class="fa {{ $count == 1 ? 'fa-heart text-danger' : 'fa-heart-o' }} me-1"></i>
+                  <span class="save-text">{{ $count == 1 ? 'Đã lưu' : 'Lưu tin' }}</span>
+                </button>
+              </div>
+
+            @elseif (Auth::check() && Auth::user()->role === 'employer')
+              <a href="{{ route('JobDetail_employer', $job->id) }}" class="tw-btn-apply">
+                <i class="fa fa-users me-1.5"></i> Quản lý ứng viên
+              </a>
+              <div class="d-flex gap-2 mt-2">
+                <button type="button" class="tw-btn-save-job w-100" onclick="saveJobHeart({{ $job->id }}, this)">
+                  <i class="fa {{ $count == 1 ? 'fa-heart text-danger' : 'fa-heart-o' }} me-1"></i>
+                  <span class="save-text">{{ $count == 1 ? 'Đã lưu' : 'Lưu tin' }}</span>
+                </button>
+              </div>
+
+            @else
+              <a href="{{ route('account.login') }}" class="tw-btn-apply">
+                <i class="fa fa-sign-in me-1.5"></i> Đăng nhập để ứng tuyển
+              </a>
+              <div class="d-flex gap-2 mt-2">
+                <a href="{{ route('account.login') }}" class="tw-btn-chat-ntd">
+                  <i class="fa fa-comments me-1"></i> Chat với NTD
+                </a>
+                <button type="button" class="tw-btn-save-job" onclick="saveJobHeart({{ $job->id }}, this)">
+                  <i class="fa {{ $count == 1 ? 'fa-heart text-danger' : 'fa-heart-o' }} me-1"></i>
+                  <span class="save-text">{{ $count == 1 ? 'Đã lưu' : 'Lưu tin' }}</span>
+                </button>
+              </div>
+            @endif
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@
   <nav class="tw-navbar">
     <div class="container-fluid tw-nav-inner">
       
-      {{-- Brand Logo (Vieclam24h purple style) --}}
+      {{-- Brand Logo (TopWork Green style) --}}
       <a class="tw-logo" href="{{ route('home') }}">
         <img src="{{ asset('assets/user/images/logo_web.jpg') }}" alt="TopWork" class="tw-logo-img">
         <span class="tw-logo-text">TopWork<small>NHANH HƠN, DỄ DÀNG HƠN</small></span>
@@ -26,11 +26,11 @@
             </a>
             <div class="dropdown-menu shadow-lg tw-dropdown-vieclam" aria-labelledby="navDropdownJobs">
               <a class="dropdown-item tw-dd-main-link" href="{{ route('jobs') }}">
-                <i class="fa fa-search text-primary me-2"></i> <span>Tìm việc làm</span>
+                <i class="fa fa-search me-2" style="color: #00b14f;"></i> <span>Tìm việc làm</span>
               </a>
               <div class="dropdown-divider my-2"></div>
               <div class="tw-dd-group-header">
-                <span><i class="fa fa-briefcase text-primary me-2"></i> Quản lý việc làm</span>
+                <span><i class="fa fa-briefcase me-2" style="color: #00b14f;"></i> Quản lý việc làm</span>
                 <i class="fa fa-chevron-down text-muted" style="font-size: 11px;"></i>
               </div>
               <ul class="list-unstyled mb-0 mt-1 tw-dd-sublist">
@@ -72,7 +72,7 @@
             </a>
             <div class="dropdown-menu shadow-lg tw-dropdown-congcu" aria-labelledby="navDropdownTools">
               <a class="dropdown-item py-2" href="{{ route('cv.templates') }}">
-                <i class="fa fa-file-text-o text-primary me-2" style="width: 16px;"></i> Mẫu CV xin việc
+                <i class="fa fa-file-text-o me-2" style="width: 16px; color: #00b14f;"></i> Mẫu CV xin việc
               </a>
               <a class="dropdown-item py-2" href="{{ route('cv.builder') }}">
                 <i class="fa fa-pencil-square-o text-success me-2" style="width: 16px;"></i> Tạo CV online
@@ -82,7 +82,7 @@
               </a>
               <div class="dropdown-divider my-1"></div>
               <a class="dropdown-item py-2" href="{{ route('jobs') }}">
-                <i class="fa fa-calculator text-info me-2" style="width: 16px;"></i> Tính lương GROSS - NET
+                <i class="fa fa-calculator me-2" style="width: 16px; color: #00b14f;"></i> Tính lương GROSS - NET
               </a>
             </div>
           </li>
@@ -225,15 +225,6 @@
             <a href="{{ route('account.login') }}" class="tw-btn-guest-login">Đăng nhập</a>
             <a href="{{ route('account.registration') }}" class="tw-btn-guest-reg">Đăng ký</a>
           @endif
-
-          {{-- Button DÀNH CHO Nhà Tuyển Dụng --}}
-          <a href="{{ route('account.createJob') }}" class="tw-btn-ntd d-none d-sm-inline-flex">
-            <i class="fa fa-briefcase"></i>
-            <div class="tw-ntd-text">
-              <small>DÀNH CHO</small>
-              <span>Nhà Tuyển Dụng</span>
-            </div>
-          </a>
 
           {{-- Flag 🇻🇳 --}}
           <span class="tw-lang-pill" title="Tiếng Việt">

@@ -46,9 +46,9 @@
                 <input type="file" class="form-control" id="image" name="image">
                 <p class="text-danger" id="image-error"></p>
               </div>
-              <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary mx-3">Cập nhật</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+              <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="tw-btn tw-btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="submit" class="tw-btn tw-btn-primary">Cập nhật</button>
               </div>
             </form>
           </div>
@@ -72,9 +72,9 @@
                 <input type="file" class="form-control" id="image" name="image">
                 <p class="text-danger" id="image-error"></p>
               </div>
-              <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary mx-3">Cập nhật</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+              <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="tw-btn tw-btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="submit" class="tw-btn tw-btn-primary">Cập nhật</button>
               </div>
             </form>
           </div>

@@ -6,6 +6,19 @@
       <h1 class="tw-auth-title">Đăng nhập</h1>
       <p class="tw-auth-sub">Chào mừng bạn quay lại với TopWork</p>
 
+      @if (session()->has('warning'))
+        <div class="alert alert-warning py-2.5 px-3 mb-3 border border-warning-subtle text-start" style="font-size: 13.5px; border-radius: 8px;">
+          <strong>⏳ Đang chờ xét duyệt:</strong><br>
+          {{ session('warning') }}
+        </div>
+      @endif
+
+      @if (session()->has('error'))
+        <div class="alert alert-danger py-2.5 px-3 mb-3 border border-danger-subtle text-start" style="font-size: 13.5px; border-radius: 8px;">
+          {{ session('error') }}
+        </div>
+      @endif
+
       <form action="{{ route('account.authenticate') }}" method="post">
         @csrf
         <div class="tw-form-group">

@@ -19,6 +19,16 @@
       </div>
       <div class="card-body">
         <div class="table-responsive-sm">
+          @if ($employer->status == 0)
+            <div class="alert alert-warning py-2.5 px-3 mb-3 border border-warning-subtle" style="font-size: 13.5px;">
+              <div class="d-flex align-items-center gap-2">
+                <i class="ti ti-clock fs-20 text-warning"></i>
+                <div>
+                  <strong>Tài khoản đang chờ duyệt!</strong> Hãy kiểm tra thông tin hợp lệ, sau đó đổi <strong>Trạng thái</strong> sang <strong>"Hoạt động"</strong> và bấm <strong>Xử lý</strong> để Nhà tuyển dụng có thể đăng nhập.
+                </div>
+              </div>
+            </div>
+          @endif
           <form class="needs-validation" method="POST" action="{{ route('admin.update.employer', $employer->id) }}">
             @csrf
             <div class="mb-3">
@@ -60,10 +70,9 @@
                   is-invalid
               @enderror"
                 name="status">
-                <option {{ $employer->status == env('STATUS_ACTIVE') ? 'selected' : '' }} value="1">Hoạt động
-                </option>
-                <option {{ $employer->status == env('STATUS_INACTIVE') ? 'selected' : '' }} value="0">Đã khóa
-                </option>
+                <option value="0" {{ $employer->status == 0 ? 'selected' : '' }}>Chờ duyệt</option>
+                <option value="1" {{ $employer->status == 1 ? 'selected' : '' }}>Hoạt động</option>
+                <option value="2" {{ $employer->status == 2 ? 'selected' : '' }}>Đã khóa</option>
               </select>
               <span class="invalid-feedback">{{ $errors->first('status') }}</span>
             </div>

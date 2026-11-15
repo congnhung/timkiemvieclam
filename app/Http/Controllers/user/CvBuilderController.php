@@ -17,6 +17,20 @@ class CvBuilderController extends Controller
     public static function getTemplatesList()
     {
         return [
+            'emerald_startup' => [
+                'id' => 'emerald_startup',
+                'name' => 'TopWork Chuẩn (Green)',
+                'badge' => 'KHUYÊN DÙNG',
+                'badge_color' => 'success',
+                'category' => 'modern',
+                'category_name' => 'Hiện đại',
+                'tags' => ['Chuẩn TopWork', 'Hiện đại'],
+                'description' => 'Màu xanh lục thương hiệu TopWork chuyên nghiệp, chuẩn mực giúp ghi điểm ngay với nhà tuyển dụng.',
+                'primary_color' => '#00b14f',
+                'accent_color' => '#4ade80',
+                'font' => 'Lexend',
+                'layout' => 'sidebar_left',
+            ],
             'modern_navy' => [
                 'id' => 'modern_navy',
                 'name' => 'Hiện Đại (Navy)',
@@ -45,6 +59,34 @@ class CvBuilderController extends Controller
                 'font' => 'Inter',
                 'layout' => 'header_banner',
             ],
+            'tech_slate' => [
+                'id' => 'tech_slate',
+                'name' => 'IT & Lập Trình Viên',
+                'badge' => 'HOT',
+                'badge_color' => 'danger',
+                'category' => 'it',
+                'category_name' => 'IT & Công nghệ',
+                'tags' => ['IT & Tech', 'Lập trình'],
+                'description' => 'Bố cục dạng block kỹ năng công nghệ rõ ràng, làm nổi bật dự án GitHub và tech stack.',
+                'primary_color' => '#0f172a',
+                'accent_color' => '#38bdf8',
+                'font' => 'Roboto',
+                'layout' => 'sidebar_left',
+            ],
+            'fresh_graduate' => [
+                'id' => 'fresh_graduate',
+                'name' => 'Sinh Viên & Mới Ra Trường',
+                'badge' => 'PHỔ BIẾN',
+                'badge_color' => 'info',
+                'category' => 'simple',
+                'category_name' => 'Đơn giản',
+                'tags' => ['Sinh viên', 'Mới tốt nghiệp'],
+                'description' => 'Tập trung nêu bật học vấn lên hàng đầu, hoạt động ngoại khóa, kỹ năng mềm và tiềm năng phát triển.',
+                'primary_color' => '#059669',
+                'accent_color' => '#34d399',
+                'font' => 'Lexend',
+                'layout' => 'sidebar_left',
+            ],
             'executive_dark' => [
                 'id' => 'executive_dark',
                 'name' => 'Chuyên Nghiệp (Executive)',
@@ -58,20 +100,6 @@ class CvBuilderController extends Controller
                 'accent_color' => '#f59e0b',
                 'font' => 'Roboto',
                 'layout' => 'sidebar_left',
-            ],
-            'minimalist_clean' => [
-                'id' => 'minimalist_clean',
-                'name' => 'Đơn Giản Tinh Tế',
-                'badge' => 'ƯA THÍCH',
-                'badge_color' => 'primary',
-                'category' => 'simple',
-                'category_name' => 'Đơn giản',
-                'tags' => ['Đơn giản', 'Chuẩn ATS'],
-                'description' => 'Thiết kế 1 cột tối giản phong cách Bắc Âu, tương thích 100% với hệ thống quét ATS.',
-                'primary_color' => '#2563eb',
-                'accent_color' => '#64748b',
-                'font' => 'Inter',
-                'layout' => 'single_column',
             ],
             'creative_coral' => [
                 'id' => 'creative_coral',
@@ -87,20 +115,6 @@ class CvBuilderController extends Controller
                 'font' => 'Montserrat',
                 'layout' => 'header_split',
             ],
-            'tech_slate' => [
-                'id' => 'tech_slate',
-                'name' => 'IT & Lập Trình Viên',
-                'badge' => 'HOT',
-                'badge_color' => 'danger',
-                'category' => 'it',
-                'category_name' => 'IT & Công nghệ',
-                'tags' => ['IT & Tech', 'Lập trình'],
-                'description' => 'Bố cục dạng block kỹ năng công nghệ rõ ràng, làm nổi bật dự án GitHub và tech stack.',
-                'primary_color' => '#0284c7',
-                'accent_color' => '#38bdf8',
-                'font' => 'Roboto',
-                'layout' => 'sidebar_left',
-            ],
             'classic_serif' => [
                 'id' => 'classic_serif',
                 'name' => 'Cổ Điển Sang Trọng',
@@ -114,20 +128,6 @@ class CvBuilderController extends Controller
                 'accent_color' => '#94a3b8',
                 'font' => 'Georgia',
                 'layout' => 'header_split',
-            ],
-            'fresh_graduate' => [
-                'id' => 'fresh_graduate',
-                'name' => 'Sinh Viên & Mới Ra Trường',
-                'badge' => 'PHỔ BIẾN',
-                'badge_color' => 'info',
-                'category' => 'simple',
-                'category_name' => 'Đơn giản',
-                'tags' => ['Sinh viên', 'Mới tốt nghiệp'],
-                'description' => 'Tập trung nêu bật học vấn, hoạt động ngoại khóa, kỹ năng mềm và tiềm năng phát triển.',
-                'primary_color' => '#059669',
-                'accent_color' => '#34d399',
-                'font' => 'Lexend',
-                'layout' => 'sidebar_left',
             ],
             'royal_purple' => [
                 'id' => 'royal_purple',
@@ -143,19 +143,19 @@ class CvBuilderController extends Controller
                 'font' => 'Montserrat',
                 'layout' => 'header_banner',
             ],
-            'emerald_startup' => [
-                'id' => 'emerald_startup',
-                'name' => 'Năng Động (Startup)',
-                'badge' => 'MỚI',
-                'badge_color' => 'success',
-                'category' => 'modern',
-                'category_name' => 'Hiện đại',
-                'tags' => ['Hiện đại', 'Startup'],
-                'description' => 'Màu xanh lục bảo tươi sáng, thể hiện tinh thần bứt phá và thích nghi cao.',
+            'minimalist_clean' => [
+                'id' => 'minimalist_clean',
+                'name' => 'Đơn Giản Tinh Tế',
+                'badge' => 'ƯA THÍCH',
+                'badge_color' => 'primary',
+                'category' => 'simple',
+                'category_name' => 'Đơn giản',
+                'tags' => ['Đơn giản', 'Chuẩn ATS'],
+                'description' => 'Thiết kế 1 cột tối giản phong cách Bắc Âu, tương thích 100% với hệ thống quét ATS.',
                 'primary_color' => '#00b14f',
-                'accent_color' => '#4ade80',
-                'font' => 'Lexend',
-                'layout' => 'sidebar_left',
+                'accent_color' => '#64748b',
+                'font' => 'Inter',
+                'layout' => 'single_column',
             ],
             'burgundy_luxury' => [
                 'id' => 'burgundy_luxury',
@@ -225,9 +225,14 @@ class CvBuilderController extends Controller
         }
 
         $allTemplates = self::getTemplatesList();
-        $selectedTemplateKey = $request->get('template', $resume->template ?? 'modern_navy');
-        if (!isset($allTemplates[$selectedTemplateKey])) {
-            $selectedTemplateKey = 'modern_navy';
+        
+        // Ưu tiên template từ request parameter, sau đó mới đến resume template, cuối cùng là emerald_startup (TopWork chuẩn)
+        if ($request->has('template') && isset($allTemplates[$request->template])) {
+            $selectedTemplateKey = $request->template;
+        } elseif ($resume && !empty($resume->template) && isset($allTemplates[$resume->template])) {
+            $selectedTemplateKey = $resume->template;
+        } else {
+            $selectedTemplateKey = 'emerald_startup';
         }
         $selectedTemplate = $allTemplates[$selectedTemplateKey];
 
@@ -251,7 +256,7 @@ class CvBuilderController extends Controller
             'address' => '',
             'website' => '',
             'avatar' => $defaultAvatar,
-            'theme_color' => $selectedTemplate['primary_color'] ?? '#004C82',
+            'theme_color' => $selectedTemplate['primary_color'] ?? '#00b14f',
             'template' => $selectedTemplateKey,
             'font' => $selectedTemplate['font'] ?? 'Lexend',
             'objective' => '',
@@ -334,7 +339,7 @@ class CvBuilderController extends Controller
         $resume->website = $request->input('website');
         $resume->avatar = $request->input('avatar');
         $resume->theme_color = $request->input('theme_color', '#00b14f');
-        $resume->template = $request->input('template', 'modern');
+        $resume->template = $request->input('template', 'modern_navy');
         $resume->objective = $request->input('objective');
 
         // Parse JSON data arrays

@@ -6,7 +6,7 @@
       
       <!-- Breadcrumb -->
       <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb mb-0" style="font-size: var(--text-sm);">
+        <ol class="breadcrumb mb-0" style="font-size: 13.5px;">
           <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none text-muted">Trang chủ</a></li>
           <li class="breadcrumb-item active text-dark fw-medium" aria-current="page">Thông tin tài khoản</li>
         </ol>
@@ -21,14 +21,14 @@
           <!-- 1. THÔNG TIN CÁ NHÂN -->
           <div class="tw-content-card">
             <form action="" method="post" id="userForm" name="userForm">
-              <h3 class="mb-1">
+              <h3 class="mb-1" style="font-size: 18px; font-weight: 700; color: #1e293b;">
                 @if (Auth::check() && Auth::user()->role === 'employer')
                   Thông tin người tuyển dụng
                 @else
                   Thông tin cá nhân
                 @endif
               </h3>
-              <p class="text-muted small mb-4" style="font-size: var(--text-xs);">
+              <p class="text-muted mb-4" style="font-size: 13px;">
                 Các trường đánh dấu <span class="text-danger">*</span> là bắt buộc.
               </p>
 
@@ -43,7 +43,7 @@
                 <label for="email">
                   Email <span class="text-danger">*</span>
                   @if (Auth::check() && Auth::user()->role === 'employer')
-                    <span class="text-muted fw-normal" style="font-size: var(--text-xs);">(vui lòng dùng email công ty)</span>
+                    <span class="text-muted fw-normal" style="font-size: 12px;">(vui lòng dùng email công ty)</span>
                   @endif
                 </label>
                 <input type="text" name="email" id="email" placeholder="email@domain.com"
@@ -60,7 +60,7 @@
 
               <div class="pt-2">
                 <button type="submit" class="tw-btn tw-btn-primary">
-                  Lưu thay đổi
+                  <i class="fa fa-check me-1.5"></i> Lưu thay đổi
                 </button>
               </div>
             </form>
@@ -70,8 +70,8 @@
           @if (Auth::check() && Auth::user()->role === 'employer')
             <div class="tw-content-card">
               <form action="" method="post" id="userFormCompany" name="userFormCompany">
-                <h3 class="mb-1">Thông tin công ty (Trụ sở chính)</h3>
-                <p class="text-muted small mb-4" style="font-size: var(--text-xs);">
+                <h3 class="mb-1" style="font-size: 18px; font-weight: 700; color: #1e293b;">Thông tin công ty (Trụ sở chính)</h3>
+                <p class="text-muted mb-4" style="font-size: 13px;">
                   Thông tin công ty sẽ xuất hiện công khai trên các tin tuyển dụng của bạn.
                 </p>
 
@@ -131,7 +131,7 @@
 
                 <div class="pt-2">
                   <button type="submit" class="tw-btn tw-btn-primary">
-                    Cập nhật công ty
+                    <i class="fa fa-check me-1.5"></i> Cập nhật công ty
                   </button>
                 </div>
               </form>
@@ -142,8 +142,8 @@
           @if (Auth::check() && Auth::user()->password !== null && Auth::user()->password !== '')
             <div class="tw-content-card">
               <form action="" method="POST" id="changePasswordForm" name="changePasswordForm">
-                <h3 class="mb-1">Đổi mật khẩu</h3>
-                <p class="text-muted small mb-4" style="font-size: var(--text-xs);">
+                <h3 class="mb-1" style="font-size: 18px; font-weight: 700; color: #1e293b;">Đổi mật khẩu</h3>
+                <p class="text-muted mb-4" style="font-size: 13px;">
                   Bạn nên sử dụng mật khẩu mạnh kết hợp chữ cái, số và ký tự đặc biệt.
                 </p>
 
@@ -170,7 +170,7 @@
 
                 <div class="pt-2">
                   <button type="submit" class="tw-btn tw-btn-primary">
-                    Cập nhật mật khẩu
+                    <i class="fa fa-key me-1.5"></i> Cập nhật mật khẩu
                   </button>
                 </div>
               </form>

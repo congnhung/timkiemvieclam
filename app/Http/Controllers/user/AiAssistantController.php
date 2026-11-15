@@ -67,10 +67,9 @@ class AiAssistantController extends Controller
             'sender_type' => 'user',
             'sender_id' => Auth::id(),
             'message' => $message,
-            'is_read' => false,
+            'is_read' => true,
         ]);
 
-        $conversation->increment('unread_for_admin');
         $conversation->update(['last_message_at' => now()]);
 
         $history = $request->input('history');

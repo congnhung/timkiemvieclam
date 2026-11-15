@@ -13,7 +13,7 @@ use App\Http\Controllers\admin\CareerController;
 use App\Http\Controllers\admin\BannerController;
 use App\Http\Controllers\admin\FileDownloadController;
 use App\Http\Controllers\admin\NotificationController;
-use App\Http\Controllers\admin\SupportChatController;
+use App\Http\Controllers\admin\CvManagementController;
 use App\Http\Controllers\user\ApiController;
 use App\Http\Controllers\user\GoogleAuthController;
 use App\Http\Controllers\user\CvBuilderController;
@@ -58,6 +58,7 @@ Route::group(['prefix' => 'account'], function () {
   // Guest Route
   Route::group(['middleware' => 'guest'], function () {
     Route::get('/register', [AccountController::class, 'registration'])->name('account.registration');
+    Route::get('/employer-register', [AccountController::class, 'employerRegistration'])->name('account.employer.registration');
     Route::post('/process-register', [AccountController::class, 'processRegistration'])->name('account.processRegistration');
     Route::get('/login', [AccountController::class, 'login'])->name('account.login');
     Route::post('/authenticate', [AccountController::class, 'authenticate'])->name('account.authenticate');
@@ -74,6 +75,7 @@ Route::group(['prefix' => 'account'], function () {
     Route::post('/update-profile-pic', [AccountController::class, 'updateProfilePicture'])->name('account.updateProfilePicture');
     Route::get('/create-job', [AccountController::class, 'createJob'])->name('account.createJob');
     Route::post('/save-job', [AccountController::class, 'saveJob'])->name('account.saveJob');
+    Route::post('/generate-ai-jd', [AccountController::class, 'generateAiJd'])->name('account.generateAiJd');
     Route::get('/my-job', [AccountController::class, 'myJobs'])->name('account.myJobs');
     Route::get('/my-job/edit/{jobId}', [AccountController::class, 'editJob'])->name('account.editJob');
     Route::post('/update-job/{jobId}', [AccountController::class, 'updateJob'])->name('account.updateJob');
@@ -98,6 +100,8 @@ Route::group(['prefix' => 'account'], function () {
     Route::get('/chat/messages/{conversationId}', [ChatController::class, 'getMessages'])->name('chat.messages');
     Route::post('/chat/send/{conversationId}', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unreadCount');
+    Route::post('/chat/conversation/delete/{conversationId}', [ChatController::class, 'deleteConversation'])->name('chat.deleteConversation');
+    Route::post('/chat/message/delete/{messageId}', [ChatController::class, 'deleteMessage'])->name('chat.deleteMessage');
   });
 });
 
@@ -134,18 +138,17 @@ Route::group(['prefix' => 'admin'], function () {
       Route::get("employer", 'getEmployer')->name('admin.employer');
       Route::get('edit-employer/{id}', 'editEmployer')->name('admin.edit.employer');
       Route::post('update-employer/{id}', 'updateEmployer')->name('admin.update.employer');
+      Route::post('approve-employer/{id}', 'approveEmployer')->name('admin.approve.employer');
       Route::delete('delete-employer/{id}', 'deleteEmployer')->name('admin.delete.employer');
     });
     Route::controller(JobApplyController::class)->group(function () {
       Route::get('apply-job', 'index')->name('admin.apply.job');
       Route::delete('delete-apply-job/{id}', 'deleteApllyJob')->name('admin.delete.applyjob');
     });
-    Route::controller(SupportChatController::class)->group(function () {
-      Route::get('support-chat', 'index')->name('admin.support.index');
-      Route::post('support-chat/{id}/reply', 'reply')->name('admin.support.reply');
-      Route::post('support-chat/{id}/status', 'toggleStatus')->name('admin.support.status');
-      Route::get('support-chat/{id}/messages', 'getNewMessages')->name('admin.support.messages');
-      Route::delete('support-chat/{id}', 'destroy')->name('admin.support.destroy');
+    // Quản lý CV (Option 3: 2 Tab - Hồ sơ CV Ứng viên & Mẫu phong cách CV)
+    Route::controller(CvManagementController::class)->group(function () {
+      Route::get('cv', 'index')->name('admin.cv.index');
+      Route::delete('cv/{id}', 'destroy')->name('admin.cv.destroy');
     });
     Route::controller(AdminAccountController::class)->group(function () {
       Route::get('profile', 'profile')->name('admin.profile');
@@ -153,6 +156,11 @@ Route::group(['prefix' => 'admin'], function () {
       Route::post('profile', 'updateImageProfile')->name('admin.updateImageProfile');
       Route::post('change-password', 'changePassword')->name('admin.changePassword');
     });
+    // Tự động chuyển hướng URL cũ /admin/support-chat về admin.home để không bị lỗi 404 khi người dùng refresh tab cũ
+    Route::any('support-chat/{any?}', function () {
+      return redirect()->route('admin.home');
+    })->where('any', '.*');
+
     Route::get("home", [AdminController::class, "index"])->name('admin.home');
     Route::get('/download/{filename}', [FileDownloadController::class, 'download'])->name('download');
   });

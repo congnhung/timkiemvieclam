@@ -83,6 +83,41 @@
                 </div>
               </div>
 
+              <!-- AI JD GENERATOR CARD -->
+              <div class="tw-ai-jd-card mt-4 mb-3 p-3 p-md-4 rounded-3" 
+                   style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px dashed #00b14f; box-shadow: 0 4px 15px rgba(0, 177, 79, 0.08);">
+                <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                  <div class="d-flex align-items-start gap-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0" 
+                         style="width: 44px; height: 44px; background: linear-gradient(135deg, #00b14f 0%, #009140 100%); box-shadow: 0 4px 12px rgba(0, 177, 79, 0.3);">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <h5 class="fw-bold mb-0 text-dark" style="font-size: 15px;">
+                          TopWork AI — Soạn thảo mô tả công việc (JD) tự động
+                        </h5>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size: 11px;">
+                          Gemini AI
+                        </span>
+                      </div>
+                      <p class="text-muted small mb-0 mt-1" style="font-size: 12.5px; line-height: 1.4;">
+                        Chỉ cần điền <strong>Tiêu đề công việc</strong> ở trên, bấm nút để AI tự động soạn thảo trọn gói <strong>Mô tả, Trách nhiệm, Yêu cầu và Quyền lợi</strong> chuẩn mực.
+                      </p>
+                    </div>
+                  </div>
+                  <button type="button" id="btnGenerateAiJd" class="btn text-white fw-semibold px-3 py-2 rounded-pill d-flex align-items-center gap-2 flex-shrink-0"
+                          style="background: linear-gradient(135deg, #00b14f 0%, #009140 100%); font-size: 13.5px; box-shadow: 0 4px 14px rgba(0, 177, 79, 0.3); border: none; transition: all 0.2s ease;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <span>Tạo JD bằng AI</span>
+                  </button>
+                </div>
+              </div>
+
               <div class="tw-form-group mt-3">
                 <label for="description">Mô tả công việc</label>
                 <textarea class="textarea" name="description" id="description" cols="5" rows="5"
@@ -215,11 +250,34 @@
     $("#createJobForm").submit(function(e) {
       e.preventDefault();
       $("button[type=submit]").prop("disabled", true);
+
+      // Đồng bộ từ khóa kỹ năng (Keywords)
+      var finalKeywords = $.trim($("#keywords").val());
+      if (window.keywordChoicesInstance) {
+        var choiceTags = window.keywordChoicesInstance.getValue(true);
+        if (Array.isArray(choiceTags) && choiceTags.length > 0) {
+          finalKeywords = choiceTags.join(', ');
+        }
+        var pending = $.trim($(".choices__input--cloned").val());
+        if (pending) {
+          finalKeywords = finalKeywords ? (finalKeywords + ', ' + pending) : pending;
+        }
+      }
+      $("#keywords").val(finalKeywords);
+
+      var formData = $("#createJobForm").serializeArray();
+      var kwField = formData.find(function(item) { return item.name === 'keywords'; });
+      if (kwField) {
+        kwField.value = finalKeywords;
+      } else {
+        formData.push({ name: 'keywords', value: finalKeywords });
+      }
+
       $.ajax({
         url: '{{ route('account.saveJob') }}',
         type: 'POST',
         dataType: 'json',
-        data: $("#createJobForm").serializeArray(),
+        data: formData,
         success: function(response) {
           $("button[type=submit]").prop("disabled", false);
           if (response.status == true) {
@@ -341,7 +399,7 @@
 
       const keywordInput = document.getElementById('keywords');
       if (keywordInput) {
-        new Choices(keywordInput, {
+        window.keywordChoicesInstance = new Choices(keywordInput, {
           removeItemButton: true,
           uniqueItemText: 'Từ khóa này đã có',
           placeholder: true,
@@ -351,6 +409,96 @@
           removeItems: true
         });
       }
+    });
+
+    // Tạo JD tự động bằng AI
+    $(document).ready(function() {
+      $("#btnGenerateAiJd").click(function(e) {
+        e.preventDefault();
+        var title = $.trim($("#title").val());
+        if (!title) {
+          if (typeof toastr !== 'undefined') {
+            toastr.warning('Vui lòng nhập "Tiêu đề công việc" trước để AI soạn thảo JD chính xác!');
+          } else {
+            alert('Vui lòng nhập "Tiêu đề công việc" trước để AI soạn thảo JD chính xác!');
+          }
+          $("#title").focus().addClass('is-invalid');
+          return;
+        }
+        $("#title").removeClass('is-invalid');
+
+        var $btn = $(this);
+        var oldHtml = $btn.html();
+        $btn.prop("disabled", true).html('<i class="fa fa-spinner fa-spin me-2"></i>Gemini AI đang soạn thảo...');
+
+        var postData = {
+          title: title,
+          level: $.trim($("#level").val()),
+          category_id: $("#choices-single-default").val(),
+          skills: $.trim($("#keywords").val()),
+          _token: '{{ csrf_token() }}'
+        };
+
+        $.ajax({
+          url: '{{ route('account.generateAiJd') }}',
+          type: 'POST',
+          dataType: 'json',
+          data: postData,
+          success: function(res) {
+            $btn.prop("disabled", false).html(oldHtml);
+            if (res.status && res.data) {
+              function setEditorHtml(id, html) {
+                var $el = $(id);
+                if ($el.length) {
+                  if ($.fn.trumbowyg && $el.data('trumbowyg')) {
+                    $el.trumbowyg('html', html);
+                  } else {
+                    $el.val(html);
+                  }
+                }
+              }
+
+              if (res.data.salary && !$.trim($("#salary").val())) {
+                $("#salary").val(res.data.salary);
+              }
+
+              setEditorHtml('#description', res.data.description);
+              setEditorHtml('#responsibility', res.data.responsibility);
+              setEditorHtml('#qualifications', res.data.qualifications);
+              setEditorHtml('#benefits', res.data.benefits);
+
+              if (res.data.keywords) {
+                $("#keywords").val(res.data.keywords);
+                if (window.keywordChoicesInstance) {
+                  try {
+                    window.keywordChoicesInstance.clearStore();
+                    var tags = res.data.keywords.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+                    window.keywordChoicesInstance.setValue(tags);
+                  } catch (err) {
+                    console.warn("Choices tag set warning:", err);
+                  }
+                }
+              }
+
+              if (typeof toastr !== 'undefined') {
+                toastr.success('Gemini AI đã soạn thảo JD thành công! Bạn có thể xem và tinh chỉnh lại các mục bên dưới.');
+              }
+
+              $('html, body').animate({
+                scrollTop: $("#description").closest('.tw-form-group').offset().top - 100
+              }, 400);
+            } else {
+              var msg = res.message || 'Không thể tạo JD vào lúc này. Vui lòng thử lại!';
+              if (typeof toastr !== 'undefined') toastr.error(msg); else alert(msg);
+            }
+          },
+          error: function(xhr) {
+            $btn.prop("disabled", false).html(oldHtml);
+            var msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Có lỗi khi kết nối AI.';
+            if (typeof toastr !== 'undefined') toastr.error(msg); else alert(msg);
+          }
+        });
+      });
     });
   </script>
 @endsection

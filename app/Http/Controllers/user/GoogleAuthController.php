@@ -35,10 +35,20 @@ class GoogleAuthController extends Controller
                 
             }
             else {
+                if ($user->role === 'employer' && (int)$user->status === 0) {
+                    session()->flash('warning', 'Tài khoản Nhà tuyển dụng của bạn đang chờ Quản trị viên xem xét và phê duyệt trước khi có thể đăng nhập.');
+                    session()->flash('toastr', ['warning' => 'Tài khoản đang chờ duyệt!']);
+                    return redirect()->route('account.login');
+                }
+                if ((int)$user->status === 2) {
+                    session()->flash('error', 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Quản trị viên.');
+                    session()->flash('toastr', ['error' => 'Tài khoản đã bị khóa!']);
+                    return redirect()->route('account.login');
+                }
+
                 Auth::login($user);
                 session()->flash('toastr', ['success' => 'Chào mừng bạn đến với website tìm kiếm việc làm']);
                 return redirect()->intended('account/profile');
-                
             }
         } catch (\Throwable $th) {
             dd('Something went wrong !'. $th->getMessage());

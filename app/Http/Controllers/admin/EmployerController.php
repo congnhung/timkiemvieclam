@@ -18,8 +18,17 @@ class EmployerController extends Controller
     if (!empty($request->date)) {
       $employers = $employers->whereDate('created_at', $request->date);
     }
-    $employers = $employers->latest()->paginate(5);
-    return view('admin.employer.list', compact('employers'));
+    if ($request->has('status') && $request->status !== '' && $request->status !== 'all') {
+      $employers = $employers->where('status', $request->status);
+    }
+    $employers = $employers->latest()->paginate(7)->withQueryString();
+
+    $pendingCount = User::where('role', 'employer')->where('status', 0)->count();
+    $activeCount = User::where('role', 'employer')->where('status', 1)->count();
+    $lockedCount = User::where('role', 'employer')->where('status', 2)->count();
+    $allCount = User::where('role', 'employer')->count();
+
+    return view('admin.employer.list', compact('employers', 'pendingCount', 'activeCount', 'lockedCount', 'allCount'));
   }
   public function editEmployer($id)
   {
@@ -27,8 +36,43 @@ class EmployerController extends Controller
       return view("errors.404");
     }
     $employers = User::where('role', 'employer')->orderBy('updated_at', 'DESC')->paginate(5);
-    $employer = User::where('role', 'employer')->findOrFail($id)->first();
+    $employer = User::where('role', 'employer')->findOrFail($id);
+
+    // Tự động đánh dấu đã đọc thông báo của NTD này
+    if (auth()->check()) {
+      try {
+        auth()->user()->unreadNotifications
+          ->filter(fn($n) => isset($n->data['employer_id']) && $n->data['employer_id'] == $id)
+          ->markAsRead();
+      } catch (\Throwable $e) {
+        // bỏ qua nếu lỗi
+      }
+    }
+
     return view('admin.employer.edit', compact('employers', 'employer'));
+  }
+
+  public function approveEmployer($id)
+  {
+    if (!ctype_digit($id)) {
+      return view("errors.404");
+    }
+    $employer = User::where('role', 'employer')->findOrFail($id);
+    $employer->status = 1;
+    $employer->save();
+
+    if (auth()->check()) {
+      try {
+        auth()->user()->unreadNotifications
+          ->filter(fn($n) => isset($n->data['employer_id']) && $n->data['employer_id'] == $id)
+          ->markAsRead();
+      } catch (\Throwable $e) {
+        // bỏ qua
+      }
+    }
+
+    toastr()->success("Đã phê duyệt tài khoản Nhà tuyển dụng thành công!", " ");
+    return redirect()->back();
   }
   public function updateEmployer(Request $request, $id)
   {

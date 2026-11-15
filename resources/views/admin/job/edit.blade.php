@@ -12,6 +12,17 @@
           <h4 class="header-title">Cập nhật</h4>
         </div>
         <div class="card-body">
+          @if ($job->status == env('STATUS_PENDING', 0))
+            <div class="alert alert-warning d-flex align-items-center justify-content-between mb-3 py-2 px-3 border border-warning-subtle">
+              <div class="d-flex align-items-center gap-2">
+                <i class="ti ti-alert-triangle fs-22 text-warning"></i>
+                <div>
+                  <strong>Tin việc làm đang chờ duyệt!</strong> Vui lòng rà soát nội dung và chuyển <strong>Trạng thái</strong> sang <strong>"Đã duyệt"</strong> để công việc được hiển thị trên hệ thống.
+                </div>
+              </div>
+              <span class="badge bg-danger text-white px-2 py-1">Chờ duyệt</span>
+            </div>
+          @endif
           <form class="needs-validation" method="POST" action="{{ route('admin.update.job', $job->id) }}">
             @csrf
             <div class="row g-2">
@@ -126,19 +137,23 @@
               <div class="mb-3 col-md-3">
                 <label for="salary" class="form-label">Mức lương</label>
                 <input type="text"
-                  class="form-control @error('salary')
-                    is-invalid
-                @enderror"
+                  class="form-control @error('salary') is-invalid @enderror"
                   id="salary" name="salary"
-                  value="{{ $errors->has('salary') ? '' : old('salary', $job->salary) }}">
+                  placeholder="Ví dụ: 15 - 20 triệu hoặc Thỏa thuận"
+                  value="{{ old('salary', $job->salary) }}">
                 @if ($errors->has('salary'))
                   <span class="invalid-feedback">{{ $errors->first('salary') }}</span>
                 @endif
               </div>
               <div class="mb-3 col-md-3">
-                <label for="keywords" class="form-label">Từ khóa</label>
-                <input type="text" class="form-control" id="keywords" name="keywords"
-                  value="{{ $job->keywords }}">
+                <label for="keywords" class="form-label">Từ khóa (Tags kỹ năng)</label>
+                <input type="text" class="form-control @error('keywords') is-invalid @enderror" 
+                  id="keywords" name="keywords"
+                  placeholder="Ví dụ: Kế toán, Excel, Báo cáo thuế"
+                  value="{{ old('keywords', str_replace(['[', ']', '"'], '', $job->keywords)) }}">
+                @if ($errors->has('keywords'))
+                  <span class="invalid-feedback">{{ $errors->first('keywords') }}</span>
+                @endif
               </div>
             </div>
             <div class="row g-2">

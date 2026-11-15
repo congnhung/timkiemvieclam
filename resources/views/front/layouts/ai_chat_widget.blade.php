@@ -125,37 +125,14 @@ $(document).ready(function() {
   }
   loadHistory();
 
-  // Bắt đầu polling lắng nghe Admin trả lời
-  function startPolling() {
-    if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(function() {
-      if ($('#aiChatWindow').hasClass('d-none')) return;
-      $.get('{{ route('ai.poll') }}?session_id=' + cskhSessionId + '&last_id=' + lastMsgId, function(res) {
-        if (res.status && res.messages && res.messages.length > 0) {
-          res.messages.forEach(function(m) {
-            if (m.id > lastMsgId) {
-              lastMsgId = Math.max(lastMsgId, m.id);
-              $('#aiTypingIndicator').before(
-                '<div class="ai-msg ai-msg-admin" style="display:flex;flex-direction:column;align-items:flex-start;margin-bottom:8px;">'
-                + '<div class="ai-bubble" style="background:#00b14f;color:#fff;border-radius:12px;border-bottom-left-radius:2px;max-width:85%;padding:8px 12px;font-size:13.5px;">'
-                + '<div style="font-size:11px;font-weight:bold;margin-bottom:2px;opacity:0.9;">👤 ' + esc(m.sender_name) + ' (CSKH):</div>'
-                + esc(m.message)
-                + '</div></div>'
-              );
-            }
-          });
-          scrollBot();
-        }
-      });
-    }, 3000);
-  }
-
   $('#aiChatLauncher').click(function() {
+    if ($('#twChatWidget').is(':visible')) {
+      $('#twChatWidget').fadeOut(150);
+    }
     $(this).addClass('d-none');
     $('#aiChatWindow').removeClass('d-none');
     $('#aiChatInput').focus();
     scrollBot();
-    startPolling();
   });
 
   $('#aiBtnClose').click(function() {

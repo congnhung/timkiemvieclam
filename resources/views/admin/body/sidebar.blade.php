@@ -22,7 +22,7 @@
     <!--- Sidenav Menu -->
     <ul class="side-nav">
       <li class="side-nav-item">
-        <a href="{{ route('admin.home') }}" class="side-nav-link">
+        <a href="{{ route('admin.home') }}" class="side-nav-link {{ request()->routeIs('admin.home') ? 'active' : '' }}">
           <span class="menu-icon">
             {!! file_get_contents(public_path('admin/icon/dashboard.svg')) !!}
           </span>
@@ -30,7 +30,7 @@
         </a>
       </li>
       <li class="side-nav-item">
-        <a href="{{ route('admin.career') }}" class="side-nav-link">
+        <a href="{{ route('admin.career') }}" class="side-nav-link {{ request()->routeIs('admin.career*') || request()->routeIs('admin.*career*') ? 'active' : '' }}">
           <span class="menu-icon">
             {!! file_get_contents(public_path('admin/icon/category.svg')) !!}
           </span>
@@ -38,11 +38,17 @@
         </a>
       </li>
       <li class="side-nav-item">
-        <a href="{{ route('admin.job') }}" class="side-nav-link">
+        <a href="{{ route('admin.job') }}" class="side-nav-link {{ request()->routeIs('admin.job*') || request()->routeIs('admin.edit.job*') ? 'active' : '' }}">
           <span class="menu-icon">
             {!! file_get_contents(public_path('admin/icon/briefcase-2.svg')) !!}
           </span>
           <span class="menu-text"> Việc làm </span>
+          @php
+            $pendingJobs = $adminPendingJobsCount ?? \App\Models\Job::where('status', env('STATUS_PENDING', 0))->count();
+          @endphp
+          @if ($pendingJobs > 0)
+            <span class="badge rounded-pill bg-danger ms-auto fs-11 px-2 py-0.5 fw-semibold" title="{{ $pendingJobs }} việc làm chờ duyệt">{{ $pendingJobs }}</span>
+          @endif
         </a>
       </li>
       <li class="side-nav-item">
@@ -59,7 +65,7 @@
       </li>
 
       <li class="side-nav-item">
-        <a href="{{ route('admin.user') }}" class="side-nav-link">
+        <a href="{{ route('admin.user') }}" class="side-nav-link {{ request()->routeIs('admin.user*') || request()->routeIs('admin.edit.user*') ? 'active' : '' }}">
           <span class="menu-icon">
             {!! file_get_contents(public_path('admin/icon/users.svg')) !!}
           </span>
@@ -67,35 +73,45 @@
         </a>
       </li>
       <li class="side-nav-item">
-        <a href="{{ route('admin.employer') }}" class="side-nav-link">
+        <a href="{{ route('admin.employer') }}" class="side-nav-link {{ request()->routeIs('admin.employer*') || request()->routeIs('admin.edit.employer*') ? 'active' : '' }}">
           <span class="menu-icon">
             {!! file_get_contents(public_path('admin/icon/building.svg')) !!}
           </span>
           <span class="menu-text"> Nhà tuyển dụng </span>
+          @php
+            $pendingEmployers = $adminPendingEmployersCount ?? \App\Models\User::where('role', 'employer')->where('status', 0)->count();
+          @endphp
+          @if ($pendingEmployers > 0)
+            <span class="badge rounded-pill bg-danger ms-auto fs-11 px-2 py-0.5 fw-semibold" title="{{ $pendingEmployers }} nhà tuyển dụng chờ duyệt">{{ $pendingEmployers }}</span>
+          @endif
         </a>
       </li>
       <li class="side-nav-item">
-        <a href="{{ route('admin.apply.job') }}" class="side-nav-link">
+        <a href="{{ route('admin.apply.job') }}" class="side-nav-link {{ request()->routeIs('admin.apply.job*') ? 'active' : '' }}">
           <span class="menu-icon">
             {!! file_get_contents(public_path('admin/icon/file-cv.svg')) !!}
           </span>
           <span class="menu-text"> Ứng tuyển </span>
+          @php
+            $pendingApplies = $adminPendingApplicationsCount ?? \App\Models\JobApply::where('status', env('STATUS_PENDING', 0))->count();
+          @endphp
+          @if ($pendingApplies > 0)
+            <span class="badge rounded-pill bg-warning text-dark ms-auto fs-11 px-2 py-0.5 fw-semibold" title="{{ $pendingApplies }} hồ sơ chờ duyệt">{{ $pendingApplies }}</span>
+          @endif
         </a>
       </li>
       <li class="side-nav-item">
-        <a href="{{ route('admin.support.index') }}" class="side-nav-link {{ request()->routeIs('admin.support.*') ? 'active' : '' }}">
+        <a href="{{ route('admin.cv.index') }}" class="side-nav-link {{ request()->routeIs('admin.cv.*') ? 'active' : '' }}">
           <span class="menu-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
           </span>
-          <span class="menu-text"> CSKH & Trợ lý AI </span>
-          @php
-            $unreadSupport = \App\Models\SupportConversation::sum('unread_for_admin');
-          @endphp
-          @if ($unreadSupport > 0)
-            <span class="badge bg-danger rounded-pill ms-auto" style="font-size: 11px;">{{ $unreadSupport }}</span>
-          @endif
+          <span class="menu-text"> Quản lý CV </span>
         </a>
       </li>
       {{-- <li class="side-nav-item">

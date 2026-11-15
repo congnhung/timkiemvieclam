@@ -27,8 +27,9 @@ class NewJobNotification extends Notification
   public function toDatabase($notifiable)
   {
     return [
-      'employer_name' => $this->job->user->fullname, // Lưu tên nhà tuyển dụng
-      'job_id' => $this->job->id, // Lưu ID công việc nếu cần thiết
+      'employer_name' => $this->job->company_name ?: ($this->job->user ? $this->job->user->fullname : 'Nhà tuyển dụng'),
+      'job_id' => $this->job->id,
+      'job_title' => $this->job->title,
     ];
   }
 }

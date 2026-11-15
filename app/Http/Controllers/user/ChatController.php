@@ -288,4 +288,75 @@ class ChatController extends Controller
 
         return response()->json(['count' => $count]);
     }
+
+    /**
+     * Xóa cuộc trò chuyện và toàn bộ tin nhắn bên trong
+     */
+    public function deleteConversation($conversationId)
+    {
+        $conversation = Conversation::find($conversationId);
+        if (!$conversation) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Cuộc trò chuyện không tồn tại.'
+            ], 404);
+        }
+
+        if ($conversation->user_id != Auth::id() && $conversation->employer_id != Auth::id()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn không có quyền xóa cuộc trò chuyện này.'
+            ], 403);
+        }
+
+        // Xóa toàn bộ tin nhắn thuộc cuộc trò chuyện
+        Message::where('conversation_id', $conversationId)->delete();
+
+        // Xóa cuộc trò chuyện
+        $conversation->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Đã xóa cuộc trò chuyện thành công.'
+        ]);
+    }
+
+    /**
+     * Xóa 1 tin nhắn cụ thể
+     */
+    public function deleteMessage($messageId)
+    {
+        $message = Message::with('conversation')->find($messageId);
+        if (!$message) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tin nhắn không tồn tại.'
+            ], 404);
+        }
+
+        if (
+            $message->sender_id != Auth::id() &&
+            $message->conversation->user_id != Auth::id() &&
+            $message->conversation->employer_id != Auth::id()
+        ) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn không có quyền xóa tin nhắn này.'
+            ], 403);
+        }
+
+        $convId = $message->conversation_id;
+        $message->delete();
+
+        // Cập nhật lại thời gian last_message_at về tin nhắn mới nhất còn lại
+        $latest = Message::where('conversation_id', $convId)->latest('created_at')->first();
+        if ($latest) {
+            Conversation::where('id', $convId)->update(['last_message_at' => $latest->created_at]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Đã xóa tin nhắn thành công.'
+        ]);
+    }
 }

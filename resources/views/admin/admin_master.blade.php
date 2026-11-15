@@ -14,6 +14,8 @@
 
     <!-- Vendor css -->
     <link href="{{ asset('admin/css/vendor.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- Icons css -->
+    <link href="{{ asset('admin/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- App css -->
     <link href="{{ asset('admin/css/app.min.css') }}" rel="stylesheet" type="text/css" id="app-style" />
@@ -29,6 +31,9 @@
     <style>
       *, html, body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, a, label, table, th, td {
         font-family: 'Lexend', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      }
+      [class^="ti-"], [class*=" ti-"], .ti, iconify-icon, .iconify {
+        font-family: "tabler-icons" !important;
       }
     </style>
 
